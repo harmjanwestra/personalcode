@@ -1,17 +1,21 @@
 package nl.harmjanwestra.playground.meqtl;
 
+import javafx.util.Pair;
+import nl.harmjanwestra.utilities.annotation.gtf.GTFAnnotation;
 import nl.harmjanwestra.utilities.bedfile.BedFileReader;
 import nl.harmjanwestra.utilities.enums.Chromosome;
 import nl.harmjanwestra.utilities.features.Feature;
 import nl.harmjanwestra.utilities.features.FeatureComparator;
+import nl.harmjanwestra.utilities.features.Gene;
 import nl.harmjanwestra.utilities.legacy.genetica.text.Strings;
 import org.apache.commons.math3.stat.correlation.PearsonsCorrelation;
 import umcg.genetica.io.text.TextFile;
+import umcg.genetica.io.trityper.EQTL;
+import umcg.genetica.io.trityper.QTLTextFile;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.*;
 
 public class EQTMOverlapMatrix {
 	
@@ -32,6 +36,142 @@ public class EQTMOverlapMatrix {
 			e.printStackTrace();
 		}
 		
+	}
+	
+	public void run2(String featurefileloc, String eqtmfile, String geneAnnotationGTF, String outfolder, int cgwindowsize, boolean exonoverlap) throws IOException {
+		
+		// load list of annotation files
+		
+		
+		// load a list of cg/gene pairs
+		GTFAnnotation gtf = new GTFAnnotation(geneAnnotationGTF);
+		HashMap<String, Gene> strToGene = gtf.getStrToGene();
+		ArrayList<Pair<Feature, Gene>> eqtms = new ArrayList<>();
+		
+		QTLTextFile t = new QTLTextFile(eqtmfile, TextFile.R);
+		Iterator<EQTL> it = t.getEQtlIterator();
+		
+		HashSet<String> genehash = new HashSet<String>();
+		ArrayList<Gene> genelust = new ArrayList<>();
+		HashSet<String> cghash = new HashSet<String>();
+		ArrayList<Feature> cglist = new ArrayList<>();
+		
+		while (it.hasNext()) {
+			
+			EQTL e = it.next();
+			Feature cg = new Feature(Chromosome.parseChr("" + e.getRsChr()), e.getRsChrPos(), e.getRsChrPos());
+			cg.setName(e.getRsName());
+			
+			Gene g = strToGene.get(e.getProbe());
+			if (g != null) {
+				Pair<Feature, Gene> eqtm = new Pair<>(cg, g);
+				eqtms.add(eqtm);
+				if (!genehash.contains(e.getProbe())) {
+					genelust.add(g);
+					genehash.add(e.getProbe());
+				}
+				if (!cghash.contains(e.getRsName())) {
+					cglist.add(cg);
+					cghash.add(e.getRsName());
+				}
+			}
+			
+			
+		}
+		t.close();
+		
+		
+		TextFile matrixGenesOut = new TextFile(outfolder + "Overlap_Gene.txt", TextFile.W);
+		TextFile matrixCGsOut = new TextFile(outfolder + "Overlap_CG.txt", TextFile.W);
+		TextFile matrixEQTMOut = new TextFile(outfolder + "Overlap_EQTM.txt", TextFile.W);
+		
+		String headerg = "Source\tFeature";
+		String headerc = "Source\tFeature";
+		String headere = "Source\tFeature";
+		
+		for (int i = 0; i < eqtms.size(); i++) {
+			headere += "\t" + eqtms.get(i).getKey().getName() + "\t" + eqtms.get(i).getValue().getName();
+		}
+		for (int i = 0; i < genelust.size(); i++) {
+			headerg += "\t" + genelust.get(i).getName();
+		}
+		for (int i = 0; i < cglist.size(); i++) {
+			headerc += "\t" + cglist.get(i);
+		}
+		matrixCGsOut.writeln(headerc);
+		matrixEQTMOut.writeln(headere);
+		matrixGenesOut.writeln(headerg);
+		
+		
+		// iterate the list of annotations
+		TextFile tf = new TextFile(featurefileloc, TextFile.R);
+		String[] elems = tf.readLineElems(TextFile.tab);
+		BedFileReader reader = new BedFileReader();
+		while (elems != null) {
+			ArrayList<Feature> annotation = reader.readAsList(elems[2]);
+			TreeSet<Feature> ts = new TreeSet<>(new FeatureComparator(true));
+			ts.addAll(annotation);
+			
+			String lnoute = elems[0] + "\t" + elems[1];
+			String lnoutg = elems[0] + "\t" + elems[1];
+			String lnoutc = elems[0] + "\t" + elems[1];
+			
+			// now iterate each eqtm, cg, and gene
+			for (int i = 0; i < eqtms.size(); i++) {
+				Pair<Feature, Gene> eqtm = eqtms.get(i);
+				Feature cg = eqtm.getKey();
+				Gene gene = eqtm.getValue();
+				lnoute += "\t" + overlapcg(ts, cg, cgwindowsize) + "\t" + overlapgene(ts, gene, exonoverlap);
+			}
+			matrixEQTMOut.writeln(lnoute);
+			
+			for (int i = 0; i < genelust.size(); i++) {
+				Gene gene = genelust.get(i);
+				lnoutg += "\t" + overlapgene(ts, gene, exonoverlap);
+			}
+			matrixGenesOut.writeln(lnoutg);
+			
+			for (int i = 0; i < cglist.size(); i++) {
+				Feature cg = cglist.get(i);
+				lnoutc += "\t" + overlapcg(ts, cg, cgwindowsize);
+			}
+			matrixCGsOut.writeln(lnoutc);
+			
+			
+		}
+		
+		tf.close();
+		
+		
+		matrixGenesOut.close();
+		matrixCGsOut.close();
+		matrixEQTMOut.close();
+		
+	}
+	
+	private int overlapgene(TreeSet<Feature> ts, Gene gene, boolean exonic) {
+		
+		Feature fsta = new Feature(gene.getChromosome(), gene.getStart(), gene.getStart());
+		Feature fsto = new Feature(gene.getChromosome(), gene.getStop(), gene.getStop());
+		
+		SortedSet<Feature> subset = ts.subSet(fsta, fsto);
+		if (!subset.isEmpty()) {
+			return 1;
+		}
+		
+		return 0;
+	}
+	
+	private int overlapcg(TreeSet<Feature> ts, Feature cg, int windowsize) {
+		Feature fsta = new Feature(cg.getChromosome(), cg.getStart() - windowsize, cg.getStart() - windowsize);
+		Feature fsto = new Feature(cg.getChromosome(), cg.getStop() + windowsize, cg.getStop() + windowsize);
+		
+		SortedSet<Feature> subset = ts.subSet(fsta, fsto);
+		if (!subset.isEmpty()) {
+			return 1;
+		}
+		
+		return 0;
 	}
 	
 	public void run(String annotfileloc, String markfilter, String celltypefilter, String cgfile, String outf) throws IOException {

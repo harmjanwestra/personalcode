@@ -1,11 +1,11 @@
 package nl.harmjanwestra.playground.transeqtl;
 
-import htsjdk.samtools.SAMRecord;
-import javafx.scene.control.ProgressBar;
+import htsjdk.samtools.reference.FastaSequenceFile;
+import htsjdk.samtools.reference.ReferenceSequence;
 import net.sf.samtools.AlignmentBlock;
 import net.sf.samtools.SAMFileReader;
 import net.sf.samtools.SAMRecordIterator;
-import nl.harmjanwestra.utilities.annotation.ensembl.EnsemblStructures;
+import net.sf.samtools.SAMSequenceDictionary;
 import nl.harmjanwestra.utilities.annotation.gtf.GTFAnnotation;
 import nl.harmjanwestra.utilities.enums.Chromosome;
 import nl.harmjanwestra.utilities.features.*;
@@ -20,7 +20,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.*;
-import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -28,13 +27,25 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class MakeTranscriptome {
 	
 	public static void main(String[] args) {
+//		args = new String[]{
+//				"makeseq",
+//				"e:\\align\\test\\",
+//				"d:\\work\\data\\HumanGenome\\human_g1k_v37.fasta.gz",
+//				"d:\\Work\\data\\ref\\ensembl\\Homo_sapiens.GRCh37.71.gtf.gz",
+//				"d:\\/mnt/e/align/5mbcis-25bpreads",
+//				"5000000",
+//				"25",
+//				"25",
+//				"true",
+//				"false"
+//		};
 		MakeTranscriptome mt = new MakeTranscriptome();
-		if (args.length == 0) {
-			System.out.println("Usage: makeseq || align || quantify || combine ");
+		if (args.length < 1) {
+			System.out.println("Usage: makeseq || align || quantifyIndividualEQTL || combine ");
 		} else if (args[0].equals("makeseq")) {
 			
-			if (args.length < 8) {
-				System.out.println("Usage: makeseq eqtlfile genome ensembl.gtf.gz outdir windowsize readlen shift");
+			if (args.length < 10) {
+				System.out.println("Usage: makeseq eqtlfile genome ensembl.gtf.gz outdir windowsize readlen shift exportindividualgenes exportexonseqs");
 				System.out.println("Defaults: windowsize=2000000 readlen=25 shift=2");
 				System.exit(-1);
 			} else {
@@ -79,15 +90,28 @@ public class MakeTranscriptome {
 			}
 			
 			
-		} else if (args[0].equals("quantify")) {
+		} else if (args[0].equals("quantifyIndividualEQTL")) {
 			if (args.length < 4) {
-				System.out.println("Usage quantify eqtlfile indir out");
+				System.out.println("Usage quantifyIndividualEQTL eqtlfile indir out");
 			} else {
 				String eqtlfile = args[1];
 				String indir = args[2];
 				String out = args[3];
 				try {
-					mt.quantify(eqtlfile, indir, out);
+					mt.quantifyIndividualEQTL(eqtlfile, indir, out);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		} else if (args[0].equals("quantifysnp")) {
+			if (args.length < 4) {
+				System.out.println("Usage quantifyIndividualEQTL eqtlfile indir out");
+			} else {
+				String alignment = args[1];
+				String genereadfile = args[2];
+				String out = args[3];
+				try {
+					mt.quantifySNP(alignment, genereadfile, out);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -149,7 +173,7 @@ public class MakeTranscriptome {
 		
 	}
 	
-	public void quantify(String eqtlfile, String indir, String out) throws IOException {
+	public void quantifyIndividualEQTL(String eqtlfile, String indir, String out) throws IOException {
 		
 		// inventory for genes.
 		TextFile tf2 = new TextFile(eqtlfile, TextFile.R);
@@ -179,7 +203,7 @@ public class MakeTranscriptome {
 		int ctr = 0;
 		
 		TextFile outtf = new TextFile(out, TextFile.W);
-		outtf.writeln("SNP\tGene\tNrReads\t%BasesMapped\t%ReadsMapped");
+		outtf.writeln("SNP\tGene\tNrReads\t%BasesMapped\t%ReadsMapped\tDistanceToClosestAlignment");
 		
 		while (elems != null) {
 			Chromosome chr = Chromosome.parseChr(elems[1]);
@@ -189,11 +213,18 @@ public class MakeTranscriptome {
 			
 			// get the alignment
 			String alignment = indir + "/alignments/" + snpname + "_" + genename + ".sam";
+			
 			if (Gpio.exists(alignment)) {
 //				System.out.println(alignment);
 				SAMFileReader reader = new SAMFileReader(new File(alignment));
+				
+				SAMSequenceDictionary seqDict = reader.getFileHeader().getSequenceDictionary();
+				long seqlen = seqDict.getReferenceLength();
+				int relativesnppos = (int) seqlen / 2;
+				int closest = Integer.MAX_VALUE;
 				SAMRecordIterator it = reader.iterator();
 				double totalperc = 0;
+				
 				
 				// iterate all alignments, take the ones that are properly mapping
 				while (it.hasNext()) {
@@ -201,8 +232,17 @@ public class MakeTranscriptome {
 					List<AlignmentBlock> blocks = record.getAlignmentBlocks();
 					int readlen = record.getReadLength();
 					int mappedlen = 0;
+					
+					int start = record.getAlignmentStart();
+					int relpos = Math.abs(relativesnppos - start);
+					if (relpos < closest) {
+						closest = relpos;
+					}
+					
+					
 					for (AlignmentBlock b : blocks) {
 						mappedlen += b.getLength();
+						
 					}
 					
 					double perc = (double) mappedlen / readlen;
@@ -210,8 +250,8 @@ public class MakeTranscriptome {
 				}
 				
 				int nrReadsTotal = geneToNrReads.get(genename);
-				
-				outtf.writeln(snpname + "\t" + genename + "\t" + nrReadsTotal + "\t" + totalperc + "\t" + (totalperc / nrReadsTotal));
+				System.out.println(alignment + "\t" + relativesnppos + "\t" + closest);
+				outtf.writeln(snpname + "\t" + genename + "\t" + nrReadsTotal + "\t" + totalperc + "\t" + (totalperc / nrReadsTotal) + "\t" + closest);
 				
 				reader.close();
 			} else {
@@ -226,6 +266,92 @@ public class MakeTranscriptome {
 			}
 		}
 		tf.close();
+		outtf.close();
+	}
+	
+	public void quantifySNP(String alignmentfile, String geneReadFile, String out) throws IOException {
+		
+		
+		// map gene name to nr of reads
+		HashMap<String, Double> geneToReads = new HashMap<String, Double>();
+		HashMap<String, Double> geneToBases = new HashMap<String, Double>();
+		HashMap<String, Integer> geneIndex = new HashMap<String, Integer>();
+		ArrayList<String> genenames = new ArrayList<>();
+		TextFile tf = new TextFile(geneReadFile, TextFile.R);
+		tf.readLine();
+		String[] elems = tf.readLineElems(TextFile.tab);
+		int ctr = 0;
+		
+		while (elems != null) {
+			
+			String gene = elems[0];
+			Double nrOfReads = Double.parseDouble(elems[1]);
+			Double nrOfBases = Double.parseDouble(elems[2]);
+			
+			if (!geneIndex.containsKey(gene)) {
+				geneToReads.put(gene, nrOfReads);
+				geneToBases.put(gene, nrOfBases);
+				geneIndex.put(gene, ctr);
+				genenames.add(gene);
+				ctr++;
+			}
+			elems = tf.readLineElems(TextFile.tab);
+		}
+		tf.close();
+		
+		TextFile outtf = new TextFile(out, TextFile.W);
+		String header = "Gene\tNrOfReadsTotal\tNrOfReadsMapped\tNrOfBasesTotal\tNrOfBasesMapped";
+		outtf.writeln(header);
+		
+		// iterate the list of snps
+		
+		if (!Gpio.exists(alignmentfile)) {
+			System.out.println("Expected file: " + alignmentfile + " but wasn't present on disk.");
+		} else {
+			
+			
+			double[] nrReadsMappedPerGene = new double[geneIndex.size()];
+			double[] nrBasesMappedPerGene = new double[geneIndex.size()];
+			
+			SAMFileReader reader = new SAMFileReader(new File(alignmentfile));
+			SAMRecordIterator it = reader.iterator();
+			
+			while (it.hasNext()) {
+				net.sf.samtools.SAMRecord record = it.next();
+				String recordname = record.getReadName();
+				String gene = recordname.split("_")[0];
+				Integer index = geneIndex.get(gene);
+				if (index != null) {
+					List<AlignmentBlock> blocks = record.getAlignmentBlocks();
+					if (!blocks.isEmpty()) {
+						nrReadsMappedPerGene[index]++;
+						int mappedlen = 0;
+						for (AlignmentBlock b : blocks) {
+							mappedlen += b.getLength();
+						}
+						nrBasesMappedPerGene[index] += mappedlen;
+					}
+				}
+			}
+			
+			for (int g = 0; g < nrBasesMappedPerGene.length; g++) {
+				String gene = genenames.get(g);
+				double nrOfReads = geneToReads.get(gene);
+				double nrOfBases = geneToBases.get(gene);
+				double percentageOfReadsMapped = nrOfReads / nrReadsMappedPerGene[g];
+				double percentageOfBasesMapped = nrOfBases / nrBasesMappedPerGene[g];
+//				String outln = genenames.get(g) + "\t" + nrOfReads + "\t" + nrReadsMappedPerGene[g] + "\t" + percentageOfReadsMapped + "\t" + nrOfBasesTotal + "\t" + nrBasesMappedPerGene[g] + "\t" + percentageOfBasesMapped;
+			}
+			
+			System.exit(-1);
+//			outtf.writeln(outln);
+			
+			it.close();
+			reader.close();
+			
+		}
+		
+		
 		outtf.close();
 	}
 	
@@ -266,7 +392,7 @@ public class MakeTranscriptome {
 //				try {
 //					Thread.sleep(1000);
 //				} catch (InterruptedException e) {
-//					e.printStackTrace();
+//					e.printStackTrace();+
 //				}
 //			}
 
@@ -397,9 +523,10 @@ public class MakeTranscriptome {
 			geneIds.add(genename);
 			elems = tf.readLineElems(TextFile.tab);
 			ctr++;
-			if (ctr % 100000 == 0) {
-				System.out.print("\r" + ctr + " lines parsed..");
-			}
+//			if (ctr % 100 == 0) {
+//				System.out.print("\r" + ctr + " lines parsed..");
+//				break;
+//			}
 		}
 		tf.close();
 		System.out.println();
@@ -428,8 +555,8 @@ public class MakeTranscriptome {
 		
 		// create 1mb regions around snps
 		System.out.println("Loading genome from: " + genomeFasta);
-		htsjdk.samtools.reference.FastaSequenceFile fastaFile = new htsjdk.samtools.reference.FastaSequenceFile(new File(genomeFasta), false);
-		htsjdk.samtools.reference.ReferenceSequence seq = fastaFile.nextSequence();
+		FastaSequenceFile fastaFile = new FastaSequenceFile(new File(genomeFasta), false);
+		ReferenceSequence seq = fastaFile.nextSequence();
 //		System.out.println("available sequences");
 //		while (seq != null) {
 //			String seqname = seq.getName();
@@ -446,7 +573,9 @@ public class MakeTranscriptome {
 		int nrsnpsexported = 0;
 		int nrgenesexported = 0;
 		TextFile allgenefa = new TextFile(geneoutputdir + "allgenes.fa.gz", TextFile.W);
-		
+		TextFile allgenefaignoringexons = new TextFile(geneoutputdir + "allgenes_ignoringexons.fa.gz", TextFile.W);
+		TextFile geneStats = new TextFile(geneoutputdir + "allgenes.stats.txt", TextFile.W);
+		geneStats.writeln("Gene\tnrOfReads\tnrOfBases\tnrTranscripts\tnrExons\tnrOfReadsIgnoringExons\tnrOfBasesIgnoringExons");
 		while (seq != null) {
 			
 			byte[] bases = seq.getBases();
@@ -509,28 +638,56 @@ public class MakeTranscriptome {
 					HashSet<Exon> allexons = new HashSet<Exon>();
 					for (Transcript t : transcripts) {
 						ArrayList<Exon> exons = t.getExons();
-						allexons.addAll(exons);
+						for (Exon e : exons) {
+							if (e.getType().equals(FeatureType.EXON)) {
+								allexons.add(e);
+							}
+						}
 					}
 //					System.out.println("Gene: " + g.getName() + "\tTotal exons: " + allexons.size());
+					
 					
 					if (exportfullexonsequences) {
 						TextFile genesfastaoutFull = new TextFile(geneoutputdir + g.getName() + "_exons.fa.gz", TextFile.W);
 						for (Exon currentexon : allexons) {
-							int len = currentexon.getStop() - currentexon.getStart();
-							byte[] b = new byte[len];
-							System.arraycopy(bases, currentexon.getStart(), b, 0, len);
-							String fastaStr = ">" + g.getName() + "_" + currentexon.getName() + "_" + currentexon.getChromosome().toString() + "_" + currentexon.getStart() + "_" + currentexon.getStop()
-									+ "\n" + byteToStr(b);
-							genesfastaoutFull.writeln(fastaStr);
+							if (currentexon.getType().equals(FeatureType.EXON)) {
+								int len = currentexon.getStop() - currentexon.getStart();
+								byte[] b = new byte[len];
+								System.arraycopy(bases, currentexon.getStart(), b, 0, len);
+								String fastaStr = ">" + g.getName() + "_" + currentexon.getName() + "_" + currentexon.getChromosome().toString() + "_" + currentexon.getStart() + "_" + currentexon.getStop()
+										+ "\n" + byteToStr(b);
+								genesfastaoutFull.writeln(fastaStr);
+							}
 						}
 						genesfastaoutFull.close();
 					}
+					
 					// split up the transcript in readlen reads
 					int nrseqs = 0;
 					for (Transcript t : transcripts) {
 						ArrayList<Exon> exons = t.getExons();
 						
+						// get only exons
+						{
+							ArrayList<Exon> tmpexons = new ArrayList<>();
+							for (Exon e : exons) {
+								if (e.getType().equals(FeatureType.EXON)) {
+									tmpexons.add(e);
+								}
+							}
+							exons = tmpexons;
+						}
+						
 						Collections.sort(exons, new FeatureComparator(true)); // sort the exons
+
+//						if (t.getStrand().equals(Strand.NEG)) {
+//							System.out.println("Got one...");
+//							for (int i = 0; i < exons.size(); i++) {
+//								System.out.println(i + "\t" + exons.get(i).toString());
+//							}
+//							System.exit(-1);
+//						}
+						
 						// output exon sequences
 						int exonctr = 0;
 						int tstart = exons.get(0).getStart();
@@ -617,9 +774,29 @@ public class MakeTranscriptome {
 						}
 						
 					}
+					
 					if (exportindividualgenes) {
 						genesfastaout.close();
 					}
+					
+					// write the sequence, while ignoring exons
+					int sta = g.getStart();
+					int sto = g.getStop();
+					
+					int currentPos = sta;
+					while (currentPos < sto) {
+						byte[] b = new byte[readlen];
+						System.arraycopy(bases, currentPos, b, 0, readlen);
+						String fastaStr = ">" + g.getName() + "\t" + g.getChromosome().toString() + "_" + currentPos + "_" + (currentPos + readlen)
+								+ "\n" + byteToStr(b);
+						allgenefaignoringexons.writeln(fastaStr);
+						currentPos += shift;
+					}
+					
+					
+					String genestatout = g.getName() + "\t" + nrseqs + "\t" + (nrseqs * readlen) + "\t" + transcripts.size() + "\t" + allexons.size();
+					geneStats.writeln(genestatout);
+					
 					System.out.println(nrgenesexported + "/" + genesToExport.size() + " | Gene: " + g.getName() + " Chr: " + g.getChromosome().toString() + " start: " + g.getStart() + " stop: " + g.getStop() + " Strand: " + g.getStrand() + " nr sequences: " + nrseqs);
 					nrgenesexported++;
 				}
@@ -627,6 +804,7 @@ public class MakeTranscriptome {
 			System.out.println("Done exporting genes");
 			seq = fastaFile.nextSequence();
 		}
+		geneStats.close();
 		allgenefa.close();
 		
 		// make index script
@@ -639,20 +817,18 @@ public class MakeTranscriptome {
 		}
 		tfs1.close();
 		
-		TextFile tfsa1 = new TextFile(outputdir + "alignall.sh", TextFile.W);
-		TextFile tfsa2 = new TextFile(outputdir + "samseall.sh", TextFile.W);
-		tfsa1.writeln("mkdir -p alignments");
+		
+		TextFile snplistout = new TextFile(snpoutputdir + "snps.txt", TextFile.W);
 		for (String snp : snpids) {
 			System.out.println(snpoutputdir + snp + ".fa.gz");
 			if (Gpio.exists(snpoutputdir + snp + ".fa.gz")) {
 				String ln = "bwa aln -t 16 -l 10 -0 ./snps/" + snp + ".fa.gz ./genes/allgenes.fa.gz > ./alignments/" + snp + "_allgenes.sai";
 				String ln2 = "bwa samse ./snps/" + snp + ".fa.gz ./alignments/" + snp + "_allgenes.sai ./genes/allgenes.fa.gz > ./alignments/" + snp + "_allgenes.sam";
-				tfsa1.writeln(ln);
-				tfsa2.writeln(ln2);
+				
 			}
+			snplistout.writeln(snp);
 		}
-		tfsa1.close();
-		tfsa2.close();
+		snplistout.close();
 		
 		
 		// make alignment script
