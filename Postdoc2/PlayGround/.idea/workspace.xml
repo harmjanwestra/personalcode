@@ -2,12 +2,16 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="dab806bc-2f3b-467a-b3f4-bc5afadb1254" name="Default" comment="">
-      <change beforePath="" afterPath="$PROJECT_DIR$/src/main/java/nl/harmjanwestra/playground/transeqtl/GTExRecode.java" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/src/main/java/nl/harmjanwestra/playground/transeqtl/MixAndMatch.java" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/nl/harmjanwestra/playground/MutherRecode.java" afterPath="$PROJECT_DIR$/src/main/java/nl/harmjanwestra/playground/transeqtl/MutherRecode.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/nl/harmjanwestra/playground/meqtl/EQTMOverlapMatrix.java" afterPath="$PROJECT_DIR$/src/main/java/nl/harmjanwestra/playground/meqtl/EQTMOverlapMatrix.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/nl/harmjanwestra/playground/transeqtl/MakeTranscriptome.java" afterPath="$PROJECT_DIR$/src/main/java/nl/harmjanwestra/playground/transeqtl/MakeTranscriptome.java" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/nl/harmjanwestra/playground/Trans/eQTLFileSNPSelect.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/nl/harmjanwestra/playground/mat/MeanAndVariance.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/nl/harmjanwestra/playground/meqtl/ConvertMeQTLToEQTLFile.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/nl/harmjanwestra/playground/transeqtl/FilterReplTable.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/nl/harmjanwestra/playground/transeqtl/MakeGeneTranslation.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/nl/harmjanwestra/playground/IntTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/nl/harmjanwestra/playground/IntTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/nl/harmjanwestra/playground/meqtl/EQTMFlipper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/nl/harmjanwestra/playground/meqtl/EQTMFlipper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/nl/harmjanwestra/playground/meqtl/EQTMOverlapMatrix.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/nl/harmjanwestra/playground/meqtl/EQTMOverlapMatrix.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <ignored path="$PROJECT_DIR$/target/" />
@@ -20,12 +24,83 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+      <file leaf-file-name="ConvertMeQTLToEQTLFile.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/nl/harmjanwestra/playground/meqtl/ConvertMeQTLToEQTLFile.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="136">
+              <caret line="8" column="24" selection-start-line="8" selection-start-column="24" selection-end-line="8" selection-end-column="24" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="BinCpGs.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/nl/harmjanwestra/playground/meqtl/BinCpGs.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="374">
+              <caret line="28" selection-start-line="28" selection-end-line="28" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="EQTMFlipper.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/nl/harmjanwestra/playground/meqtl/EQTMFlipper.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="595">
+              <caret line="43" column="45" selection-start-line="43" selection-start-column="45" selection-end-line="43" selection-end-column="45" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="MakeGeneTranslation.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/nl/harmjanwestra/playground/transeqtl/MakeGeneTranslation.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="370">
+              <caret line="35" column="43" selection-start-line="35" selection-start-column="43" selection-end-line="35" selection-end-column="43" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="MeanAndVariance.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/main/java/nl/harmjanwestra/playground/mat/MeanAndVariance.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="145">
+              <caret line="36" column="8" lean-forward="true" selection-start-line="36" selection-start-column="8" selection-end-line="36" selection-end-column="8" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
       <file leaf-file-name="pom.xml" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/pom.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="196">
-              <caret line="46" column="94" lean-forward="false" selection-start-line="46" selection-start-column="94" selection-end-line="46" selection-end-column="94" />
-              <folding />
+            <state relative-caret-position="201">
+              <caret line="46" column="86" selection-start-line="46" selection-start-column="86" selection-end-line="46" selection-end-column="86" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="DoubleMatrixDataset.class" pinned="false" current-in-tab="false">
+        <entry file="jar://$MAVEN_REPOSITORY$/nl/systemsgenetics/genetica-libraries/1.0.9-SNAPSHOT/genetica-libraries-1.0.9-SNAPSHOT.jar!/umcg/genetica/math/matrix2/DoubleMatrixDataset.class">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="386">
+              <caret line="239" column="49" selection-start-line="239" selection-start-column="43" selection-end-line="239" selection-end-column="49" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="eQTLFileSNPSelect.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/nl/harmjanwestra/playground/Trans/eQTLFileSNPSelect.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="850">
+              <caret line="55" column="4" selection-start-line="55" selection-start-column="4" selection-end-line="55" selection-end-column="4" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -33,8 +108,8 @@
       <file leaf-file-name="MakeTranscriptome.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/nl/harmjanwestra/playground/transeqtl/MakeTranscriptome.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="672">
-              <caret line="72" column="20" lean-forward="true" selection-start-line="72" selection-start-column="20" selection-end-line="72" selection-end-column="20" />
+            <state relative-caret-position="459">
+              <caret line="49" column="28" selection-start-line="49" selection-start-column="28" selection-end-line="49" selection-end-column="28" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -42,123 +117,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Transcript.class" pinned="false" current-in-tab="false">
-        <entry file="jar://$MAVEN_REPOSITORY$/nl/harmjanwestra/Utilities/1.0-SNAPSHOT/Utilities-1.0-SNAPSHOT.jar!/nl/harmjanwestra/utilities/features/Transcript.class">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="255">
-              <caret line="21" column="27" lean-forward="false" selection-start-line="21" selection-start-column="27" selection-end-line="21" selection-end-column="27" />
-              <folding>
-                <marker date="1522152850754" expanded="false" signature="0:104" ph="/.../" />
-                <marker date="1522152850754" expanded="false" signature="159:305" ph="..." />
-                <marker date="1522152850754" expanded="true" signature="577:704" ph="{...}" />
-                <marker date="1522152850754" expanded="true" signature="811:992" ph="{...}" />
-                <marker date="1522152850754" expanded="false" signature="1019:1030" ph=" { " />
-                <marker date="1522152850754" expanded="false" signature="1047:1053" ph=" }" />
-                <marker date="1522152850754" expanded="true" signature="1092:1103" ph=" { " />
-                <marker date="1522152850754" expanded="true" signature="1121:1127" ph=" }" />
-                <marker date="1522152850754" expanded="true" signature="1161:1504" ph="{...}" />
-                <marker date="1522152850754" expanded="true" signature="1536:1654" ph="{...}" />
-                <marker date="1522152850754" expanded="false" signature="1691:1702" ph=" { " />
-                <marker date="1522152850754" expanded="false" signature="1719:1725" ph=" }" />
-                <marker date="1522152850754" expanded="true" signature="1756:1964" ph="{...}" />
-                <marker date="1522152850754" expanded="true" signature="2038:2197" ph="{...}" />
-                <marker date="1522152850754" expanded="false" signature="2233:2244" ph=" { " />
-                <marker date="1522152850754" expanded="false" signature="2288:2294" ph=" }" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="GTFAnnotation.class" pinned="false" current-in-tab="false">
-        <entry file="jar://$MAVEN_REPOSITORY$/nl/harmjanwestra/Utilities/1.0-SNAPSHOT/Utilities-1.0-SNAPSHOT.jar!/nl/harmjanwestra/utilities/annotation/gtf/GTFAnnotation.class">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="596">
-              <caret line="58" column="35" lean-forward="false" selection-start-line="58" selection-start-column="35" selection-end-line="58" selection-end-column="35" />
-              <folding>
-                <marker date="1522152850754" expanded="false" signature="0:104" ph="/.../" />
-                <marker date="1522152850754" expanded="false" signature="165:525" ph="..." />
-                <marker date="1522152850754" expanded="true" signature="618:866" ph="{...}" />
-                <marker date="1522152850754" expanded="true" signature="638:722" ph="{...}" />
-                <marker date="1522152850754" expanded="true" signature="931:1015" ph="{...}" />
-                <marker date="1522152850754" expanded="true" signature="1070:4456" ph="{...}" />
-                <marker date="1522152850754" expanded="true" signature="4072:4456" ph="{...}" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Exon.class" pinned="false" current-in-tab="false">
-        <entry file="jar://$MAVEN_REPOSITORY$/nl/harmjanwestra/Utilities/1.0-SNAPSHOT/Utilities-1.0-SNAPSHOT.jar!/nl/harmjanwestra/utilities/features/Exon.class">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="229">
-              <caret line="40" column="39" lean-forward="false" selection-start-line="40" selection-start-column="39" selection-end-line="40" selection-end-column="39" />
-              <folding>
-                <marker date="1522152850754" expanded="false" signature="0:104" ph="/.../" />
-                <marker date="1522152850754" expanded="false" signature="159:279" ph="..." />
-                <marker date="1522152850754" expanded="true" signature="1473:1479" ph="{...}" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="MixAndMatch.java" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/main/java/nl/harmjanwestra/playground/transeqtl/MixAndMatch.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="374">
-              <caret line="169" column="43" lean-forward="false" selection-start-line="169" selection-start-column="43" selection-end-line="169" selection-end-column="43" />
-              <folding>
-                <element signature="imports" expanded="true" />
-                <element signature="e#1698#1714#0" expanded="true" />
-                <element signature="e#2636#2652#0" expanded="true" />
-                <element signature="e#2706#2722#0" expanded="true" />
-                <element signature="e#3288#3304#0" expanded="true" />
-                <element signature="e#3873#3881#0" expanded="true" />
-                <element signature="e#3923#3931#0" expanded="true" />
-                <element signature="e#3973#3981#0" expanded="true" />
-                <element signature="e#4023#4031#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Range.class" pinned="false" current-in-tab="false">
-        <entry file="jar://$MAVEN_REPOSITORY$/nl/harmjanwestra/Utilities/1.0-SNAPSHOT/Utilities-1.0-SNAPSHOT.jar!/nl/harmjanwestra/utilities/graphics/Range.class">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="238">
-              <caret line="17" column="11" lean-forward="false" selection-start-line="17" selection-start-column="11" selection-end-line="17" selection-end-column="11" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ScatterplotPanel.class" pinned="false" current-in-tab="false">
-        <entry file="jar://$MAVEN_REPOSITORY$/nl/harmjanwestra/Utilities/1.0-SNAPSHOT/Utilities-1.0-SNAPSHOT.jar!/nl/harmjanwestra/utilities/graphics/panels/ScatterplotPanel.class">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="577">
-              <caret line="301" column="0" lean-forward="true" selection-start-line="301" selection-start-column="0" selection-end-line="301" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="MutherRecode.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/nl/harmjanwestra/playground/transeqtl/MutherRecode.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1734">
-              <caret line="107" column="26" lean-forward="false" selection-start-line="107" selection-start-column="26" selection-end-line="107" selection-end-column="26" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="GTExRecode.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/nl/harmjanwestra/playground/transeqtl/GTExRecode.java">
+      <file leaf-file-name="IntTest.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/nl/harmjanwestra/playground/IntTest.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="306">
-              <caret line="18" column="32" lean-forward="false" selection-start-line="18" selection-start-column="32" selection-end-line="18" selection-end-column="32" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
+              <caret line="18" column="8" selection-start-line="18" selection-start-column="8" selection-end-line="18" selection-end-column="8" />
             </state>
           </provider>
         </entry>
@@ -179,15 +142,11 @@
       <find>QTLObj</find>
       <find>total exons</find>
       <find>makeseq</find>
+      <find>transEQTL-Replication</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../.." />
-  </component>
-  <component name="GradleLocalSettings">
-    <option name="externalProjectsViewState">
-      <projects_view />
-    </option>
   </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
@@ -205,8 +164,6 @@
         <option value="$PROJECT_DIR$/src/main/java/nl/harmjanwestra/playground/XMLExample.java" />
         <option value="$PROJECT_DIR$/src/main/java/nl/harmjanwestra/playground/meqtl/FolderFilter.java" />
         <option value="$PROJECT_DIR$/src/main/java/nl/harmjanwestra/playground/EnsemblReWrite.java" />
-        <option value="$PROJECT_DIR$/src/main/java/nl/harmjanwestra/playground/IntTest.java" />
-        <option value="$PROJECT_DIR$/src/main/java/nl/harmjanwestra/playground/meqtl/EQTMFlipper.java" />
         <option value="$PROJECT_DIR$/src/main/java/nl/harmjanwestra/playground/BinCpGs.java" />
         <option value="$PROJECT_DIR$/src/main/java/nl/harmjanwestra/playground/meqtl/BinCpGs.java" />
         <option value="$PROJECT_DIR$/src/main/java/nl/harmjanwestra/playground/Trans/SupplementaryTable1.java" />
@@ -216,9 +173,17 @@
         <option value="$PROJECT_DIR$/src/main/java/nl/harmjanwestra/playground/meqtl/EQTMOverlapMatrix.java" />
         <option value="$PROJECT_DIR$/src/main/java/nl/harmjanwestra/playground/transeqtl/MutherRecode.java" />
         <option value="$PROJECT_DIR$/src/main/java/nl/harmjanwestra/playground/transeqtl/GTExRecode.java" />
-        <option value="$PROJECT_DIR$/pom.xml" />
         <option value="$PROJECT_DIR$/src/main/java/nl/harmjanwestra/playground/transeqtl/MakeTranscriptome.java" />
         <option value="$PROJECT_DIR$/src/main/java/nl/harmjanwestra/playground/transeqtl/MixAndMatch.java" />
+        <option value="$PROJECT_DIR$/src/main/java/nl/harmjanwestra/playground/transeqtl/FilterReplTable.java" />
+        <option value="$PROJECT_DIR$/src/main/java/nl/harmjanwestra/playground/meqtl/ConvertMeQTLToEQTLFile.java" />
+        <option value="$PROJECT_DIR$/src/main/java/nl/harmjanwestra/playground/IntTest.java" />
+        <option value="$PROJECT_DIR$/src/main/java/nl/harmjanwestra/playground/Trans/eQTLFileSNPSelect.java" />
+        <option value="$PROJECT_DIR$/src/main/java/nl/harmjanwestra/playground/meqtl/EQTMFlipper.java" />
+        <option value="$PROJECT_DIR$/src/main/java/nl/harmjanwestra/playground/transeqtl/MakeGeneTranslation.java" />
+        <option value="$PROJECT_DIR$/src/main/java/nl/harmjanwestra/playground/mat/mat.java" />
+        <option value="$PROJECT_DIR$/pom.xml" />
+        <option value="$PROJECT_DIR$/src/main/java/nl/harmjanwestra/playground/mat/MeanAndVariance.java" />
       </list>
     </option>
   </component>
@@ -308,22 +273,15 @@
       </profile-state>
     </entry>
   </component>
-  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="ProjectView">
-    <navigator currentView="ProjectPane" proportions="" version="1">
-      <flattenPackages />
-      <showMembers />
-      <showModules />
-      <showLibraryContents />
-      <hideEmptyPackages />
-      <abbreviatePackageNames />
-      <autoscrollToSource />
-      <autoscrollFromSource />
-      <sortByType />
-      <manualOrder />
+    <navigator proportions="" version="1">
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -364,6 +322,15 @@
               <item name="main" type="462c0819:PsiDirectoryNode" />
               <item name="java" type="462c0819:PsiDirectoryNode" />
               <item name="playground" type="462c0819:PsiDirectoryNode" />
+              <item name="mat" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="PlayGround" type="b2602c69:ProjectViewProjectNode" />
+              <item name="PlayGround" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="playground" type="462c0819:PsiDirectoryNode" />
               <item name="meqtl" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
@@ -389,8 +356,6 @@
         </subPane>
       </pane>
       <pane id="PackagesPane" />
-      <pane id="Scope" />
-      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -417,125 +382,69 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Application.MixAndMatch">
+  <component name="RunManager" selected="Application.MakeGeneTranslation">
     <configuration default="true" type="Applet" factoryName="Applet">
-      <option name="WIDTH" value="400" />
-      <option name="HEIGHT" value="300" />
       <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
-      <module />
-    </configuration>
-    <configuration name="BinCpGs" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea">
-        <pattern>
-          <option name="PATTERN" value="nl.harmjanwestra.playground.meqtl.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="MAIN_CLASS_NAME" value="nl.harmjanwestra.playground.meqtl.BinCpGs" />
-      <option name="VM_PARAMETERS" />
-      <option name="PROGRAM_PARAMETERS" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" />
-      <option name="ENABLE_SWING_INSPECTOR" value="false" />
-      <option name="ENV_VARIABLES" />
-      <option name="PASS_PARENT_ENVS" value="true" />
-      <module name="PlayGround" />
-      <envs />
     </configuration>
     <configuration name="EQTMFlipper" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea">
+      <option name="MAIN_CLASS_NAME" value="nl.harmjanwestra.playground.meqtl.EQTMFlipper" />
+      <module name="PlayGround" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <extension name="coverage">
         <pattern>
           <option name="PATTERN" value="nl.harmjanwestra.playground.meqtl.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
-      <option name="MAIN_CLASS_NAME" value="nl.harmjanwestra.playground.meqtl.EQTMFlipper" />
-      <option name="VM_PARAMETERS" />
-      <option name="PROGRAM_PARAMETERS" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" />
-      <option name="ENABLE_SWING_INSPECTOR" value="false" />
-      <option name="ENV_VARIABLES" />
-      <option name="PASS_PARENT_ENVS" value="true" />
-      <module name="PlayGround" />
-      <envs />
     </configuration>
-    <configuration name="MakeTranscriptome" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea">
+    <configuration name="FilterReplTable" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="nl.harmjanwestra.playground.transeqtl.FilterReplTable" />
+      <module name="PlayGround" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <extension name="coverage">
         <pattern>
           <option name="PATTERN" value="nl.harmjanwestra.playground.transeqtl.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
-      <option name="MAIN_CLASS_NAME" value="nl.harmjanwestra.playground.transeqtl.MakeTranscriptome" />
-      <option name="VM_PARAMETERS" />
-      <option name="PROGRAM_PARAMETERS" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" />
-      <option name="ENABLE_SWING_INSPECTOR" value="false" />
-      <option name="ENV_VARIABLES" />
-      <option name="PASS_PARENT_ENVS" value="true" />
+    </configuration>
+    <configuration name="MakeGeneTranslation" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="nl.harmjanwestra.playground.transeqtl.MakeGeneTranslation" />
       <module name="PlayGround" />
-      <envs />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="nl.harmjanwestra.playground.transeqtl.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
     </configuration>
     <configuration name="MixAndMatch" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea">
-        <pattern>
-          <option name="PATTERN" value="nl.harmjanwestra.playground.transeqtl.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
       <option name="MAIN_CLASS_NAME" value="nl.harmjanwestra.playground.transeqtl.MixAndMatch" />
-      <option name="VM_PARAMETERS" />
-      <option name="PROGRAM_PARAMETERS" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" />
-      <option name="ENABLE_SWING_INSPECTOR" value="false" />
-      <option name="ENV_VARIABLES" />
-      <option name="PASS_PARENT_ENVS" value="true" />
       <module name="PlayGround" />
-      <envs />
-    </configuration>
-    <configuration name="MutherRecode" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea">
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <extension name="coverage">
         <pattern>
           <option name="PATTERN" value="nl.harmjanwestra.playground.transeqtl.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
-      <option name="MAIN_CLASS_NAME" value="nl.harmjanwestra.playground.transeqtl.MutherRecode" />
-      <option name="VM_PARAMETERS" />
-      <option name="PROGRAM_PARAMETERS" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" />
-      <option name="ENABLE_SWING_INSPECTOR" value="false" />
-      <option name="ENV_VARIABLES" />
-      <option name="PASS_PARENT_ENVS" value="true" />
-      <module name="PlayGround" />
-      <envs />
     </configuration>
     <configuration default="true" type="Application" factoryName="Application">
-      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
-      <option name="MAIN_CLASS_NAME" />
-      <option name="VM_PARAMETERS" />
-      <option name="PROGRAM_PARAMETERS" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" />
-      <option name="ENABLE_SWING_INSPECTOR" value="false" />
-      <option name="ENV_VARIABLES" />
-      <option name="PASS_PARENT_ENVS" value="true" />
-      <module name="" />
-      <envs />
+    </configuration>
+    <configuration name="eQTLFileSNPSelect" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="nl.harmjanwestra.playground.Trans.eQTLFileSNPSelect" />
+      <module name="PlayGround" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="nl.harmjanwestra.playground.Trans.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
     </configuration>
     <configuration default="true" type="JUnit" factoryName="JUnit">
-      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
-      <module name="" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
       <option name="ALTERNATIVE_JRE_PATH" />
       <option name="PACKAGE_NAME" />
@@ -545,24 +454,13 @@
       <option name="VM_PARAMETERS" value="-ea" />
       <option name="PARAMETERS" />
       <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
-      <option name="ENV_VARIABLES" />
       <option name="PASS_PARENT_ENVS" value="true" />
       <option name="TEST_SEARCH_SCOPE">
         <value defaultName="singleModule" />
       </option>
-      <envs />
       <patterns />
     </configuration>
-    <configuration default="true" type="Remote" factoryName="Remote">
-      <option name="USE_SOCKET_TRANSPORT" value="true" />
-      <option name="SERVER_MODE" value="false" />
-      <option name="SHMEM_ADDRESS" value="javadebug" />
-      <option name="HOST" value="localhost" />
-      <option name="PORT" value="5005" />
-    </configuration>
     <configuration default="true" type="TestNG" factoryName="TestNG">
-      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
-      <module name="" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
       <option name="ALTERNATIVE_JRE_PATH" />
       <option name="SUITE_NAME" />
@@ -575,17 +473,21 @@
       <option name="PARAMETERS" />
       <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
       <option name="OUTPUT_DIRECTORY" />
-      <option name="ANNOTATION_TYPE" />
-      <option name="ENV_VARIABLES" />
       <option name="PASS_PARENT_ENVS" value="true" />
       <option name="TEST_SEARCH_SCOPE">
         <value defaultName="singleModule" />
       </option>
       <option name="USE_DEFAULT_REPORTERS" value="false" />
       <option name="PROPERTIES_FILE" />
-      <envs />
       <properties />
       <listeners />
+    </configuration>
+    <configuration default="true" type="Remote" factoryName="Remote">
+      <option name="USE_SOCKET_TRANSPORT" value="true" />
+      <option name="SERVER_MODE" value="false" />
+      <option name="SHMEM_ADDRESS" value="javadebug" />
+      <option name="HOST" value="localhost" />
+      <option name="PORT" value="5005" />
     </configuration>
     <configuration default="true" type="#org.jetbrains.idea.devkit.run.PluginConfigurationType" factoryName="Plugin">
       <module name="" />
@@ -593,25 +495,22 @@
       <option name="PROGRAM_PARAMETERS" />
       <predefined_log_file id="idea.log" enabled="true" />
     </configuration>
-    <list size="5">
-      <item index="0" class="java.lang.String" itemvalue="Application.EQTMFlipper" />
-      <item index="1" class="java.lang.String" itemvalue="Application.BinCpGs" />
-      <item index="2" class="java.lang.String" itemvalue="Application.MutherRecode" />
-      <item index="3" class="java.lang.String" itemvalue="Application.MakeTranscriptome" />
-      <item index="4" class="java.lang.String" itemvalue="Application.MixAndMatch" />
+    <list>
+      <item itemvalue="Application.MixAndMatch" />
+      <item itemvalue="Application.FilterReplTable" />
+      <item itemvalue="Application.EQTMFlipper" />
+      <item itemvalue="Application.eQTLFileSNPSelect" />
+      <item itemvalue="Application.MakeGeneTranslation" />
     </list>
     <recent_temporary>
-      <list size="5">
-        <item index="0" class="java.lang.String" itemvalue="Application.MixAndMatch" />
-        <item index="1" class="java.lang.String" itemvalue="Application.MakeTranscriptome" />
-        <item index="2" class="java.lang.String" itemvalue="Application.MutherRecode" />
-        <item index="3" class="java.lang.String" itemvalue="Application.BinCpGs" />
-        <item index="4" class="java.lang.String" itemvalue="Application.EQTMFlipper" />
+      <list>
+        <item itemvalue="Application.MakeGeneTranslation" />
+        <item itemvalue="Application.EQTMFlipper" />
+        <item itemvalue="Application.eQTLFileSNPSelect" />
+        <item itemvalue="Application.FilterReplTable" />
+        <item itemvalue="Application.MixAndMatch" />
       </list>
     </recent_temporary>
-  </component>
-  <component name="ShelveChangesManager" show_recycled="false">
-    <option name="remove_strategy" value="false" />
   </component>
   <component name="SvnConfiguration">
     <configuration />
@@ -630,26 +529,26 @@
     <frame x="-8" y="-8" width="1936" height="1066" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32903227" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Maven Projects" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.07835821" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.35053763" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.15138593" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.5139785" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32903227" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info anchor="bottom" id="TODO" order="6" />
+      <window_info anchor="right" id="Palette&#9;" order="3" />
+      <window_info anchor="bottom" id="Event Log" order="7" side_tool="true" />
+      <window_info active="true" id="Maven Projects" order="4" sideWeight="0.49846625" visible="true" weight="0.07835821" />
+      <window_info anchor="bottom" id="Version Control" order="7" />
+      <window_info anchor="bottom" id="Run" order="2" visible="true" weight="0.2974138" />
+      <window_info anchor="bottom" id="Terminal" order="7" />
+      <window_info id="Designer" order="2" />
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.4989224" weight="0.18869936" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.3286638" />
+      <window_info id="Structure" order="1" sideWeight="0.50153375" side_tool="true" visible="true" weight="0.07835821" />
+      <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
+      <window_info id="Favorites" order="3" side_tool="true" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.5139785" />
+      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
+      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
+      <window_info anchor="right" id="Commander" order="0" weight="0.4" />
+      <window_info anchor="bottom" id="Message" order="0" />
+      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+      <window_info anchor="bottom" id="Messages" order="7" weight="0.32903227" />
     </layout>
   </component>
   <component name="VcsContentAnnotationSettings">
@@ -688,70 +587,24 @@
           <properties />
           <option name="timeStamp" value="25" />
         </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-method">
-          <url>file://$PROJECT_DIR$/src/main/java/nl/harmjanwestra/playground/meqtl/EQTMFlipper.java</url>
-          <line>14</line>
-          <properties class="nl.harmjanwestra.playground.meqtl.EQTMFlipper" method="main">
-            <option name="EMULATED" value="true" />
-          </properties>
-          <option name="timeStamp" value="7" />
-        </line-breakpoint>
       </breakpoints>
-      <option name="time" value="26" />
+      <option name="time" value="27" />
     </breakpoint-manager>
-    <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/pom.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/nl/harmjanwestra/playground/IntTest.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="221">
-          <caret line="13" column="4" lean-forward="false" selection-start-line="13" selection-start-column="4" selection-end-line="13" selection-end-column="4" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/nl/harmjanwestra/playground/SampleComparison.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1513">
-          <caret line="96" column="26" lean-forward="false" selection-start-line="96" selection-start-column="26" selection-end-line="96" selection-end-column="26" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/pom.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/nl/harmjanwestra/playground/SampleComparison.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="697">
-          <caret line="48" column="104" lean-forward="false" selection-start-line="48" selection-start-column="104" selection-end-line="48" selection-end-column="104" />
-        </state>
-      </provider>
-    </entry>
     <entry file="jar://$MAVEN_REPOSITORY$/nl/systemsgenetics/genetica-libraries/1.0.5/genetica-libraries-1.0.5.jar!/umcg/genetica/io/text/TextFile.class">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="199">
-          <caret line="77" column="0" lean-forward="false" selection-start-line="77" selection-start-column="0" selection-end-line="78" selection-end-column="0" />
+          <caret line="77" selection-start-line="77" selection-end-line="78" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/nl/harmjanwestra/playground/LZ4.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2074">
-          <caret line="122" column="5" lean-forward="false" selection-start-line="69" selection-start-column="0" selection-end-line="122" selection-end-column="5" />
+          <caret line="122" column="5" selection-start-line="69" selection-end-line="122" selection-end-column="5" />
           <folding>
-            <element signature="imports" expanded="false" />
+            <element signature="imports" />
           </folding>
         </state>
       </provider>
@@ -759,21 +612,7 @@
     <entry file="file://$PROJECT_DIR$/src/main/java/nl/harmjanwestra/playground/SampleComparison.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1513">
-          <caret line="96" column="26" lean-forward="false" selection-start-line="96" selection-start-column="26" selection-end-line="96" selection-end-column="26" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/nl/harmjanwestra/playground/meqtl/QTLmeQTLCompare.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="34">
-          <caret line="449" column="52" lean-forward="false" selection-start-line="449" selection-start-column="52" selection-end-line="449" selection-end-column="52" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/nl/harmjanwestra/playground/meqtl/EQTMGeneLinker.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="234">
-          <caret line="570" column="8" lean-forward="false" selection-start-line="570" selection-start-column="8" selection-end-line="570" selection-end-column="8" />
+          <caret line="96" column="26" selection-start-line="96" selection-start-column="26" selection-end-line="96" selection-end-column="26" />
         </state>
       </provider>
     </entry>
@@ -794,60 +633,31 @@
     <entry file="file://$PROJECT_DIR$/src/main/java/nl/harmjanwestra/playground/XMLExample.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="153">
-          <caret line="9" column="8" lean-forward="false" selection-start-line="9" selection-start-column="8" selection-end-line="9" selection-end-column="8" />
+          <caret line="9" column="8" selection-start-line="9" selection-start-column="8" selection-end-line="9" selection-end-column="8" />
         </state>
       </provider>
     </entry>
     <entry file="jar://$MAVEN_REPOSITORY$/nl/harmjanwestra/Utilities/1.0-SNAPSHOT/Utilities-1.0-SNAPSHOT.jar!/nl/harmjanwestra/utilities/bedfile/BedFileReader.class">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="493">
-          <caret line="44" column="30" lean-forward="false" selection-start-line="44" selection-start-column="30" selection-end-line="44" selection-end-column="30" />
+          <caret line="44" column="30" selection-start-line="44" selection-start-column="30" selection-end-line="44" selection-end-column="30" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/nl/harmjanwestra/playground/meqtl/FolderFilter.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="204">
-          <caret line="16" column="4" lean-forward="false" selection-start-line="16" selection-start-column="4" selection-end-line="16" selection-end-column="4" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/nl/harmjanwestra/playground/IntTest.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="221">
-          <caret line="13" column="32" lean-forward="false" selection-start-line="13" selection-start-column="32" selection-end-line="13" selection-end-column="32" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/nl/harmjanwestra/playground/meqtl/BinCpGs.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="374">
-          <caret line="28" column="0" lean-forward="false" selection-start-line="28" selection-start-column="0" selection-end-line="28" selection-end-column="0" />
+          <caret line="16" column="4" selection-start-line="16" selection-start-column="4" selection-end-line="16" selection-end-column="4" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/nl/harmjanwestra/playground/EnsemblReWrite.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="697">
-          <caret line="41" column="17" lean-forward="false" selection-start-line="41" selection-start-column="17" selection-end-line="41" selection-end-column="17" />
+          <caret line="41" column="17" selection-start-line="41" selection-start-column="17" selection-end-line="41" selection-end-column="17" />
           <folding>
-            <element signature="imports" expanded="false" />
+            <element signature="imports" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/nl/harmjanwestra/playground/meqtl/EQTMFlipper.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="476">
-          <caret line="35" column="18" lean-forward="false" selection-start-line="33" selection-start-column="8" selection-end-line="35" selection-end-column="18" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$MAVEN_REPOSITORY$/nl/systemsgenetics/genetica-libraries/1.0.9-SNAPSHOT/genetica-libraries-1.0.9-SNAPSHOT.jar!/umcg/genetica/math/matrix2/DoubleMatrixDataset.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1309">
-          <caret line="102" column="60" lean-forward="false" selection-start-line="102" selection-start-column="60" selection-end-line="102" selection-end-column="60" />
         </state>
       </provider>
     </entry>
@@ -858,302 +668,223 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/nl/harmjanwestra/playground/Trans/SupplementaryTables.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="34">
-          <caret line="2" column="13" lean-forward="false" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
     <entry file="jar://$MAVEN_REPOSITORY$/com/github/samtools/htsjdk/1.134/htsjdk-1.134.jar!/htsjdk/samtools/util/FastLineReader.class">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="102">
-          <caret line="12" column="13" lean-forward="false" selection-start-line="12" selection-start-column="13" selection-end-line="12" selection-end-column="13" />
+          <caret line="12" column="13" selection-start-line="12" selection-start-column="13" selection-end-line="12" selection-end-column="13" />
         </state>
       </provider>
     </entry>
     <entry file="jar://$MAVEN_REPOSITORY$/com/github/samtools/htsjdk/1.134/htsjdk-1.134.jar!/htsjdk/samtools/reference/FastaSequenceFile.class">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="136">
-          <caret line="17" column="20" lean-forward="false" selection-start-line="17" selection-start-column="20" selection-end-line="17" selection-end-column="20" />
+          <caret line="17" column="20" selection-start-line="17" selection-start-column="20" selection-end-line="17" selection-end-column="20" />
         </state>
       </provider>
     </entry>
     <entry file="jar://$MAVEN_REPOSITORY$/nl/harmjanwestra/Utilities/1.0-SNAPSHOT/Utilities-1.0-SNAPSHOT.jar!/nl/harmjanwestra/utilities/annotation/gtf/GTFLine.class">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1275">
-          <caret line="83" column="31" lean-forward="false" selection-start-line="83" selection-start-column="31" selection-end-line="83" selection-end-column="31" />
+          <caret line="83" column="31" selection-start-line="83" selection-start-column="31" selection-end-line="83" selection-end-column="31" />
         </state>
       </provider>
     </entry>
     <entry file="jar://$MAVEN_REPOSITORY$/nl/harmjanwestra/Utilities/1.0-SNAPSHOT/Utilities-1.0-SNAPSHOT.jar!/nl/harmjanwestra/utilities/annotation/Annotation.class">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="130">
-          <caret line="25" column="33" lean-forward="false" selection-start-line="25" selection-start-column="33" selection-end-line="25" selection-end-column="33" />
+          <caret line="25" column="33" selection-start-line="25" selection-start-column="33" selection-end-line="25" selection-end-column="33" />
         </state>
       </provider>
     </entry>
     <entry file="jar://C:/Program Files/Java/jdk1.8.0_161/src.zip!/java/util/concurrent/atomic/AtomicInteger.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1887">
-          <caret line="156" column="21" lean-forward="false" selection-start-line="156" selection-start-column="21" selection-end-line="156" selection-end-column="21" />
+          <caret line="156" column="21" selection-start-line="156" selection-start-column="21" selection-end-line="156" selection-end-column="21" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/nl/harmjanwestra/playground/meqtl/EQTMOverlapMatrix.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1989">
-          <caret line="132" column="12" lean-forward="false" selection-start-line="132" selection-start-column="12" selection-end-line="132" selection-end-column="12" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#1956#1964#0" expanded="true" />
-            <element signature="e#2054#2062#0" expanded="true" />
-          </folding>
+          <caret line="132" column="12" selection-start-line="132" selection-start-column="12" selection-end-line="132" selection-end-column="12" />
         </state>
       </provider>
     </entry>
     <entry file="jar://$MAVEN_REPOSITORY$/nl/systemsgenetics/genetica-libraries/1.0.9-SNAPSHOT/genetica-libraries-1.0.9-SNAPSHOT.jar!/umcg/genetica/io/trityper/EQTL.class">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="7174">
-          <caret line="501" column="8" lean-forward="false" selection-start-line="501" selection-start-column="8" selection-end-line="501" selection-end-column="8" />
-          <folding>
-            <marker date="1521120134383" expanded="false" signature="0:104" ph="/.../" />
-            <marker date="1521120134383" expanded="true" signature="985:992" ph="{}" />
-            <marker date="1521120134383" expanded="false" signature="1023:1034" ph=" { " />
-            <marker date="1521120134383" expanded="false" signature="1053:1059" ph=" }" />
-            <marker date="1521120134383" expanded="false" signature="1101:1112" ph=" { " />
-            <marker date="1521120134383" expanded="false" signature="1133:1139" ph=" }" />
-            <marker date="1521120134383" expanded="false" signature="1170:1181" ph=" { " />
-            <marker date="1521120134383" expanded="false" signature="1200:1206" ph=" }" />
-            <marker date="1521120134383" expanded="false" signature="1248:1259" ph=" { " />
-            <marker date="1521120134383" expanded="false" signature="1280:1286" ph=" }" />
-            <marker date="1521120134383" expanded="false" signature="1314:1325" ph=" { " />
-            <marker date="1521120134383" expanded="false" signature="1343:1349" ph=" }" />
-            <marker date="1521120134383" expanded="false" signature="1387:1398" ph=" { " />
-            <marker date="1521120134383" expanded="false" signature="1417:1423" ph=" }" />
-            <marker date="1521120134383" expanded="false" signature="1457:1468" ph=" { " />
-            <marker date="1521120134383" expanded="false" signature="1489:1495" ph=" }" />
-            <marker date="1521120134383" expanded="false" signature="1538:1549" ph=" { " />
-            <marker date="1521120134383" expanded="false" signature="1574:1580" ph=" }" />
-            <marker date="1521120134383" expanded="false" signature="1610:1621" ph=" { " />
-            <marker date="1521120134383" expanded="false" signature="1639:1645" ph=" }" />
-            <marker date="1521120134383" expanded="false" signature="1685:1696" ph=" { " />
-            <marker date="1521120134383" expanded="false" signature="1715:1721" ph=" }" />
-            <marker date="1521120134383" expanded="false" signature="1752:1763" ph=" { " />
-            <marker date="1521120134383" expanded="false" signature="1784:1790" ph=" }" />
-            <marker date="1521120134383" expanded="false" signature="1834:1845" ph=" { " />
-            <marker date="1521120134383" expanded="false" signature="1870:1876" ph=" }" />
-            <marker date="1521120134383" expanded="false" signature="1913:1924" ph=" { " />
-            <marker date="1521120134383" expanded="false" signature="1948:1954" ph=" }" />
-            <marker date="1521120134383" expanded="false" signature="2003:2014" ph=" { " />
-            <marker date="1521120134383" expanded="false" signature="2045:2051" ph=" }" />
-            <marker date="1521120134383" expanded="false" signature="2080:2091" ph=" { " />
-            <marker date="1521120134383" expanded="false" signature="2112:2118" ph=" }" />
-            <marker date="1521120134383" expanded="false" signature="2156:2167" ph=" { " />
-            <marker date="1521120134383" expanded="false" signature="2188:2194" ph=" }" />
-            <marker date="1521120134383" expanded="false" signature="2226:2237" ph=" { " />
-            <marker date="1521120134383" expanded="false" signature="2257:2263" ph=" }" />
-            <marker date="1521120134383" expanded="false" signature="2307:2318" ph=" { " />
-            <marker date="1521120134383" expanded="false" signature="2341:2347" ph=" }" />
-            <marker date="1521120134383" expanded="false" signature="2386:2397" ph=" { " />
-            <marker date="1521120134383" expanded="false" signature="2424:2430" ph=" }" />
-            <marker date="1521120134383" expanded="false" signature="2488:2499" ph=" { " />
-            <marker date="1521120134383" expanded="false" signature="2536:2542" ph=" }" />
-            <marker date="1521120134383" expanded="false" signature="2577:2588" ph=" { " />
-            <marker date="1521120134383" expanded="false" signature="2609:2615" ph=" }" />
-            <marker date="1521120134383" expanded="false" signature="2663:2674" ph=" { " />
-            <marker date="1521120134383" expanded="false" signature="2699:2705" ph=" }" />
-            <marker date="1521120134383" expanded="false" signature="2736:2747" ph=" { " />
-            <marker date="1521120134383" expanded="false" signature="2766:2772" ph=" }" />
-            <marker date="1521120134383" expanded="false" signature="2814:2825" ph=" { " />
-            <marker date="1521120134383" expanded="false" signature="2846:2852" ph=" }" />
-            <marker date="1521120134383" expanded="false" signature="2893:2904" ph=" { " />
-            <marker date="1521120134383" expanded="false" signature="2931:2937" ph=" }" />
-            <marker date="1521120134383" expanded="false" signature="2997:3008" ph=" { " />
-            <marker date="1521120134383" expanded="false" signature="3045:3051" ph=" }" />
-            <marker date="1521120134383" expanded="false" signature="3094:3105" ph=" { " />
-            <marker date="1521120134383" expanded="false" signature="3133:3139" ph=" }" />
-            <marker date="1521120134383" expanded="false" signature="3202:3213" ph=" { " />
-            <marker date="1521120134383" expanded="false" signature="3252:3258" ph=" }" />
-            <marker date="1521120134383" expanded="false" signature="3295:3306" ph=" { " />
-            <marker date="1521120134383" expanded="false" signature="3329:3335" ph=" }" />
-            <marker date="1521120134383" expanded="false" signature="3387:3398" ph=" { " />
-            <marker date="1521120134383" expanded="false" signature="3427:3433" ph=" }" />
-            <marker date="1521120134383" expanded="false" signature="3473:3484" ph=" { " />
-            <marker date="1521120134383" expanded="false" signature="3510:3516" ph=" }" />
-            <marker date="1521120134383" expanded="false" signature="3574:3585" ph=" { " />
-            <marker date="1521120134383" expanded="false" signature="3620:3626" ph=" }" />
-            <marker date="1521120134383" expanded="false" signature="3660:3671" ph=" { " />
-            <marker date="1521120134383" expanded="false" signature="3693:3699" ph=" }" />
-            <marker date="1521120134383" expanded="false" signature="3747:3758" ph=" { " />
-            <marker date="1521120134383" expanded="false" signature="3785:3791" ph=" }" />
-            <marker date="1521120134383" expanded="false" signature="3830:3841" ph=" { " />
-            <marker date="1521120134383" expanded="false" signature="3866:3872" ph=" }" />
-            <marker date="1521120134383" expanded="false" signature="3928:3939" ph=" { " />
-            <marker date="1521120134383" expanded="false" signature="3972:3978" ph=" }" />
-            <marker date="1521120134383" expanded="false" signature="4012:4023" ph=" { " />
-            <marker date="1521120134383" expanded="false" signature="4036:4042" ph=" }" />
-            <marker date="1521120134383" expanded="false" signature="4070:4081" ph=" { " />
-            <marker date="1521120134383" expanded="false" signature="4097:4103" ph=" }" />
-            <marker date="1521120134383" expanded="true" signature="4142:5473" ph="{...}" />
-            <marker date="1521120134383" expanded="true" signature="5501:5640" ph="{...}" />
-            <marker date="1521120134383" expanded="true" signature="5680:6386" ph="{...}" />
-            <marker date="1521120134383" expanded="true" signature="6417:14950" ph="{...}" />
-            <marker date="1521120134383" expanded="true" signature="14985:15895" ph="{...}" />
-            <marker date="1521120134383" expanded="true" signature="15937:17459" ph="{...}" />
-            <marker date="1521120134383" expanded="true" signature="17495:18195" ph="{...}" />
-            <marker date="1521120134383" expanded="false" signature="18231:18242" ph=" { " />
-            <marker date="1521120134383" expanded="false" signature="18272:18278" ph=" }" />
-            <marker date="1521120134383" expanded="true" signature="18330:19243" ph="{...}" />
-            <marker date="1521120134383" expanded="false" signature="19287:19298" ph=" { " />
-            <marker date="1521120134383" expanded="false" signature="19321:19327" ph=" }" />
-            <marker date="1521120134383" expanded="false" signature="19367:19378" ph=" { " />
-            <marker date="1521120134383" expanded="false" signature="19397:19403" ph=" }" />
-            <marker date="1521120134383" expanded="false" signature="19441:19452" ph=" { " />
-            <marker date="1521120134383" expanded="false" signature="19469:19475" ph=" }" />
-            <marker date="1521120134383" expanded="false" signature="19508:19519" ph=" { " />
-            <marker date="1521120134383" expanded="false" signature="19540:19546" ph=" }" />
-            <marker date="1521120134383" expanded="false" signature="19575:19586" ph=" { " />
-            <marker date="1521120134383" expanded="false" signature="19603:19609" ph=" }" />
-            <marker date="1521120134383" expanded="false" signature="19636:19647" ph=" { " />
-            <marker date="1521120134383" expanded="false" signature="19662:19668" ph=" }" />
-            <marker date="1521120134383" expanded="true" signature="19698:20343" ph="{...}" />
-            <marker date="1521120134383" expanded="false" signature="20391:20402" ph=" { " />
-            <marker date="1521120134383" expanded="false" signature="20429:20435" ph=" }" />
-            <marker date="1521120134383" expanded="false" signature="20490:20501" ph=" { " />
-            <marker date="1521120134383" expanded="false" signature="20535:20541" ph=" }" />
-            <marker date="1521120134383" expanded="false" signature="20575:20586" ph=" { " />
-            <marker date="1521120134383" expanded="false" signature="20608:20614" ph=" }" />
-            <marker date="1521120134383" expanded="false" signature="20648:20659" ph=" { " />
-            <marker date="1521120134383" expanded="false" signature="20681:20687" ph=" }" />
-            <marker date="1521120134383" expanded="false" signature="20727:20738" ph=" { " />
-            <marker date="1521120134383" expanded="false" signature="20768:20774" ph=" }" />
-            <marker date="1521120134383" expanded="false" signature="20817:20828" ph=" { " />
-            <marker date="1521120134383" expanded="false" signature="20858:20864" ph=" }" />
-            <marker date="1521120134383" expanded="true" signature="20900:21143" ph="{...}" />
-          </folding>
+          <caret line="501" column="8" selection-start-line="501" selection-start-column="8" selection-end-line="501" selection-end-column="8" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/nl/harmjanwestra/playground/transeqtl/MutherRecode.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1734">
-          <caret line="107" column="26" lean-forward="false" selection-start-line="107" selection-start-column="26" selection-end-line="107" selection-end-column="26" />
-          <folding />
+          <caret line="107" column="26" selection-start-line="107" selection-start-column="26" selection-end-line="107" selection-end-column="26" />
         </state>
       </provider>
     </entry>
     <entry file="jar://$MAVEN_REPOSITORY$/nl/harmjanwestra/Utilities/1.0-SNAPSHOT/Utilities-1.0-SNAPSHOT.jar!/nl/harmjanwestra/utilities/annotation/gtf/GTFAnnotation.class">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="596">
-          <caret line="58" column="35" lean-forward="false" selection-start-line="58" selection-start-column="35" selection-end-line="58" selection-end-column="35" />
-          <folding>
-            <marker date="1522152850754" expanded="false" signature="0:104" ph="/.../" />
-            <marker date="1522152850754" expanded="false" signature="165:525" ph="..." />
-            <marker date="1522152850754" expanded="true" signature="618:866" ph="{...}" />
-            <marker date="1522152850754" expanded="true" signature="638:722" ph="{...}" />
-            <marker date="1522152850754" expanded="true" signature="931:1015" ph="{...}" />
-            <marker date="1522152850754" expanded="true" signature="1070:4456" ph="{...}" />
-            <marker date="1522152850754" expanded="true" signature="4072:4456" ph="{...}" />
-          </folding>
+        <state relative-caret-position="816">
+          <caret line="58" column="35" selection-start-line="58" selection-start-column="35" selection-end-line="58" selection-end-column="35" />
         </state>
       </provider>
     </entry>
     <entry file="jar://$MAVEN_REPOSITORY$/nl/harmjanwestra/Utilities/1.0-SNAPSHOT/Utilities-1.0-SNAPSHOT.jar!/nl/harmjanwestra/utilities/features/Transcript.class">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="255">
-          <caret line="21" column="27" lean-forward="false" selection-start-line="21" selection-start-column="27" selection-end-line="21" selection-end-column="27" />
-          <folding>
-            <marker date="1522152850754" expanded="false" signature="0:104" ph="/.../" />
-            <marker date="1522152850754" expanded="false" signature="159:305" ph="..." />
-            <marker date="1522152850754" expanded="true" signature="577:704" ph="{...}" />
-            <marker date="1522152850754" expanded="true" signature="811:992" ph="{...}" />
-            <marker date="1522152850754" expanded="false" signature="1019:1030" ph=" { " />
-            <marker date="1522152850754" expanded="false" signature="1047:1053" ph=" }" />
-            <marker date="1522152850754" expanded="true" signature="1092:1103" ph=" { " />
-            <marker date="1522152850754" expanded="true" signature="1121:1127" ph=" }" />
-            <marker date="1522152850754" expanded="true" signature="1161:1504" ph="{...}" />
-            <marker date="1522152850754" expanded="true" signature="1536:1654" ph="{...}" />
-            <marker date="1522152850754" expanded="false" signature="1691:1702" ph=" { " />
-            <marker date="1522152850754" expanded="false" signature="1719:1725" ph=" }" />
-            <marker date="1522152850754" expanded="true" signature="1756:1964" ph="{...}" />
-            <marker date="1522152850754" expanded="true" signature="2038:2197" ph="{...}" />
-            <marker date="1522152850754" expanded="false" signature="2233:2244" ph=" { " />
-            <marker date="1522152850754" expanded="false" signature="2288:2294" ph=" }" />
-          </folding>
+          <caret line="21" column="27" selection-start-line="21" selection-start-column="27" selection-end-line="21" selection-end-column="27" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/nl/harmjanwestra/playground/transeqtl/GTExRecode.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="306">
-          <caret line="18" column="32" lean-forward="false" selection-start-line="18" selection-start-column="32" selection-end-line="18" selection-end-column="32" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
+        <state relative-caret-position="187">
+          <caret line="18" column="32" selection-start-line="18" selection-start-column="32" selection-end-line="18" selection-end-column="32" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/pom.xml">
+    <entry file="file://$PROJECT_DIR$/src/main/java/nl/harmjanwestra/playground/meqtl/QTLmeQTLCompare.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="196">
-          <caret line="46" column="94" lean-forward="false" selection-start-line="46" selection-start-column="94" selection-end-line="46" selection-end-column="94" />
-          <folding />
+        <state relative-caret-position="764">
+          <caret line="602" selection-start-line="602" selection-end-line="602" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/nl/harmjanwestra/playground/transeqtl/MixAndMatch.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="846">
+          <caret line="169" column="43" selection-start-line="169" selection-start-column="43" selection-end-line="169" selection-end-column="43" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="jar://$MAVEN_REPOSITORY$/nl/harmjanwestra/Utilities/1.0-SNAPSHOT/Utilities-1.0-SNAPSHOT.jar!/nl/harmjanwestra/utilities/features/Exon.class">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="229">
-          <caret line="40" column="39" lean-forward="false" selection-start-line="40" selection-start-column="39" selection-end-line="40" selection-end-column="39" />
-          <folding>
-            <marker date="1522152850754" expanded="false" signature="0:104" ph="/.../" />
-            <marker date="1522152850754" expanded="false" signature="159:279" ph="..." />
-            <marker date="1522152850754" expanded="true" signature="1473:1479" ph="{...}" />
-          </folding>
+        <state relative-caret-position="527">
+          <caret line="40" column="39" selection-start-line="40" selection-start-column="39" selection-end-line="40" selection-end-column="39" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/nl/harmjanwestra/playground/transeqtl/MakeTranscriptome.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/nl/harmjanwestra/playground/meqtl/EQTMGeneLinker.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="672">
-          <caret line="72" column="20" lean-forward="true" selection-start-line="72" selection-start-column="20" selection-end-line="72" selection-end-column="20" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$MAVEN_REPOSITORY$/nl/harmjanwestra/Utilities/1.0-SNAPSHOT/Utilities-1.0-SNAPSHOT.jar!/nl/harmjanwestra/utilities/graphics/panels/ScatterplotPanel.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="577">
-          <caret line="301" column="0" lean-forward="true" selection-start-line="301" selection-start-column="0" selection-end-line="301" selection-end-column="0" />
-          <folding />
+        <state relative-caret-position="238">
+          <caret line="14" column="13" selection-start-line="14" selection-start-column="13" selection-end-line="14" selection-end-column="13" />
         </state>
       </provider>
     </entry>
     <entry file="jar://$MAVEN_REPOSITORY$/nl/harmjanwestra/Utilities/1.0-SNAPSHOT/Utilities-1.0-SNAPSHOT.jar!/nl/harmjanwestra/utilities/graphics/Range.class">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="238">
-          <caret line="17" column="11" lean-forward="false" selection-start-line="17" selection-start-column="11" selection-end-line="17" selection-end-column="11" />
-          <folding />
+          <caret line="17" column="11" selection-start-line="17" selection-start-column="11" selection-end-line="17" selection-end-column="11" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/nl/harmjanwestra/playground/transeqtl/MixAndMatch.java">
+    <entry file="jar://$MAVEN_REPOSITORY$/nl/harmjanwestra/Utilities/1.0-SNAPSHOT/Utilities-1.0-SNAPSHOT.jar!/nl/harmjanwestra/utilities/graphics/panels/ScatterplotPanel.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="819">
+          <caret line="301" selection-start-line="301" selection-end-line="301" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/nl/harmjanwestra/playground/Trans/SupplementaryTables.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="34">
+          <caret line="2" column="13" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/nl/harmjanwestra/playground/transeqtl/FilterReplTable.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="374">
-          <caret line="169" column="43" lean-forward="false" selection-start-line="169" selection-start-column="43" selection-end-line="169" selection-end-column="43" />
+          <caret line="26" column="41" selection-start-line="26" selection-start-column="35" selection-end-line="26" selection-end-column="41" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#1698#1714#0" expanded="true" />
-            <element signature="e#2636#2652#0" expanded="true" />
-            <element signature="e#2706#2722#0" expanded="true" />
-            <element signature="e#3288#3304#0" expanded="true" />
-            <element signature="e#3873#3881#0" expanded="true" />
-            <element signature="e#3923#3931#0" expanded="true" />
-            <element signature="e#3973#3981#0" expanded="true" />
-            <element signature="e#4023#4031#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/nl/harmjanwestra/playground/meqtl/BinCpGs.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="374">
+          <caret line="28" selection-start-line="28" selection-end-line="28" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/nl/harmjanwestra/playground/IntTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="306">
+          <caret line="18" column="8" selection-start-line="18" selection-start-column="8" selection-end-line="18" selection-end-column="8" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/nl/harmjanwestra/playground/Trans/eQTLFileSNPSelect.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="850">
+          <caret line="55" column="4" selection-start-line="55" selection-start-column="4" selection-end-line="55" selection-end-column="4" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/nl/harmjanwestra/playground/transeqtl/MakeTranscriptome.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="459">
+          <caret line="49" column="28" selection-start-line="49" selection-start-column="28" selection-end-line="49" selection-end-column="28" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/nl/harmjanwestra/playground/meqtl/EQTMFlipper.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="595">
+          <caret line="43" column="45" selection-start-line="43" selection-start-column="45" selection-end-line="43" selection-end-column="45" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/nl/harmjanwestra/playground/transeqtl/MakeGeneTranslation.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="370">
+          <caret line="35" column="43" selection-start-line="35" selection-start-column="43" selection-end-line="35" selection-end-column="43" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$MAVEN_REPOSITORY$/nl/systemsgenetics/genetica-libraries/1.0.9-SNAPSHOT/genetica-libraries-1.0.9-SNAPSHOT.jar!/umcg/genetica/math/matrix2/DoubleMatrixDataset.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="386">
+          <caret line="239" column="49" selection-start-line="239" selection-start-column="43" selection-end-line="239" selection-end-column="49" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/nl/harmjanwestra/playground/meqtl/ConvertMeQTLToEQTLFile.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="136">
+          <caret line="8" column="24" selection-start-line="8" selection-start-column="24" selection-end-line="8" selection-end-column="24" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/pom.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="201">
+          <caret line="46" column="86" selection-start-line="46" selection-start-column="86" selection-end-line="46" selection-end-column="86" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/nl/harmjanwestra/playground/mat/MeanAndVariance.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="145">
+          <caret line="36" column="8" lean-forward="true" selection-start-line="36" selection-start-column="8" selection-end-line="36" selection-end-column="8" />
+          <folding>
+            <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>

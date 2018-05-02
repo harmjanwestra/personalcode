@@ -1,5 +1,7 @@
 package nl.harmjanwestra.playground;
 
+import htsjdk.samtools.SamReader;
+
 public class IntTest {
 	
 	public static void main(String[] args) {
@@ -12,5 +14,8 @@ public class IntTest {
 		
 		int i = 25;
 		System.out.println(i / 2);
+		
+		
+		
 	}
 }

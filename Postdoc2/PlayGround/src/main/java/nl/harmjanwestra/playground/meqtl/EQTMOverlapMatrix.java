@@ -288,9 +288,9 @@ public class EQTMOverlapMatrix {
 
 //		DoubleMatrixDataset ds = new DoubleMatrixDataset<>();
 //		ds.setMatrix(matrix);
-//		DoubleMatrix2D mat = ds.getMatrix();
+//		DoubleMatrix2D MeanAndVariance = ds.getMatrix();
 //		cern.colt.matrix.tdouble.algo.DenseDoubleAlgebra al = new DenseDoubleAlgebra();
-//		mat = al.transpose(mat);
+//		MeanAndVariance = al.transpose(MeanAndVariance);
 //
 //		File fileObj = new File(fileslist.get(q));
 //		String name = fileObj.getName();
