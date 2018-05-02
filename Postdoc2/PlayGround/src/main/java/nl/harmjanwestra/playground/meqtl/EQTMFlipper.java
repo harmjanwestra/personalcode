@@ -8,29 +8,104 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 
 public class EQTMFlipper {
 	
 	
 	public static void main(String[] args) {
-//		String infile = "D:\\Work\\Projects\\2018-eQTMPredict\\2017-12-09-eQTMs-250k\\eQTLsFDR0.05.txt";
-//		String outfile = "D:\\Work\\Projects\\2018-eQTMPredict\\2017-12-09-eQTMs-250k\\eQTLsFDR0.050-flipped.txt";
 		
 		
 		double fdrthreshold = 0.0;
 //		String infile = "D:\\Work\\Projects\\2017-11-eQTLMeta\\eqtm\\eQTLsFDR0.05-SNPLevel.txt.gz";
-		String infile = "D:\\Work\\Projects\\2018-eQTMPredict\\bonder\\2015_09_02_cis_eQTMsFDR0.05-CpGLevel.txt";
+//		String infile = "D:\\Work\\Projects\\2018-eQTMPredict\\bonder\\2015_09_02_cis_eQTMsFDR0.05-CpGLevel.txt";
 //		String outfile = "D:\\Work\\Projects\\2017-11-eQTLMeta\\eqtm\\eQTLsFDR" + fdrthreshold + "-SNPLevel-flipped.txt.gz";
-		String outfile = "D:\\Work\\Projects\\2018-eQTMPredict\\bonder\\2015_09_02_cis_eQTMsFDR0.0-CpGLevel-filter.txt";
+//		String outfile = "D:\\Work\\Projects\\2018-eQTMPredict\\bonder\\2015_09_02_cis_eQTMsFDR0.0-CpGLevel-filter.txt";
+		
+		String infile = "D:\\Sync\\SyncThing\\Postdoc2\\2018-02-eQTMPredict\\2017-12-09-eQTMs-250k\\eQTLsFDR0.05.txt";
+		
+		
 		EQTMFlipper f = new EQTMFlipper();
 		try {
-			f.run(infile, outfile, fdrthreshold);
+			String outfile = "D:\\Sync\\SyncThing\\Postdoc2\\2018-02-eQTMPredict\\2017-12-09-eQTMs-250k\\2017-12-09-eQTLsFDR-gt0.0-flipped.txt";
+//			f.run(infile, outfile, fdrthreshold, MODE.ABOVE);
+			
+			outfile = "D:\\Sync\\SyncThing\\Postdoc2\\2018-02-eQTMPredict\\2017-12-09-eQTMs-250k\\2017-12-09-eQTLsFDR-et0.0-flipped.txt";
+//			f.run(infile, outfile, fdrthreshold, MODE.BELOW);
+			
+			infile = "D:\\Sync\\SyncThing\\Postdoc2\\2018-02-eQTMPredict\\2017-12-09-eQTMs-250k\\eQTLsFDR.txt.gz";
+			outfile = "D:\\Sync\\SyncThing\\Postdoc2\\2018-02-eQTMPredict\\2017-12-09-eQTMs-250k\\2017-12-09-eQTLsFDR-gt0.05-flipped.txt.gz";
+			fdrthreshold = 0.05;
+			System.out.println(fdrthreshold);
+			f.flipnfilter(infile, outfile, fdrthreshold, MODE.ABOVE);
+			
+			outfile = "D:\\Sync\\SyncThing\\Postdoc2\\2018-02-eQTMPredict\\2017-12-09-eQTMs-250k\\2017-12-09-eQTLsFDR-gt0.5-flipped.txt.gz";
+			fdrthreshold = 0.5;
+			System.out.println(fdrthreshold);
+			f.flipnfilter(infile, outfile, fdrthreshold, MODE.ABOVE);
+			
+			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 	
-	public void run(String infile, String outfile, double fdrthreshold) throws IOException {
+	enum MODE {
+		ABOVE,
+		BELOW
+	}
+	
+	public void flipnfilter(String infile, String outfile, double fdrthreshold, MODE m) throws IOException {
+		QTLTextFile f = new QTLTextFile(infile, QTLTextFile.R);
+		Iterator<EQTL> it = f.getEQtlIterator();
+		
+		
+		
+		TextFile out = new TextFile(outfile, TextFile.W);
+		out.writeln(QTLTextFile.header);
+		
+		int nrpos = 0;
+		int nrneg = 0;
+		
+		
+		HashSet<String> visitedCGs = new HashSet<String>();
+		while(it.hasNext()){
+			EQTL me = it.next();
+			boolean flip = false;
+			double fdr = me.getFDR();
+			boolean include = false;
+			if (m.equals(MODE.ABOVE)) {
+				if (fdr > fdrthreshold) {
+					include = true;
+				}
+			} else {
+				if (fdr <= fdrthreshold) {
+					include = true;
+				}
+			}
+			if (include) {
+				if (!me.getAlleleAssessed().equals("C")) {
+					flip = true;
+				}
+				
+				if (flip) {
+					double z = me.getZscore();
+					z *= -1;
+					me.setZscore(z);
+				}
+				
+				me.setAlleleAssessed("C");
+				me.setAlleles("C/T");
+				
+				out.writeln(me.toString());
+			}
+		}
+		out.close();
+		
+		
+	}
+	
+	public void run(String infile, String outfile, double fdrthreshold, MODE m) throws IOException {
 		QTLTextFile f = new QTLTextFile(infile, QTLTextFile.R);
 		ArrayList<EQTL> meqtl = f.readList();
 		f.close();
@@ -46,7 +121,17 @@ public class EQTMFlipper {
 		for (EQTL me : meqtl) {
 			boolean flip = false;
 			double fdr = me.getFDR();
-			if (fdr <= fdrthreshold) {
+			boolean include = false;
+			if (m.equals(MODE.ABOVE)) {
+				if (fdr > fdrthreshold) {
+					include = true;
+				}
+			} else {
+				if (fdr <= fdrthreshold) {
+					include = true;
+				}
+			}
+			if (include) {
 				if (!me.getAlleleAssessed().equals("C")) {
 					flip = true;
 				}

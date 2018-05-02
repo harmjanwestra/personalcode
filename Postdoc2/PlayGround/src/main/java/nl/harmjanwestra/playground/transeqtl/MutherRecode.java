@@ -1,4 +1,4 @@
-package nl.harmjanwestra.playground;
+package nl.harmjanwestra.playground.transeqtl;
 
 import umcg.genetica.io.text.TextFile;
 import umcg.genetica.io.trityper.QTLTextFile;
