@@ -10,20 +10,14 @@ target/
 *.png
 
 Thumbs.db
-.idea/
+*.idea/
 git.properties
 molgenis-compute-core/test-output
 data/
 test-output/
 nbactions*.xml
 *~
+.DS_Store
 
 nb-configuration.xml
 
-eqtl-mapping-pipeline/nb-configuration.xml
-/eQTLInteractionAnalyser/nbproject/private/
-/eQTLInteractionAnalyser/build/
-/eQTLInteractionAnalyser/dist/
-/eQTLInteractionAnalyser2/build/
-/eQTLInteractionAnalyser2/dist/
-/eQTLInteractionAnalyser2/nbproject/private/
