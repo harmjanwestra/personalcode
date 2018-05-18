@@ -37,13 +37,22 @@ public class EQTMFlipper {
 			outfile = "D:\\Sync\\SyncThing\\Postdoc2\\2018-02-eQTMPredict\\2017-12-09-eQTMs-250k\\2017-12-09-eQTLsFDR-gt0.05-flipped.txt.gz";
 			fdrthreshold = 0.05;
 			System.out.println(fdrthreshold);
-			f.flipnfilter(infile, outfile, fdrthreshold, MODE.ABOVE);
+//			f.flipnfilter(infile, outfile, fdrthreshold, MODE.ABOVE);
 			
 			outfile = "D:\\Sync\\SyncThing\\Postdoc2\\2018-02-eQTMPredict\\2017-12-09-eQTMs-250k\\2017-12-09-eQTLsFDR-gt0.5-flipped.txt.gz";
 			fdrthreshold = 0.5;
 			System.out.println(fdrthreshold);
-			f.flipnfilter(infile, outfile, fdrthreshold, MODE.ABOVE);
 			
+//			f.flipnfilter(infile, outfile, fdrthreshold, MODE.ABOVE);
+			
+			infile = "D:\\Sync\\SyncThing\\Postdoc2\\2018-02-eQTMPredict\\2017-12-09-eQTMs-250k\\eQTLsFDR.txt.gz";
+			outfile = "D:\\Sync\\SyncThing\\Postdoc2\\2018-02-eQTMPredict\\2017-12-09-eQTMs-250k\\2017-12-09-eQTLsFDR-lt0.5-flipped.txt.gz";
+			fdrthreshold = 0.5;
+			f.flipnfilter(infile, outfile, fdrthreshold, MODE.BELOW);
+
+			outfile = "D:\\Sync\\SyncThing\\Postdoc2\\2018-02-eQTMPredict\\2017-12-09-eQTMs-250k\\2017-12-09-eQTLsFDR-lt0.05-flipped.txt.gz";
+			fdrthreshold = 0.05;
+			f.flipnfilter(infile, outfile, fdrthreshold, MODE.BELOW);
 			
 		} catch (IOException e) {
 			e.printStackTrace();

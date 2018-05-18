@@ -1,6 +1,7 @@
 package nl.harmjanwestra.playground;
 
-import javafx.util.Pair;
+
+import umcg.genetica.containers.Pair;
 import umcg.genetica.io.trityper.ProbeAnnotation;
 import umcg.genetica.io.trityper.SNP;
 import umcg.genetica.io.trityper.SNPLoader;

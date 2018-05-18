@@ -1,6 +1,5 @@
 package nl.harmjanwestra.playground.meqtl;
 
-import javafx.util.Pair;
 import nl.harmjanwestra.utilities.annotation.gtf.GTFAnnotation;
 import nl.harmjanwestra.utilities.bedfile.BedFileReader;
 import nl.harmjanwestra.utilities.enums.Chromosome;
@@ -9,6 +8,7 @@ import nl.harmjanwestra.utilities.features.FeatureComparator;
 import nl.harmjanwestra.utilities.features.Gene;
 import nl.harmjanwestra.utilities.legacy.genetica.text.Strings;
 import org.apache.commons.math3.stat.correlation.PearsonsCorrelation;
+import umcg.genetica.containers.Pair;
 import umcg.genetica.io.text.TextFile;
 import umcg.genetica.io.trityper.EQTL;
 import umcg.genetica.io.trityper.QTLTextFile;
@@ -90,7 +90,7 @@ public class EQTMOverlapMatrix {
 		String headere = "Source\tFeature";
 		
 		for (int i = 0; i < eqtms.size(); i++) {
-			headere += "\t" + eqtms.get(i).getKey().getName() + "\t" + eqtms.get(i).getValue().getName();
+			headere += "\t" + eqtms.get(i).getLeft().getName() + "\t" + eqtms.get(i).getRight().getName();
 		}
 		for (int i = 0; i < genelust.size(); i++) {
 			headerg += "\t" + genelust.get(i).getName();
@@ -119,8 +119,8 @@ public class EQTMOverlapMatrix {
 			// now iterate each eqtm, cg, and gene
 			for (int i = 0; i < eqtms.size(); i++) {
 				Pair<Feature, Gene> eqtm = eqtms.get(i);
-				Feature cg = eqtm.getKey();
-				Gene gene = eqtm.getValue();
+				Feature cg = eqtm.getLeft();
+				Gene gene = eqtm.getRight();
 				lnoute += "\t" + overlapcg(ts, cg, cgwindowsize) + "\t" + overlapgene(ts, gene, exonoverlap);
 			}
 			matrixEQTMOut.writeln(lnoute);
