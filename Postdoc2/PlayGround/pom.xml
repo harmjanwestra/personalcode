@@ -44,7 +44,7 @@
                     </descriptorRefs>
                     <archive>
                         <manifest>
-                            <mainClass>nl.harmjanwestra.playground.meqtl.CompareCorrelations</mainClass>
+                            <mainClass>nl.harmjanwestra.playground.transeqtl.MakeTranscriptomeEPRS</mainClass>
                             <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
                             <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
                         </manifest>

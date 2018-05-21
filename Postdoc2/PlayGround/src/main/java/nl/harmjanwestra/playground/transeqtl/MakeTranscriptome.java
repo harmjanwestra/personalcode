@@ -22,6 +22,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class MakeTranscriptome {
@@ -58,8 +59,10 @@ public class MakeTranscriptome {
 				int shift = Integer.parseInt(args[7]); // 2;
 				boolean exportindividualgenes = Boolean.parseBoolean(args[8]);
 				boolean exportexonseqs = Boolean.parseBoolean(args[9]);
+				boolean overwriteexistingsnps = true;
 				try {
-					mt.createSequences(eqtlfile, genomefasta, ensemblannotation, outdir, windowsize, readlen, shift, exportindividualgenes, exportexonseqs);
+					mt.createSequences(eqtlfile, genomefasta, ensemblannotation, outdir, windowsize, readlen, shift,
+							exportindividualgenes, exportexonseqs, overwriteexistingsnps);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -488,7 +491,9 @@ public class MakeTranscriptome {
 	}
 	
 	
-	public void createSequences(String eqtlfile, String genomeFasta, String ensemblannotation, String outputdir, int windowsize, int readlen, int shift, boolean exportindividualgenes, boolean exportfullexonsequences) throws IOException {
+	public void createSequences(String eqtlfile, String genomeFasta, String ensemblannotation, String outputdir,
+								int windowsize, int readlen, int shift, boolean exportindividualgenes,
+								boolean exportfullexonsequences, boolean overwriteexisitingsnps) throws IOException {
 		
 		
 		String geneoutputdir = outputdir + "/genes/";
@@ -532,6 +537,207 @@ public class MakeTranscriptome {
 		System.out.println();
 		System.out.println(snps.size() + " snps to export");
 		System.out.println(geneIds.size() + " genes to export");
+
+
+//		System.out.println("available sequences");
+//		while (seq != null) {
+//			String seqname = seq.getName();
+//			byte[] bases = seq.getBases();
+//			byte[] base10 = new byte[10];
+//			System.arraycopy(bases, 0, base10, 0, 10);
+//			System.out.println(seqname + "\t" + bases.length + "\t" + byteToStr(base10) + "\t" + seq.length());
+//			seq = fastaFile.nextSequence();
+//
+//		}
+//		System.exit(-1);
+		exportGenes(genomeFasta, geneoutputdir, geneIds, ensemblannotation, exportindividualgenes, exportfullexonsequences, readlen, shift);
+		exportSNPs(snps, genomeFasta, windowsize, snpoutputdir, overwriteexisitingsnps);
+		
+		// make index script
+		TextFile tfs1 = new TextFile(outputdir + "index.sh", TextFile.W);
+		for (String snp : snpids) {
+			System.out.println(snpoutputdir + snp + ".fa.gz");
+			if (Gpio.exists(snpoutputdir + snp + ".fa.gz")) {
+				tfs1.writeln("bwa index ./snps/" + snp + ".fa.gz");
+			}
+		}
+		tfs1.close();
+		
+		
+		TextFile snplistout = new TextFile(snpoutputdir + "snps.txt", TextFile.W);
+		for (String snp : snpids) {
+			System.out.println(snpoutputdir + snp + ".fa.gz");
+			if (Gpio.exists(snpoutputdir + snp + ".fa.gz")) {
+				String ln = "bwa aln -t 16 -l 10 -0 ./snps/" + snp + ".fa.gz ./genes/allgenes.fa.gz > ./alignments/" + snp + "_allgenes.sai";
+				String ln2 = "bwa samse ./snps/" + snp + ".fa.gz ./alignments/" + snp + "_allgenes.sai ./genes/allgenes.fa.gz > ./alignments/" + snp + "_allgenes.sam";
+				
+			}
+			snplistout.writeln(snp);
+		}
+		snplistout.close();
+		
+		
+		// make alignment script
+		tf.open();
+		tf.readLine();
+		elems = tf.readLineElems(TextFile.tab);
+		
+		TextFile tfs2 = new TextFile(outputdir + "align.sh", TextFile.W);
+		TextFile tfs3 = new TextFile(outputdir + "samse.sh", TextFile.W);
+		tfs2.writeln("mkdir -p alignments");
+		while (elems != null) {
+			
+			String snp = elems[0];
+			String gene = elems[3];
+			if (Gpio.exists(snpoutputdir + snp + ".fa.gz") && Gpio.exists(geneoutputdir + gene + ".fa.gz")) {
+				String ln = "bwa aln -t 1 -l 10 -0 ./snps/" + snp + ".fa.gz ./genes/" + gene + ".fa.gz > ./alignments/" + snp + "_" + gene + ".sai";
+				String ln2 = "bwa samse ./snps/" + snp + ".fa.gz ./alignments/" + snp + "_" + gene + ".sai ./genes/" + gene + ".fa.gz > ./alignments/" + snp + "_" + gene + ".sam";
+				tfs2.writeln(ln);
+				tfs3.writeln(ln2);
+			}
+			elems = tf.readLineElems(TextFile.tab);
+		}
+		tf.close();
+		tfs2.close();
+		tfs3.close();
+	}
+	
+	private String byteToStr(byte[] bytes) throws UnsupportedEncodingException {
+		return new String(bytes, "UTF-8");
+	}
+	
+	protected void exportSNPs(ArrayList<Triple<String, Chromosome, Integer>> snps, String genomeFasta, int windowsize,
+							  String snpoutputdir, boolean overwriteexisitingsnps) throws IOException {
+		
+		System.out.println("Loading genome from: " + genomeFasta);
+		FastaSequenceFile fastaFile = new FastaSequenceFile(new File(genomeFasta), false);
+		ReferenceSequence seq = fastaFile.nextSequence();
+		
+		
+		ExecutorService ex = Executors.newWorkStealingPool(16);
+		AtomicInteger nrsnpsexported = new AtomicInteger();
+		
+		ArrayList<Future> taskoutput = new ArrayList<>();
+		while (seq != null) {
+			String seqname = seq.getName();
+			while (seqname.contains("  ")) {
+				seqname = seqname.replaceAll("  ", " ");
+			}
+			String[] seqnamelems = seqname.split(" ");
+			seqname = seqnamelems[0];
+			
+			
+			Chromosome seqchr = Chromosome.parseChr(seqname);
+			
+			if (seqchr.isAutosome()) {
+				System.out.println("Getting sequence: " + seq.getName() + "\t" + seq.length() + "\tParsed seq: " + seqname);
+				SNPExportTask t = new SNPExportTask(seq.getBases(), Chromosome.parseChr(seqname), snps, windowsize, nrsnpsexported, snpoutputdir, overwriteexisitingsnps);
+				
+				Future<?> output = ex.submit(t);
+				
+				taskoutput.add(output);
+			}
+			seq = fastaFile.nextSequence();
+		}
+		
+		
+		boolean alldone = false;
+		while (!alldone) {
+			alldone = true;
+			for (Future f : taskoutput) {
+				if (!f.isDone()) {
+					alldone = false;
+				}
+			}
+		}
+		
+		fastaFile.close();
+		ex.shutdown();
+		
+	}
+	
+	class SNPExportTask implements Runnable {
+		private final boolean overwriteexisitingsnps;
+		byte[] bases;
+		Chromosome seqchr;
+		ArrayList<Triple<String, Chromosome, Integer>> snps;
+		int windowsize;
+		AtomicInteger nrsnpsexported;
+		String snpoutputdir;
+		
+		public SNPExportTask(byte[] bases,
+							 Chromosome seqchr,
+							 ArrayList<Triple<String, Chromosome, Integer>> snps,
+							 int windowsize,
+							 AtomicInteger nrsnpsexported,
+							 String snpoutputdir,
+							 boolean overwriteexisitingsnps) {
+			this.bases = bases;
+			this.seqchr = seqchr;
+			this.snps = snps;
+			this.windowsize = windowsize;
+			this.nrsnpsexported = nrsnpsexported;
+			this.snpoutputdir = snpoutputdir;
+			this.overwriteexisitingsnps = overwriteexisitingsnps;
+		}
+		
+		@Override
+		public void run() {
+			try {
+				for (Triple<String, Chromosome, Integer> snp : snps) {
+					if (snp.getMiddle().equals(seqchr)) {
+						
+						String filename = snpoutputdir + snp.getLeft() + ".fa.gz";
+						if (Gpio.exists(filename) && !overwriteexisitingsnps && Gpio.getFileSize(filename) > 0) {
+							// do not overwrite
+							nrsnpsexported.getAndIncrement();
+						} else {
+							int snppos = snp.getRight();
+							int windowleft = snppos - (windowsize / 2);
+							int windowright = snppos + (windowsize / 2);
+							
+							if (windowleft < 0) {
+								windowleft = 0;
+							}
+							if (windowright > bases.length - 1) {
+								windowright = bases.length - 1;
+							}
+							
+							int nrbases = windowright - windowleft;
+							if (nrbases <= 0) {
+								System.err.println("Error: <=0 bases..");
+								System.err.println(nrsnpsexported.get() + "/" + snps.size() + " | SNP: " + snp + " pos: " + snppos + " chr " + seqchr + " left: " + windowleft + " right: " + windowright + " size: " + (windowright - windowleft));
+								System.exit(-1);
+							}
+							byte[] snpwindow = new byte[nrbases];
+							System.arraycopy(bases, windowleft, snpwindow, 0, nrbases);
+							
+							// make into fasta
+							TextFile snpfastaout = new TextFile(filename, TextFile.W);
+							String fastaStr = null;
+							try {
+								fastaStr = ">" + snp.getMiddle().toString() + "_" + snp.getRight() + "_" + snp.getLeft() + "_" + windowleft + "_" + windowright
+										+ "\n" + byteToStr(snpwindow);
+							} catch (UnsupportedEncodingException e) {
+								e.printStackTrace();
+							}
+							snpfastaout.writeln(fastaStr);
+							snpfastaout.close();
+							System.out.println(nrsnpsexported + "/" + snps.size() + " | SNP: " + snp + " chr " + seqchr + " left: " + windowleft + " right: " + windowright + " size: " + (windowright - windowleft));
+							nrsnpsexported.getAndIncrement();
+						}
+						
+						
+					}
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	protected void exportGenes(String genomeFasta, String geneoutputdir, HashSet<String> geneIds, String ensemblannotation,
+							   boolean exportindividualgenes, boolean exportfullexonsequences, int readlen, int shift) throws IOException {
 		
 		GTFAnnotation s = new GTFAnnotation(ensemblannotation);
 		
@@ -557,19 +763,6 @@ public class MakeTranscriptome {
 		System.out.println("Loading genome from: " + genomeFasta);
 		FastaSequenceFile fastaFile = new FastaSequenceFile(new File(genomeFasta), false);
 		ReferenceSequence seq = fastaFile.nextSequence();
-//		System.out.println("available sequences");
-//		while (seq != null) {
-//			String seqname = seq.getName();
-//			byte[] bases = seq.getBases();
-//			byte[] base10 = new byte[10];
-//			System.arraycopy(bases, 0, base10, 0, 10);
-//			System.out.println(seqname + "\t" + bases.length + "\t" + byteToStr(base10) + "\t" + seq.length());
-//			seq = fastaFile.nextSequence();
-//
-//		}
-//		System.exit(-1);
-		
-		
 		int nrsnpsexported = 0;
 		int nrgenesexported = 0;
 		TextFile allgenefa = new TextFile(geneoutputdir + "allgenes.fa.gz", TextFile.W);
@@ -589,42 +782,7 @@ public class MakeTranscriptome {
 			System.out.println("Getting sequence: " + seq.getName() + "\t" + seq.length() + "\tParsed seq: " + seqname);
 			
 			Chromosome seqchr = Chromosome.parseChr(seqname);
-			for (Triple<String, Chromosome, Integer> snp : snps) {
-				if (snp.getMiddle().equals(seqchr)) {
-					
-					int snppos = snp.getRight();
-					int windowleft = snppos - (windowsize / 2);
-					int windowright = snppos + (windowsize / 2);
-					
-					if (windowleft < 0) {
-						windowleft = 0;
-					}
-					if (windowright > bases.length - 1) {
-						windowright = bases.length - 1;
-					}
-					
-					
-					int nrbases = windowright - windowleft;
-					if (nrbases <= 0) {
-						System.err.println("Error: <=0 bases..");
-						System.err.println(nrsnpsexported + "/" + snps.size() + " | SNP: " + snp + " pos: " + snppos + " chr " + seqchr + " left: " + windowleft + " right: " + windowright + " size: " + (windowright - windowleft));
-						System.exit(-1);
-					}
-					byte[] snpwindow = new byte[nrbases];
-					System.arraycopy(bases, windowleft, snpwindow, 0, nrbases);
-					
-					// make into fasta
-					TextFile snpfastaout = new TextFile(snpoutputdir + snp.getLeft() + ".fa.gz", TextFile.W);
-					String fastaStr = ">" + snp.getMiddle().toString() + "_" + snp.getRight() + "_" + snp.getLeft() + "_" + windowleft + "_" + windowright
-							+ "\n" + byteToStr(snpwindow);
-					snpfastaout.writeln(fastaStr);
-					snpfastaout.close();
-					System.out.println(nrsnpsexported + "/" + snps.size() + " | SNP: " + snp + " chr " + seqchr + " left: " + windowleft + " right: " + windowright + " size: " + (windowright - windowleft));
-					nrsnpsexported++;
-				}
-			}
 			
-			System.out.println("Done exporting snps for chr " + seqchr);
 			
 			System.out.println("Now exporting genes");
 			// now parse the ensemblgenes on this chr
@@ -806,57 +964,5 @@ public class MakeTranscriptome {
 		}
 		geneStats.close();
 		allgenefa.close();
-		
-		// make index script
-		TextFile tfs1 = new TextFile(outputdir + "index.sh", TextFile.W);
-		for (String snp : snpids) {
-			System.out.println(snpoutputdir + snp + ".fa.gz");
-			if (Gpio.exists(snpoutputdir + snp + ".fa.gz")) {
-				tfs1.writeln("bwa index ./snps/" + snp + ".fa.gz");
-			}
-		}
-		tfs1.close();
-		
-		
-		TextFile snplistout = new TextFile(snpoutputdir + "snps.txt", TextFile.W);
-		for (String snp : snpids) {
-			System.out.println(snpoutputdir + snp + ".fa.gz");
-			if (Gpio.exists(snpoutputdir + snp + ".fa.gz")) {
-				String ln = "bwa aln -t 16 -l 10 -0 ./snps/" + snp + ".fa.gz ./genes/allgenes.fa.gz > ./alignments/" + snp + "_allgenes.sai";
-				String ln2 = "bwa samse ./snps/" + snp + ".fa.gz ./alignments/" + snp + "_allgenes.sai ./genes/allgenes.fa.gz > ./alignments/" + snp + "_allgenes.sam";
-				
-			}
-			snplistout.writeln(snp);
-		}
-		snplistout.close();
-		
-		
-		// make alignment script
-		tf.open();
-		tf.readLine();
-		elems = tf.readLineElems(TextFile.tab);
-		
-		TextFile tfs2 = new TextFile(outputdir + "align.sh", TextFile.W);
-		TextFile tfs3 = new TextFile(outputdir + "samse.sh", TextFile.W);
-		tfs2.writeln("mkdir -p alignments");
-		while (elems != null) {
-			
-			String snp = elems[0];
-			String gene = elems[3];
-			if (Gpio.exists(snpoutputdir + snp + ".fa.gz") && Gpio.exists(geneoutputdir + gene + ".fa.gz")) {
-				String ln = "bwa aln -t 1 -l 10 -0 ./snps/" + snp + ".fa.gz ./genes/" + gene + ".fa.gz > ./alignments/" + snp + "_" + gene + ".sai";
-				String ln2 = "bwa samse ./snps/" + snp + ".fa.gz ./alignments/" + snp + "_" + gene + ".sai ./genes/" + gene + ".fa.gz > ./alignments/" + snp + "_" + gene + ".sam";
-				tfs2.writeln(ln);
-				tfs3.writeln(ln2);
-			}
-			elems = tf.readLineElems(TextFile.tab);
-		}
-		tf.close();
-		tfs2.close();
-		tfs3.close();
-	}
-	
-	private String byteToStr(byte[] bytes) throws UnsupportedEncodingException {
-		return new String(bytes, "UTF-8");
 	}
 }
