@@ -1,14 +1,21 @@
 package nl.harmjanwestra.playground.transeqtl;
 
+import nl.harmjanwestra.utilities.annotation.gtf.GTFAnnotation;
 import nl.harmjanwestra.utilities.enums.Chromosome;
+import nl.harmjanwestra.utilities.enums.Strand;
 import nl.harmjanwestra.utilities.features.Feature;
 import nl.harmjanwestra.utilities.features.FeatureComparator;
+import nl.harmjanwestra.utilities.features.Gene;
 import nl.harmjanwestra.utilities.features.SNPFeature;
 import nl.harmjanwestra.utilities.legacy.genetica.console.ProgressBar;
 import nl.harmjanwestra.utilities.legacy.genetica.io.text.TextFile;
+import nl.harmjanwestra.utilities.legacy.genetica.math.stats.Descriptives;
+import nl.harmjanwestra.utilities.legacy.genetica.text.Strings;
 import org.apache.tools.ant.Executor;
 import umcg.genetica.containers.Triple;
 import umcg.genetica.io.Gpio;
+
+import umcg.genetica.util.Primitives;
 
 import java.io.IOException;
 import java.util.*;
@@ -27,7 +34,7 @@ public class MakeTranscriptomeEPRS extends MakeTranscriptome {
 		String snpseqoutputdir = "D:\\Work\\eprsqc\\seq\\snps\\";
 		String alndir = "D:\\Work\\eprsqc\\aln\\";
 		
-		int windowsize = 10000000;
+		int windowsize = 5000000;
 		int clusterdistance = 1000000;
 		
 		String genomeFasta = "D:\\Sync\\SyncThing\\Data\\HumanGenome\\human_g1k_v37.fasta.gz";
@@ -51,18 +58,127 @@ public class MakeTranscriptomeEPRS extends MakeTranscriptome {
 //					readlen, shift);
 			int threads = 16;
 //			m.createSNPList(signprs, dbloc, snplist);
-			boolean onlyexportsnps = true;
+			boolean onlyexportsnps = false;
 			boolean overwriteexistingsnps = false;
-//			m.createPRSRegions(signprs, dbloc, snpmap, snplist, clusterdistance, windowsize,
-//					genomeFasta, snpseqoutputdir, regiondeffolder, threads, onlyexportsnps, overwriteexistingsnps);
-			
-			m.createAlignmentScripts(signprs, snpseqoutputdir,
-					geneoutputdir, prsfastaoutdir,
-					regiondeffolder, alndir);
+			boolean exportsnpseqs = false;
+			m.createPRSRegions(signprs, dbloc, snpmap, snplist, clusterdistance, windowsize,
+					genomeFasta, snpseqoutputdir, regiondeffolder, threads, exportsnpseqs, onlyexportsnps, overwriteexistingsnps);
+
+//			m.createAlignmentScripts(signprs, snpseqoutputdir,
+//					geneoutputdir, prsfastaoutdir,
+//					regiondeffolder, alndir);
+			String overlapoutput = "D:\\Work\\eprsqc\\overlapoutput.txt";
+			m.determineOverlapWithPRSRegions(signprs, regiondeffolder, ensemblannotation, snpmap, snplist, windowsize, overlapoutput);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		
+	}
+	
+	private void determineOverlapWithPRSRegions(String signprs, String regionDefFolder, String ensemblannotation,
+												String snpmapfile, String snplist, int windowsize, String overlapoutput) throws IOException {
+		
+		loadSNPMap(snpmapfile, snplist);
+		GTFAnnotation ann = new GTFAnnotation(ensemblannotation);
+		HashMap<String, Gene> genemap = ann.getStrToGene();
+		
+		TextFile tf = new TextFile(signprs, TextFile.R);
+		tf.readLine();
+		String[] elems = tf.readLineElems(TextFile.tab);
+		HashMap<String, ArrayList<String>> prsgenes = new HashMap<>();
+		while (elems != null) {
+			if (elems.length >= 2) {
+				String prs = elems[0];
+				String gene = elems[1];
+				ArrayList<String> genes = prsgenes.get(prs);
+				if (genes == null) {
+					genes = new ArrayList<>();
+				}
+				genes.add(gene);
+				prsgenes.put(prs, genes);
+			}
+			elems = tf.readLineElems(TextFile.tab);
+		}
+		tf.close();
+		String headln = "PRS\tGene\tGeneCoordinates\t#PRSSNPs\t#SNPRegionsOverlap\tTssDistances\tOverlappingSNPPos\tOverlappingSNPIds";
+		TextFile outf = new TextFile(overlapoutput, TextFile.W);
+		outf.writeln(headln);
+		TextFile outf2 = new TextFile(overlapoutput + "withoutConflicts.txt", TextFile.W);
+		for (String prs : prsgenes.keySet()) {
+			String[] prselems = prs.split("_");
+			String pvalstr = prselems[prselems.length - 1];
+			pvalstr = pvalstr.replaceAll("P", "");
+			Double pvalthresh = Double.parseDouble(pvalstr);
+			
+			
+			int lastunderscore = prs.lastIndexOf("_");
+			String traitname = prs.substring(0, lastunderscore);
+			// outputfolder + traitname + "_P" + pvalstr + ".txt.gz"
+			String regiondef = regionDefFolder + traitname + "_P" + pvalstr + ".txt.gz";
+			ArrayList<String> keysnps = new ArrayList<>();
+			TextFile tf2 = new TextFile(regiondef, TextFile.R);
+			String[] elems2 = tf2.readLineElems(TextFile.tab);
+			while (elems2 != null) {
+				if (elems2.length > 3) {
+					if (Boolean.parseBoolean(elems2[3])) {
+						String snpstr = elems2[1].split("_")[2];
+						keysnps.add(snpstr);
+					}
+				}
+				elems2 = tf2.readLineElems(TextFile.tab);
+			}
+			tf2.close();
+			
+			// define regions
+			ArrayList<String> genes = prsgenes.get(prs);
+			
+			for (String geneStr : genes) {
+				Gene gene = genemap.get(geneStr);
+				Feature genefeat = new Feature(gene);
+				
+				ArrayList<String> interferingsnps = new ArrayList<>();
+				ArrayList<Integer> distances = new ArrayList<>();
+				ArrayList<Integer> positions = new ArrayList<>();
+				for (String snp : keysnps) {
+					Feature pos = snpmap.get(snp);
+					Feature snpwindow = new Feature(pos);
+					snpwindow.setStart(pos.getStart() - windowsize);
+					if (snpwindow.getStart() < 0) {
+						snpwindow.setStart(0);
+					}
+					snpwindow.setStop(pos.getStop() + windowsize);
+					if (snpwindow.overlaps(gene)) {
+						int distance = gene.getStart() - pos.getStart();
+						if (gene.getStrand().equals(Strand.NEG)) {
+							distance = pos.getStart() - gene.getStop();
+						}
+						distances.add(distance);
+						interferingsnps.add(snp);
+						positions.add(pos.getStart());
+					}
+				}
+				
+				
+				if (interferingsnps.isEmpty()) {
+					outf2.writeln(prs + "\t" + geneStr);
+				}
+				
+				// "PRS\tGene\tGeneCoordinates\t#PRSSNPs\t#SNPRegionsOverlap\tTssDistances\tOverlappingSNPs(pos)";
+				String outln = prs
+						+ "\t" + geneStr
+						+ "\t" + genefeat.toString()
+						+ "\t" + keysnps.size()
+						+ "\t" + interferingsnps.size()
+						+ "\t" + Strings.concat(Primitives.toPrimitiveArr(distances.toArray(new Integer[0])), Strings.semicolon)
+						+ "\t" + Strings.concat(Primitives.toPrimitiveArr(positions.toArray(new Integer[0])), Strings.semicolon)
+						+ "\t" + Strings.concat(interferingsnps, Strings.semicolon);
+				
+				outf.writeln(outln);
+			}
+			
+		}
+		outf.close();
+		outf2.close();
 	}
 	
 	private void createAlignmentScripts(String significantEPRSFile, String snpfastadir,
@@ -336,7 +452,8 @@ public class MakeTranscriptomeEPRS extends MakeTranscriptome {
 	
 	public void createPRSRegions(String significantEPRSFile, String dbloc, String snpmap, String snplist, int clusterdistance, int windowsize,
 								 String genomeFasta, String snpseqoutputdir,
-								 String regionDefinitionOutputFolder, int threads, boolean exportonly, boolean overwriteexistingsnps) throws IOException {
+								 String regionDefinitionOutputFolder, int threads, boolean exportsnps,
+								 boolean exportonly, boolean overwriteexistingsnps) throws IOException {
 		
 		ArrayList<Triple<String, Chromosome, Integer>> snps = null;
 		if (!exportonly) {
@@ -434,8 +551,12 @@ public class MakeTranscriptomeEPRS extends MakeTranscriptome {
 				elems = tfo.readLineElems(TextFile.tab);
 			}
 		}
-		MakeTranscriptome t = new MakeTranscriptome();
-		t.exportSNPs(snps, genomeFasta, windowsize, snpseqoutputdir, overwriteexistingsnps);
+		
+		if (exportsnps) {
+			MakeTranscriptome t = new MakeTranscriptome();
+			// note: windowsize * 2 for writing sequences (gets / 2 in that part of the code :/)
+			t.exportSNPs(snps, genomeFasta, windowsize * 2, snpseqoutputdir, overwriteexistingsnps);
+		}
 	}
 	
 	
