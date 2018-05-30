@@ -2,9 +2,7 @@ package nl.harmjanwestra.playground;
 
 import nl.harmjanwestra.utilities.legacy.genetica.io.text.TextFile;
 import nl.harmjanwestra.utilities.legacy.genetica.text.Strings;
-import org.apache.commons.lang.StringEscapeUtils;
 
-import javax.xml.soap.Text;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;

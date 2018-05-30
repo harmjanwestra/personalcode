@@ -1,4 +1,4 @@
-package nl.harmjanwestra.playground.Trans;
+package nl.harmjanwestra.playground.transeqtl;
 
 public class SupplementaryTables {
 	
