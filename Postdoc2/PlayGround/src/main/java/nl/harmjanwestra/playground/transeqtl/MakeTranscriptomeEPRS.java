@@ -61,14 +61,16 @@ public class MakeTranscriptomeEPRS extends MakeTranscriptome {
 			boolean onlyexportsnps = false;
 			boolean overwriteexistingsnps = false;
 			boolean exportsnpseqs = false;
-			m.createPRSRegions(signprs, dbloc, snpmap, snplist, clusterdistance, windowsize,
-					genomeFasta, snpseqoutputdir, regiondeffolder, threads, exportsnpseqs, onlyexportsnps, overwriteexistingsnps);
+//			m.createPRSRegions(signprs, dbloc, snpmap, snplist, clusterdistance, windowsize,
+//					genomeFasta, snpseqoutputdir, regiondeffolder, threads, exportsnpseqs, onlyexportsnps, overwriteexistingsnps);
 
 //			m.createAlignmentScripts(signprs, snpseqoutputdir,
 //					geneoutputdir, prsfastaoutdir,
 //					regiondeffolder, alndir);
 			String overlapoutput = "D:\\Work\\eprsqc\\overlapoutput.txt";
 			m.determineOverlapWithPRSRegions(signprs, regiondeffolder, ensemblannotation, snpmap, snplist, windowsize, overlapoutput);
+			
+			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -101,6 +103,8 @@ public class MakeTranscriptomeEPRS extends MakeTranscriptome {
 		}
 		tf.close();
 		String headln = "PRS\tGene\tGeneCoordinates\t#PRSSNPs\t#SNPRegionsOverlap\tTssDistances\tOverlappingSNPPos\tOverlappingSNPIds";
+		TextFile outf3 = new TextFile(overlapoutput + "snpsPerPRS.txt", TextFile.W);
+		outf3.writeln("PRS\t#SNPs\tSNPids");
 		TextFile outf = new TextFile(overlapoutput, TextFile.W);
 		outf.writeln(headln);
 		TextFile outf2 = new TextFile(overlapoutput + "withoutConflicts.txt", TextFile.W);
@@ -128,6 +132,8 @@ public class MakeTranscriptomeEPRS extends MakeTranscriptome {
 				elems2 = tf2.readLineElems(TextFile.tab);
 			}
 			tf2.close();
+			
+			outf3.writeln(prs + "\t" + keysnps.size() + "\t" + Strings.concat(keysnps, Strings.semicolon));
 			
 			// define regions
 			ArrayList<String> genes = prsgenes.get(prs);
@@ -179,6 +185,7 @@ public class MakeTranscriptomeEPRS extends MakeTranscriptome {
 		}
 		outf.close();
 		outf2.close();
+		outf3.close();
 	}
 	
 	private void createAlignmentScripts(String significantEPRSFile, String snpfastadir,
