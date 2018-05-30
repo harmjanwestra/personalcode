@@ -22,7 +22,7 @@ public class MixAndMatch {
 //
 		MixAndMatch m = new MixAndMatch();
 //		try {
-//			m.run(file1, file2, outf);
+//			m.combineEPRSWithCisAndTransFX(file1, file2, outf);
 //		} catch (IOException e) {
 //			e.printStackTrace();
 //		}
