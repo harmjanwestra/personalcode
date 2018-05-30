@@ -390,7 +390,7 @@ public class MakeTranscriptome {
 			ex.submit(t);
 			nrsubmitted++;
 			
-			// don't let the buffer run too full
+			// don't let the buffer combineEPRSWithCisAndTransFX too full
 //			if (nrdone.get() - nrsubmitted > 128) {
 //				try {
 //					Thread.sleep(1000);
@@ -879,7 +879,7 @@ public class MakeTranscriptome {
 							
 							// if there are exons remaining
 							if (exonctr + 1 < exons.size()) {
-								while (currentPos < currentexon.getStop()) { // iterate until we run out of currentexon
+								while (currentPos < currentexon.getStop()) { // iterate until we combineEPRSWithCisAndTransFX out of currentexon
 									int basesFromCurrentExon = currentexon.getStop() - currentPos;
 									byte[] b = new byte[readlen];
 									System.arraycopy(bases, currentPos, b, 0, basesFromCurrentExon);

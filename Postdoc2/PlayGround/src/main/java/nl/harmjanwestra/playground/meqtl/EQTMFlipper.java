@@ -28,10 +28,10 @@ public class EQTMFlipper {
 		EQTMFlipper f = new EQTMFlipper();
 		try {
 			String outfile = "D:\\Sync\\SyncThing\\Postdoc2\\2018-02-eQTMPredict\\2017-12-09-eQTMs-250k\\2017-12-09-eQTLsFDR-gt0.0-flipped.txt";
-//			f.run(infile, outfile, fdrthreshold, MODE.ABOVE);
+//			f.combineEPRSWithCisAndTransFX(infile, outfile, fdrthreshold, MODE.ABOVE);
 			
 			outfile = "D:\\Sync\\SyncThing\\Postdoc2\\2018-02-eQTMPredict\\2017-12-09-eQTMs-250k\\2017-12-09-eQTLsFDR-et0.0-flipped.txt";
-//			f.run(infile, outfile, fdrthreshold, MODE.BELOW);
+//			f.combineEPRSWithCisAndTransFX(infile, outfile, fdrthreshold, MODE.BELOW);
 			
 			infile = "D:\\Sync\\SyncThing\\Postdoc2\\2018-02-eQTMPredict\\2017-12-09-eQTMs-250k\\eQTLsFDR.txt.gz";
 			outfile = "D:\\Sync\\SyncThing\\Postdoc2\\2018-02-eQTMPredict\\2017-12-09-eQTMs-250k\\2017-12-09-eQTLsFDR-gt0.05-flipped.txt.gz";

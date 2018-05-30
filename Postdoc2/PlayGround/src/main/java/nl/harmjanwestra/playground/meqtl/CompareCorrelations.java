@@ -3,6 +3,7 @@ package nl.harmjanwestra.playground.meqtl;
 import cern.colt.matrix.tdouble.DoubleMatrix1D;
 import cern.colt.matrix.tdouble.DoubleMatrix2D;
 import cern.colt.matrix.tdouble.impl.DenseDoubleMatrix2D;
+import com.itextpdf.text.DocumentException;
 import nl.harmjanwestra.utilities.graphics.Grid;
 import nl.harmjanwestra.utilities.graphics.Range;
 import nl.harmjanwestra.utilities.graphics.panels.ScatterplotPanel;
@@ -14,6 +15,7 @@ import umcg.genetica.math.matrix2.DoubleMatrixDataset;
 import umcg.genetica.math.stats.Descriptives;
 import umcg.genetica.util.Primitives;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -21,10 +23,23 @@ import java.util.HashSet;
 public class CompareCorrelations {
 	
 	public static void main(String[] args) {
+		CompareCorrelations c = new CompareCorrelations();
+		String correlationdata = "D:\\Sync\\SyncThing\\Postdoc2\\2018-02-eQTMPredict\\2018-05-15-RNACpGCorrelationComparison\\correlationData.txt.gz";
+		String plotout = "D:\\Sync\\SyncThing\\Postdoc2\\2018-02-eQTMPredict\\2018-05-15-RNACpGCorrelationComparison\\plot.png";
+		
+		try {
+			c.plot(correlationdata, plotout);
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (DocumentException e) {
+			e.printStackTrace();
+		}
+		System.exit(0);
+		
 		if (args.length < 6) {
 			System.out.println("Usage rna rnasamples meth methsamples eqtms outputfolder");
 		} else {
-			CompareCorrelations c = new CompareCorrelations();
+			
 			
 			try {
 				c.run(args[0],
@@ -37,6 +52,44 @@ public class CompareCorrelations {
 				e.printStackTrace();
 			}
 		}
+		
+		
+	}
+	
+	public void plot(String correlationData, String plotout) throws IOException, DocumentException {
+		ArrayList<Double> x = new ArrayList<>();
+		ArrayList<Double> y = new ArrayList<>();
+		
+		TextFile tf = new TextFile(correlationData, TextFile.R);
+		String[] elems = tf.readLineElems(TextFile.tab);
+		while (elems != null) {
+			if (elems.length >= 4) {
+				Double x1 = Double.parseDouble(elems[1]);
+				Double y1 = Double.parseDouble(elems[3]);
+				x.add(x1);
+				y.add(y1);
+//				if (x.size() > 10000) {
+//					break;
+//				}
+			}
+			elems = tf.readLineElems(TextFile.tab);
+		}
+		tf.close();
+		
+		System.out.println(x.size() + " data points loaded");
+		
+		Grid g = new Grid(500, 500, 1, 1, 100, 100);
+		ScatterplotPanel p = new ScatterplotPanel(1, 1);
+		p.setAlpha(0.1f);
+		p.setData(Primitives.toPrimitiveArr(x), Primitives.toPrimitiveArr(y));
+		p.setDataRange(new Range(-1, -1, 1, 1));
+		p.setLabels("RNA-correl", "CpG-correl");
+		p.setPlotElems(true, false);
+		g.addPanel(p);
+		
+		g.draw(plotout);
+		
+		
 	}
 	
 	public void run(String rna,
@@ -111,18 +164,19 @@ public class CompareCorrelations {
 		
 		for (int i = 0; i < rnacormat.rows(); i++) {
 			String gene = rnacormat.getRowObjects().get(i);
+			String cpg = eqtmlinks.get(gene);
 			int icpg = geneTpCpgIndex[i];
 			if (icpg >= 0) {
 				for (int j = i + 1; j < rnacormat.rows(); j++) {
 					int jcpg = geneTpCpgIndex[j];
 					if (icpg > -1 && jcpg > -1) {
 						// produce output
-						String cpg = eqtmlinks.get(gene);
+						String gene2 = rnacormat.getRowObjects().get(j);
 						double corrna = rnacormat.getMatrix().getQuick(i, j);
 						double corcpg = methcormat.getMatrix().getQuick(icpg, jcpg);
 						x.add(corrna);
 						y.add(corcpg);
-						output.writeln(gene + "\t" + corrna + "\t" + cpg + "\t" + corcpg);
+						output.writeln(gene + "\t" + cpg + "\t" + gene2 + "\t" + corrna + "\t" + corcpg);
 					}
 				}
 			}

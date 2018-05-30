@@ -53,14 +53,14 @@ public class SampleComparison {
 
 //		SampleComparison c = new SampleComparison();
 //		try {
-//			c.run(gtefiles[0], genotypeInds[0], outfiles[0]);
+//			c.combineEPRSWithCisAndTransFX(gtefiles[0], genotypeInds[0], outfiles[0]);
 //		} catch (IOException e) {
 //			e.printStackTrace();
 //		}
 //
 //		for (int i = 0; i < gtefiles.length; i++) {
 //			try {
-////				c.run(gtefiles[i], genotypeInds[i], outfiles[i]);
+////				c.combineEPRSWithCisAndTransFX(gtefiles[i], genotypeInds[i], outfiles[i]);
 //			} catch (IOException e) {
 //				e.printStackTrace();
 //			}
