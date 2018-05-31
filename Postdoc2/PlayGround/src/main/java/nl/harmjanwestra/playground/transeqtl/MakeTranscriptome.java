@@ -611,6 +611,7 @@ public class MakeTranscriptome {
 		
 		System.out.println("Loading genome from: " + genomeFasta);
 		FastaSequenceFile fastaFile = new FastaSequenceFile(new File(genomeFasta), false);
+		
 		ReferenceSequence seq = fastaFile.nextSequence();
 		
 		
