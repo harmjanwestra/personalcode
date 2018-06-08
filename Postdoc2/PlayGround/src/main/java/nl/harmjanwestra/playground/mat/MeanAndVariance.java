@@ -43,7 +43,7 @@ public class MeanAndVariance {
 			tf.close();
 		}
 		
-		DoubleMatrixDataset<String, String> ds = DoubleMatrixDataset.loadSubsetOfTextDoubleData(input, "\t", rowselect, colselect);
+		DoubleMatrixDataset<String, String> ds = DoubleMatrixDataset.loadSubsetOfTextDoubleData(input, '\t', rowselect, colselect);
 		
 		// over rows
 		TextFile out1 = new TextFile(output + "-MeanAndVarianceRows.txt", TextFile.W);

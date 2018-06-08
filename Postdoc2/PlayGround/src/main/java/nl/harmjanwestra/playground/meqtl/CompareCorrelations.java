@@ -205,7 +205,7 @@ public class CompareCorrelations {
 		System.out.println(rowLimit.size() + " rows to select");
 		
 		// load data
-		DoubleMatrixDataset<String, String> ds = DoubleMatrixDataset.loadSubsetOfTextDoubleData(datasetFile, "\t", rowLimit, cols);
+		DoubleMatrixDataset<String, String> ds = DoubleMatrixDataset.loadSubsetOfTextDoubleData(datasetFile, '\t', rowLimit, cols);
 		System.out.println("Final size: " + ds.rows() + " x " + ds.columns());
 		
 		DoubleMatrix2D mat = ds.getMatrix();

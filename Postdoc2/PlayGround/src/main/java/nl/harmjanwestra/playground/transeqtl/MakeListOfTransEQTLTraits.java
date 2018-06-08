@@ -23,7 +23,7 @@ public class MakeListOfTransEQTLTraits {
 		
 		MakeListOfTransEQTLTraits t = new MakeListOfTransEQTLTraits();
 		try {
-//			t.runTrans(transfx, traitfile, rowtraitfile, coltraitfile, usejaccard, outfilename);
+			t.runTrans(transfx, traitfile, rowtraitfile, coltraitfile, usejaccard, outfilename);
 			
 			
 			String prsfile = "D:\\Sync\\SyncThing\\Postdoc2\\2018-05-eQTLMeta\\data\\2018-05-22-assoc\\eprs\\eQTLsFDR-Significant-0.05.txt.gz";
