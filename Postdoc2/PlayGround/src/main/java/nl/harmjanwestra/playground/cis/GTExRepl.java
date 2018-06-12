@@ -27,18 +27,23 @@ public class GTExRepl {
 //		String output = "D:\\Sync\\SyncThing\\Postdoc2\\2018-05-eQTLMeta\\data\\2018-06-05-cis-gtexrepl\\ConcordanceBetweenTopGTExAndEQTLFullCis.txt";
 		boolean maponposition = true;
 		GTExRepl r = new GTExRepl();
-
-//		args = new String[]{
-//				"D:\\Sync\\SyncThing\\Postdoc2\\2018-05-eQTLMeta\\data\\2018-05-22-assoc\\cis\\2018-01-31-cis-eQTLsFDR0.05-ProbeLevel-CohortInfoRemoved.txt.gz",
-//				"D:\\Sync\\SyncThing\\Data\\eQTLs\\GTEx\\test\\",
-//				"D:\\Sync\\SyncThing\\Postdoc2\\2018-05-eQTLMeta\\data\\2018-06-05-cis-gtexrepl\\test\\output.txt"
-//		};
+		
+		args = new String[]{
+				"D:\\Sync\\SyncThing\\Postdoc2\\2018-05-eQTLMeta\\data\\2018-05-22-assoc\\cis\\2018-01-31-cis-eQTLsFDR0.05-ProbeLevel-CohortInfoRemoved.txt.gz",
+				"D:\\Sync\\SyncThing\\Data\\eQTLs\\GTEx\\GTEx_Analysis_v7_eQTL\\",
+				"D:\\Sync\\SyncThing\\Postdoc2\\2018-05-eQTLMeta\\data\\2018-06-05-cis-gtexrepl\\test\\output.txt",
+				"D:\\Sync\\SyncThing\\Postdoc2\\2018-05-eQTLMeta\\data\\2018-06-12-biosstats\\LL_ENSG_ENSEMBL71_expression_statistics_raw.txt"
+		};
 		
 		try {
 			if (args.length < 3) {
 				System.out.println("Usage: fullcis gtexloc output");
 			} else {
-				r.determineConcordanceBetweenTopGTExAndFullCis(args[0], args[1], maponposition, args[2]);
+				String avgexp = null;
+				if (args.length > 3) {
+					avgexp = args[3];
+				}
+				r.determineConcordanceBetweenTopGTExAndFullCis(args[0], args[1], maponposition, args[2], avgexp);
 			}
 			
 		} catch (IOException e) {
@@ -92,7 +97,7 @@ public class GTExRepl {
 		ArrayList<GenePair> pairs = new ArrayList<>();
 		while (elems != null) {
 			String gene = elems[0];
-			Double exp = Double.parseDouble(elems[1]);
+			Double exp = Double.parseDouble(elems[2]);
 			pairs.add(new GenePair(gene, exp));
 			elems = tf.readLineElems(TextFile.tab);
 		}
@@ -104,20 +109,35 @@ public class GTExRepl {
 		int genesperbin = pairs.size() / nrbins;
 		int ctr = 0;
 		int bin = 0;
+		int[] nrgenesperbin = new int[nrbins];
 		while (ctr < nrgenes) {
 			String gene = pairs.get(ctr).gene;
 			geneToBin.put(gene, bin);
+			nrgenesperbin[bin]++;
 			ctr++;
 			if (ctr % genesperbin == 0) {
-				bin++;
+				if (bin < nrbins - 1) {
+					bin++;
+				}
 			}
 		}
+		for (int i = 0; i < nrbins; i++) {
+			System.out.println(i + "\t" + nrgenesperbin[i]);
+		}
 		
+		System.out.println("max bin: " + bin);
 		return geneToBin;
 		
 	}
 	
 	public void determineConcordanceBetweenTopGTExAndFullCis(String fullcis, String gtextarball, boolean maponposition, String outputfile, String avgexpressionfile) throws IOException {
+		int nrbins = 10;
+		HashMap<String, Integer> rankedgenes = null;
+		int[] nrgenesperbin = null;
+		if (avgexpressionfile != null) {
+			rankedgenes = loadAndRankGenes(avgexpressionfile, nrbins);
+			System.out.println(rankedgenes.size() + " genes ranked from " + avgexpressionfile);
+		}
 		
 		ArrayList<Pair<String, ArrayList<EQTL>>> topgtexfx = getGTExTopFx(gtextarball,
 				"egenes.txt.gz",
@@ -149,6 +169,7 @@ public class GTExRepl {
 		TextFile tf = new TextFile(fullcis, TextFile.R, 1048576);
 		tf.readLine();
 		String[] elems = tf.readLineElems(TextFile.tab);
+		HashSet<String> significantGenes = new HashSet<String>();
 		while (elems != null) {
 			String snp = Strings.cache(elems[1]);
 			String gene = Strings.cache(elems[4]);
@@ -160,6 +181,10 @@ public class GTExRepl {
 			}
 			refgenes.add(gene);
 			refsnps.add(snp);
+			double fdr = Double.parseDouble(elems[20]);
+			if (fdr < 0.05) {
+				significantGenes.add(gene);
+			}
 			if (toread.contains(query)) {
 				EQTL subqtl = new EQTL();
 				//
@@ -173,7 +198,8 @@ public class GTExRepl {
 					subqtl.setAlleleAssessed(Strings.cache(elems[9]));
 					subqtl.setAlleles(Strings.cache(elems[8]));
 					subqtl.setZscore(Double.parseDouble(elems[10]));
-					subqtl.setFDR(Double.parseDouble(elems[20]));
+					subqtl.setFDR(fdr);
+					
 					eqtlmap.put(Strings.cache(query), subqtl);
 				}
 			}
@@ -191,13 +217,13 @@ public class GTExRepl {
 		System.out.println(eqtlmap.size() + " eqtls read from eqtlgen");
 		
 		// for debug purposes...
-		TextFile tfo = new TextFile(outputfile + "-eqtlgen-genes.txt", TextFile.W);
+		TextFile tfo = new TextFile(outputfile + "-00-eqtlgen-genes.txt", TextFile.W);
 		for (String gene : refgenes) {
 			tfo.writeln(gene);
 		}
 		tfo.close();
 		
-		TextFile tfo2 = new TextFile(outputfile + "-eqtlgen-snps.txt", TextFile.W);
+		TextFile tfo2 = new TextFile(outputfile + "-00-eqtlgen-snps.txt", TextFile.W);
 		for (String snp : refsnps) {
 			tfo2.writeln(snp);
 		}
@@ -214,8 +240,7 @@ public class GTExRepl {
 			}
 		}
 		
-		
-		TextFile tfo3 = new TextFile(outputfile + "-gterx-genesnotfound.txt", TextFile.W);
+		TextFile tfo3 = new TextFile(outputfile + "-00-gtex-genesnotfound.txt", TextFile.W);
 		for (String gene : gtexgenes) {
 			if (!refgenes.contains(gene)) {
 				tfo3.writeln(gene);
@@ -223,7 +248,7 @@ public class GTExRepl {
 		}
 		tfo3.close();
 		
-		TextFile tfo4 = new TextFile(outputfile + "-eqtlgen-snpsnotfound.txt", TextFile.W);
+		TextFile tfo4 = new TextFile(outputfile + "-00-eqtlgen-snpsnotfound.txt", TextFile.W);
 		for (String snp : gtexsnps) {
 			if (!refsnps.contains(snp)) {
 				tfo4.writeln(snp);
@@ -232,7 +257,7 @@ public class GTExRepl {
 		tfo4.close();
 		
 		
-		TextFile notfound = new TextFile(outputfile + "-gtex-eQTLs-notfound.txt", TextFile.W);
+		TextFile notfound = new TextFile(outputfile + "-00-gtex-eQTLs-notfound.txt", TextFile.W);
 		notfound.writeln("snp\tsnpchr\tsnppos\tgene\tsnppresent\tgenepresent");
 		
 		// now check concordance
@@ -254,10 +279,70 @@ public class GTExRepl {
 		
 		out.writeln(header);
 		
+		HashSet<String> noneqtlgenes = null;
+		int[][] noneqtlctr = null;
+		int[][] eqtlgenectrperbin = null;
+		int[][] testedgenesperbin = null;
+		int[] missinggenesperbin = null;
+		int[] significantgenesperbin = new int[nrbins];
+		if (avgexpressionfile != null) {
+			// make sets of genes that are not an eQTL in eqtlgen
+			noneqtlgenes = new HashSet<String>();
+			for (String gene : rankedgenes.keySet()) {
+				if (!significantGenes.contains(gene)) {
+					noneqtlgenes.add(gene);
+				}
+			}
+			
+			// we need to count the number of times a gene is a cis-eQTL in a GTEx tissue, but not eQTLGen
+			noneqtlctr = new int[topgtexfx.size()][nrbins];
+			eqtlgenectrperbin = new int[topgtexfx.size()][nrbins];
+			testedgenesperbin = new int[topgtexfx.size()][nrbins];
+			missinggenesperbin = new int[nrbins];
+			
+			for (String gene : significantGenes) {
+				Integer bin = rankedgenes.get(gene);
+				if (bin != null) {
+					significantgenesperbin[bin]++;
+				}
+			}
+			
+			for (int i = 0; i < nrbins; i++) {
+				missinggenesperbin[i] =
+			}
+		}
+		
+		int tissuectr = 0;
 		for (Pair<String, ArrayList<EQTL>> pair : topgtexfx) {
 			
 			String tissue = pair.getLeft();
 			int nringtex = pair.getRight().size();
+			
+			if (avgexpressionfile != null) {
+				HashSet<String> visitedGenes = new HashSet<String>();
+				HashSet<String> visitedGenes2 = new HashSet<String>();
+				for (EQTL e : pair.getRight()) {
+					String gene = e.getProbe();
+					if (e.getFDR() < 0.05 && !visitedGenes.contains(gene)) {
+						Integer bin = rankedgenes.get(gene);
+						if (bin != null) {
+							eqtlgenectrperbin[tissuectr][bin]++;
+							if (!significantGenes.contains(gene)) {
+								noneqtlctr[tissuectr][bin]++;
+							}
+						}
+						visitedGenes.add(e.getProbe());
+					}
+					
+					if (!visitedGenes2.contains(gene)) {
+						Integer bin = rankedgenes.get(gene);
+						if (bin != null) {
+							testedgenesperbin[tissuectr][bin]++;
+						}
+						visitedGenes2.add(gene);
+					}
+				}
+			}
 			
 			
 			int nrsigingtex = 0;
@@ -285,7 +370,7 @@ public class GTExRepl {
 				}
 			}
 			
-			TextFile nonc = new TextFile(outputfile + tissue + "-nonconcordant.txt.gz", TextFile.W);
+			TextFile nonc = new TextFile(outputfile + "-" + tissue + "-nonconcordant.txt.gz", TextFile.W);
 			for (EQTL e : pair.getRight()) {
 				String query = null;
 				if (maponposition) {
@@ -383,9 +468,49 @@ public class GTExRepl {
 					+ "\t" + concordantsigeqtlgen
 					+ "\t" + concordantsigboth;
 			out.writeln(ln);
+			tissuectr++;
 		}
 		out.close();
 		notfound.close();
+		
+		if (avgexpressionfile != null) {
+			
+			TextFile outbins = new TextFile(outputfile + "-00-eqtlsperbin.txt", TextFile.W);
+			TextFile outbins2 = new TextFile(outputfile + "-00-eqtlsperbin-noteqtlgeneqtl.txt", TextFile.W);
+			header = "Tissue\tNrEQTLs\t";
+			for (int i = 0; i < nrbins; i++) {
+				header += "\tBin" + i;
+			}
+			outbins.writeln(header);
+			outbins2.writeln(header);
+			tissuectr = 0;
+			
+			for (Pair<String, ArrayList<EQTL>> pair : topgtexfx) {
+				
+				String lnout = pair.getLeft();
+				int sum = 0;
+				
+				for (int i = 0; i < nrbins; i++) {
+					sum += eqtlgenectrperbin[tissuectr][i];
+				}
+				
+				String eqtlsout = lnout + "\t" + sum;
+				String noneqtlsout = lnout + "\t" + sum;
+				for (int i = 0; i < nrbins; i++) {
+					double perc = (double) eqtlgenectrperbin[tissuectr][i] / sum;
+					eqtlsout += "\t" + perc;
+					noneqtlsout += "\t" + noneqtlctr[tissuectr][i];
+					
+				}
+				outbins.writeln(eqtlsout);
+				outbins2.writeln(noneqtlsout);
+				tissuectr++;
+			}
+			outbins.close();
+			outbins2.close();
+		}
+		
+		
 	}
 	
 	public void determineLDBetweenTopCisFx(String cisfxfile, String gtextarball, String ensembl, String tabixfile, String samplefilter) throws IOException {
