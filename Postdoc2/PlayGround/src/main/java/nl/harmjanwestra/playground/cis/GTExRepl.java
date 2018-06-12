@@ -72,6 +72,8 @@ public class GTExRepl {
 		int ctr = 0;
 		HashSet<String> refgenes = new HashSet<>();
 		HashSet<String> refsnps = new HashSet<>();
+		
+		
 		TextFile tf = new TextFile(fullcis, TextFile.R, 1048576);
 		tf.readLine();
 		String[] elems = tf.readLineElems(TextFile.tab);
@@ -116,17 +118,59 @@ public class GTExRepl {
 		System.out.println();
 		System.out.println(eqtlmap.size() + " eqtls read from eqtlgen");
 		
-		TextFile notfound = new TextFile(outputfile + "-notfound.txt", TextFile.W);
+		// for debug purposes...
+		TextFile tfo = new TextFile(outputfile + "-eqtlgen-genes.txt", TextFile.W);
+		for (String gene : refgenes) {
+			tfo.writeln(gene);
+		}
+		tfo.close();
+		
+		TextFile tfo2 = new TextFile(outputfile + "-eqtlgen-snps.txt", TextFile.W);
+		for (String snp : refsnps) {
+			tfo2.writeln(snp);
+		}
+		tfo2.close();
+		
+		HashSet<String> gtexgenes = new HashSet<>();
+		HashSet<String> gtexsnps = new HashSet<>();
+		for (Pair<String, ArrayList<EQTL>> pair : topgtexfx) {
+			
+			String tissue = pair.getLeft();
+			for (EQTL e : pair.getRight()) {
+				gtexgenes.add(e.getProbe());
+				gtexsnps.add(e.getRsName());
+			}
+		}
+		
+		
+		TextFile tfo3 = new TextFile(outputfile + "-gterx-genesnotfound.txt", TextFile.W);
+		for (String gene : gtexgenes) {
+			if (!refgenes.contains(gene)) {
+				tfo3.writeln(gene);
+			}
+		}
+		tfo3.close();
+		
+		TextFile tfo4 = new TextFile(outputfile + "-eqtlgen-snpsnotfound.txt", TextFile.W);
+		for (String snp : gtexsnps) {
+			if (!refsnps.contains(snp)) {
+				tfo4.writeln(snp);
+			}
+		}
+		tfo4.close();
+		
+		
+		TextFile notfound = new TextFile(outputfile + "-gtex-eQTLs-notfound.txt", TextFile.W);
 		notfound.writeln("snp\tsnpchr\tsnppos\tgene\tsnppresent\tgenepresent");
 		
 		// now check concordance
 		TextFile out = new TextFile(outputfile, TextFile.W);
 		String header = "tissue" +
 				"\tnrInGTEx" +
+				"\tnrSignificantGTEx" +
 				"\tnrGTExSNPsInEQTLGen" +
 				"\tnrGTExGenesInEQTLGen" +
 				"\tnrGTExeQTLsPossibleInEQTLGen" +
-				"\tnrSignificantGTEx" +
 				"\tShared" +
 				"\tSharedSignificantInGTEx" +
 				"\tSharedSignificantInEQTLGen" +
@@ -158,7 +202,7 @@ public class GTExRepl {
 			
 			int nrpossiblydetectedineqtlgen = 0;
 			for (EQTL e : pair.getRight()) {
-				if (refsnps.contains(e.getRsName()) || refgenes.contains(e.getProbe())) {
+				if (refsnps.contains(e.getRsName()) && refgenes.contains(e.getProbe())) {
 					nrpossiblydetectedineqtlgen++;
 				}
 				if (refsnps.contains(e.getRsName())) {
@@ -168,6 +212,7 @@ public class GTExRepl {
 					nrsharedgenes++;
 				}
 			}
+			
 			TextFile nonc = new TextFile(outputfile + tissue + "-nonconcordant.txt.gz", TextFile.W);
 			for (EQTL e : pair.getRight()) {
 				String query = null;
@@ -254,6 +299,9 @@ public class GTExRepl {
 			String ln = tissue
 					+ "\t" + nringtex
 					+ "\t" + nrsigingtex
+					+ "\t" + nrsharedsnps
+					+ "\t" + nrsharedgenes
+					+ "\t" + nrpossiblydetectedineqtlgen
 					+ "\t" + shared
 					+ "\t" + sharedsiggtex
 					+ "\t" + sharedsigeqtlgen
