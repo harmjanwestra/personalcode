@@ -47,7 +47,78 @@ public class GTExRepl {
 		
 	}
 	
-	public void determineConcordanceBetweenTopGTExAndFullCis(String fullcis, String gtextarball, boolean maponposition, String outputfile) throws IOException {
+	class GenePair implements Comparable<GenePair> {
+		String gene;
+		Double exp;
+		
+		public GenePair(String gene, Double exp) {
+			this.gene = gene;
+			this.exp = exp;
+		}
+		
+		@Override
+		public boolean equals(Object o) {
+			if (this == o) return true;
+			if (o == null || getClass() != o.getClass()) return false;
+			
+			GenePair genePair = (GenePair) o;
+			
+			return exp.equals(genePair.exp);
+		}
+		
+		@Override
+		public int hashCode() {
+			return exp.hashCode();
+		}
+		
+		
+		@Override
+		public int compareTo(GenePair o) {
+			if (this.equals(o)) {
+				return 0;
+			} else if (this.exp > o.exp) {
+				return 1;
+			} else {
+				return -1;
+			}
+		}
+	}
+	
+	public HashMap<String, Integer> loadAndRankGenes(String expfile, int nrbins) throws IOException {
+		HashMap<String, Integer> geneToBin = new HashMap<String, Integer>();
+		TextFile tf = new TextFile(expfile, TextFile.R);
+		tf.readLine(); // header;
+		String[] elems = tf.readLineElems(TextFile.tab);
+		ArrayList<GenePair> pairs = new ArrayList<>();
+		while (elems != null) {
+			String gene = elems[0];
+			Double exp = Double.parseDouble(elems[1]);
+			pairs.add(new GenePair(gene, exp));
+			elems = tf.readLineElems(TextFile.tab);
+		}
+		tf.close();
+		
+		Collections.sort(pairs);
+		
+		int nrgenes = pairs.size();
+		int genesperbin = pairs.size() / nrbins;
+		int ctr = 0;
+		int bin = 0;
+		while (ctr < nrgenes) {
+			String gene = pairs.get(ctr).gene;
+			geneToBin.put(gene, bin);
+			ctr++;
+			if (ctr % genesperbin == 0) {
+				bin++;
+			}
+		}
+		
+		return geneToBin;
+		
+	}
+	
+	public void determineConcordanceBetweenTopGTExAndFullCis(String fullcis, String gtextarball, boolean maponposition, String outputfile, String avgexpressionfile) throws IOException {
+		
 		ArrayList<Pair<String, ArrayList<EQTL>>> topgtexfx = getGTExTopFx(gtextarball,
 				"egenes.txt.gz",
 				null,
@@ -67,6 +138,7 @@ public class GTExRepl {
 				
 			}
 		}
+		
 		System.out.println(toread.size() + " total snp/gene combos to read in");
 		HashMap<String, EQTL> eqtlmap = new HashMap<>();
 		int ctr = 0;
