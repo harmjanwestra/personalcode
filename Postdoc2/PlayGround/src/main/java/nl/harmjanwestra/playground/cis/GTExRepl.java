@@ -1,22 +1,32 @@
 package nl.harmjanwestra.playground.cis;
 
+import eqtlmappingpipeline.binarymeta.meta.graphics.ZScorePlot;
+import eqtlmappingpipeline.metaqtl3.FDR;
+import eqtlmappingpipeline.metaqtl3.graphics.EQTLDotPlot;
 import nl.harmjanwestra.utilities.annotation.gtf.GTFAnnotation;
 import nl.harmjanwestra.utilities.enums.Chromosome;
 import nl.harmjanwestra.utilities.features.FeatureComparator;
 import nl.harmjanwestra.utilities.features.Gene;
 import nl.harmjanwestra.utilities.features.SNPFeature;
+import nl.harmjanwestra.utilities.graphics.Grid;
+import nl.harmjanwestra.utilities.graphics.Range;
+import nl.harmjanwestra.utilities.graphics.panels.ScatterplotPanel;
 import nl.harmjanwestra.utilities.math.DetermineLD;
 import nl.harmjanwestra.utilities.vcf.VCFTabix;
 import nl.harmjanwestra.utilities.vcf.VCFVariant;
+import org.apache.commons.io.comparator.NameFileComparator;
+import org.apache.hadoop.hive.metastore.api.Decimal;
 import umcg.genetica.containers.Pair;
 import umcg.genetica.io.text.TextFile;
 import umcg.genetica.io.trityper.EQTL;
 import umcg.genetica.io.trityper.QTLTextFile;
 import umcg.genetica.io.trityper.util.BaseAnnot;
 import umcg.genetica.text.Strings;
+import umcg.genetica.util.Primitives;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.*;
 
 public class GTExRepl {
@@ -27,127 +37,43 @@ public class GTExRepl {
 //		String output = "D:\\Sync\\SyncThing\\Postdoc2\\2018-05-eQTLMeta\\data\\2018-06-05-cis-gtexrepl\\ConcordanceBetweenTopGTExAndEQTLFullCis.txt";
 		boolean maponposition = true;
 		GTExRepl r = new GTExRepl();
-		
-		args = new String[]{
-				"D:\\Sync\\SyncThing\\Postdoc2\\2018-05-eQTLMeta\\data\\2018-05-22-assoc\\cis\\2018-01-31-cis-eQTLsFDR0.05-ProbeLevel-CohortInfoRemoved.txt.gz",
-				"D:\\Sync\\SyncThing\\Data\\eQTLs\\GTEx\\GTEx_Analysis_v7_eQTL\\",
-				"D:\\Sync\\SyncThing\\Postdoc2\\2018-05-eQTLMeta\\data\\2018-06-05-cis-gtexrepl\\test\\output-withannot.txt",
-				"D:\\Sync\\SyncThing\\Postdoc2\\2018-05-eQTLMeta\\data\\2018-06-12-biosstats\\LL_ENSG_ENSEMBL71_expression_statistics_raw.txt",
-				"D:\\Sync\\SyncThing\\Data\\Ref\\Ensembl\\Homo_sapiens.GRCh37.71.gtf.gz"
-		};
-		
+
+//		args = new String[]{
+//				"D:\\Sync\\SyncThing\\Postdoc2\\2018-05-eQTLMeta\\data\\2018-05-22-assoc\\cis\\2018-01-31-cis-eQTLsFDR0.05-ProbeLevel-CohortInfoRemoved.txt.gz",
+//				"D:\\Sync\\SyncThing\\Data\\eQTLs\\GTEx\\GTEx_Analysis_v7_eQTL\\",
+//				"D:\\Sync\\SyncThing\\Postdoc2\\2018-05-eQTLMeta\\data\\2018-06-05-cis-gtexrepl\\test\\output-withannot.txt",
+//				"D:\\Sync\\SyncThing\\Postdoc2\\2018-05-eQTLMeta\\data\\2018-06-12-biosstats\\BIOS_expression_summary_20180515.txt",
+//				"D:\\Sync\\SyncThing\\Data\\Ref\\Ensembl\\Homo_sapiens.GRCh37.71.gtf.gz"
+//		};
+//
 		try {
 			if (args.length < 3) {
 				System.out.println("Usage: fullcis gtexloc output [avgexp] [gtf]");
 			} else {
 				String avgexp = null;
 				String gtf = null;
+				boolean includeblood = true;
+				boolean usebonferroni = true;
 				if (args.length > 3) {
 					avgexp = args[3];
 					gtf = args[4];
 				}
-				r.determineConcordanceBetweenTopGTExAndFullCis(args[0], args[1], maponposition, args[2], avgexp, gtf);
+				r.determineConcordanceBetweenTopGTExAndFullCis(args[0], args[1], maponposition, args[2], includeblood, usebonferroni);
+//				r.signficantGenesPerBin(args[0], args[1], maponposition, args[2], avgexp, gtf);
 			}
 			
-		} catch (IOException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		
 	}
 	
-	class GenePair implements Comparable<GenePair> {
-		String gene;
-		Double exp;
-		
-		public GenePair(String gene, Double exp) {
-			this.gene = gene;
-			this.exp = exp;
-		}
-		
-		@Override
-		public boolean equals(Object o) {
-			if (this == o) return true;
-			if (o == null || getClass() != o.getClass()) return false;
-			
-			GenePair genePair = (GenePair) o;
-			
-			return exp.equals(genePair.exp);
-		}
-		
-		@Override
-		public int hashCode() {
-			return exp.hashCode();
-		}
-		
-		
-		@Override
-		public int compareTo(GenePair o) {
-			if (this.equals(o)) {
-				return 0;
-			} else if (this.exp > o.exp) {
-				return 1;
-			} else {
-				return -1;
-			}
-		}
-	}
 	
-	public Pair<int[], HashMap<String, Integer>> loadAndRankGenes(String expfile, int nrbins, boolean onlyautosomal, String gtf) throws IOException {
-		GTFAnnotation f = new GTFAnnotation(gtf);
-		
-		HashMap<String, Integer> geneToBin = new HashMap<String, Integer>();
-		TextFile tf = new TextFile(expfile, TextFile.R);
-		tf.readLine(); // header;
-		String[] elems = tf.readLineElems(TextFile.tab);
-		ArrayList<GenePair> pairs = new ArrayList<>();
-		while (elems != null) {
-			String gene = elems[0];
-			Double exp = Double.parseDouble(elems[2]);
-			
-			Gene geneObj = f.getStrToGene().get(gene);
-			
-			if (geneObj == null) {
-				System.out.println("Could not find gene: " + gene);
-			} else {
-				if (onlyautosomal && geneObj.getChromosome().isAutosome()) {
-					pairs.add(new GenePair(gene, exp));
-				}
-			}
-			elems = tf.readLineElems(TextFile.tab);
-		}
-		tf.close();
-		
-		System.out.println("File has " + pairs.size() + " genes, all autosome: " + onlyautosomal);
-		
-		Collections.sort(pairs);
-		
-		int nrgenes = pairs.size();
-		int genesperbin = pairs.size() / nrbins;
-		int ctr = 0;
-		int bin = 0;
-		int[] nrgenesperbin = new int[nrbins];
-		while (ctr < nrgenes) {
-			String gene = pairs.get(ctr).gene;
-			geneToBin.put(gene, bin);
-			nrgenesperbin[bin]++;
-			ctr++;
-			if (ctr % genesperbin == 0) {
-				if (bin < nrbins - 1) {
-					bin++;
-				}
-			}
-		}
-		for (int i = 0; i < nrbins; i++) {
-			System.out.println(i + "\t" + nrgenesperbin[i]);
-		}
-		
-		System.out.println("max bin: " + bin);
-		return new Pair<>(nrgenesperbin, geneToBin);
-		
-	}
-	
-	public void determineConcordanceBetweenTopGTExAndFullCis(String fullcis, String gtextarball, boolean maponposition, String outputfile, String avgexpressionfile, String gtf) throws IOException {
+	public void signficantGenesPerBin(String fullcis, String gtextarball, boolean maponposition, String outputfile, String avgexpressionfile, String gtf, boolean includeblood) throws IOException {
 		int nrbins = 10;
+		boolean usebonferroni = true;
+//		Double customthreshold = 1.8e-5;
+		Double customthreshold = null;
 		HashMap<String, Integer> rankedgenes = null;
 		int[] nrgenesperbin = null;
 		if (avgexpressionfile != null) {
@@ -160,7 +86,152 @@ public class GTExRepl {
 		ArrayList<Pair<String, ArrayList<EQTL>>> topgtexfx = getGTExTopFx(gtextarball,
 				"egenes.txt.gz",
 				null,
-				false);
+				false,
+				includeblood);
+		
+		
+		TextFile tf = new TextFile(fullcis, TextFile.R, 10485760);
+		tf.readLine();
+		String[] elems = tf.readLineElems(TextFile.tab);
+		HashSet<String> significantGenes = new HashSet<String>();
+		
+		int nrsig = 0;
+		int ctr = 0;
+		while (elems != null) {
+			String snp = (elems[1]);
+			String gene = (elems[4]);
+			String query = null;
+			
+			double fdr = Double.parseDouble(elems[20]);
+			if (fdr < 0.05) {
+				nrsig++;
+				significantGenes.add(gene);
+			}
+			
+			
+			if (ctr % 100000 == 0) {
+				System.out.print("\r" + ctr + "\tqtls processed. " + significantGenes.size() + " significant genes found so far");
+			}
+			ctr++;
+			
+			elems = tf.readLineElems(TextFile.tab);
+		}
+		tf.close();
+		System.out.println();
+		
+		HashMap<Integer, HashSet<String>> genesWithoutEQTLInEQTLGEN = new HashMap<>();
+		for (String gene : rankedgenes.keySet()) {
+			Integer bin = rankedgenes.get(gene);
+			if (!significantGenes.contains(gene)) {
+				HashSet<String> genes = genesWithoutEQTLInEQTLGEN.get(bin);
+				if (genes == null) {
+					genes = new HashSet<>();
+				}
+				genes.add(gene);
+				genesWithoutEQTLInEQTLGEN.put(bin, genes);
+			}
+		}
+		
+		
+		HashMap<Integer, HashSet<String>> genesWithEQTLInTissue = new HashMap<>();
+		
+		int tctr = 0;
+		
+		ArrayList<HashMap<String, EQTL>> geneToEQTL = new ArrayList<>();
+		
+		for (Pair<String, ArrayList<EQTL>> pair : topgtexfx) {
+			String tissue = pair.getLeft();
+			
+			HashMap<String, EQTL> emap = new HashMap<>();
+			HashSet<String> bloodGenesUniqueToTissue = new HashSet<>();
+			for (EQTL e : pair.getRight()) {
+				String gene = e.getProbe();
+				Integer bin = rankedgenes.get(gene);
+				boolean significant = false;
+				if (customthreshold != null) {
+					if (e.getPvalue() < customthreshold) {
+						significant = true;
+					}
+				} else if (usebonferroni) {
+					double threshold = 0.05 / pair.getRight().size();
+					if (e.getPvalue() < threshold) {
+						significant = true;
+					}
+				} else {
+					if (e.getFDR() < 0.05) {
+						significant = true;
+					}
+				}
+				
+				if (significant && bin != null && !significantGenes.contains(gene)) {
+					HashSet<String> genes = genesWithEQTLInTissue.get(bin);
+					if (genes == null) {
+						genes = new HashSet<>();
+					}
+					genes.add(gene);
+					bloodGenesUniqueToTissue.add(gene);
+					genesWithEQTLInTissue.put(bin, genes);
+					emap.put(gene, e);
+					
+				}
+			}
+			geneToEQTL.add(emap);
+			tctr++;
+			
+			
+		}
+		
+		for (int bin = 0; bin < nrbins; bin++) {
+			HashSet<String> genes = genesWithoutEQTLInEQTLGEN.get(bin);
+			HashSet<String> gtexgenes = genesWithEQTLInTissue.get(bin);
+			
+			HashSet<String> shared = new HashSet<>();
+			for (String gene : genes) {
+				if (gtexgenes.contains(gene)) {
+					shared.add(gene);
+				}
+			}
+//			System.out.println(bin + "\t" + genes.size() + "\t" + shared.size());
+//
+//			if (bin >= 5) {
+//				for (String gene : genes) {
+//					if (!shared.contains(gene)) {
+//						System.out.println(bin + "\t" + gene);
+//					}
+//				}
+//			}
+			
+			if (bin >= 5) {
+//				System.out.println();
+				// print the eQTLs in sign. tissues
+				for (String gene : genes) {
+					ArrayList<String> tissues = new ArrayList<>();
+					boolean print = false;
+					for (int t = 0; t < topgtexfx.size(); t++) {
+						HashMap<String, EQTL> emap = geneToEQTL.get(t);
+						EQTL e = emap.get(gene);
+						
+						if (e != null) {
+							tissues.add(topgtexfx.get(t).getLeft());
+							print = true;
+//							System.out.println(gene + "\t" + topgtexfx.get(t).getLeft() + "\t" + e.getRsName() + "\t" + e.getPvalue() + "\t" + e.getFDR());
+						}
+					}
+					if (print) {
+						System.out.println(bin + "\t" + gene + "\t" + Strings.concat(tissues, Strings.semicolon));
+					}
+				}
+			}
+		}
+		
+	}
+	
+	public void determineConcordanceBetweenTopGTExAndFullCis(String fullcis, String gtextarball, boolean maponposition, String outputfile, boolean includeblood, boolean usebonferroni) throws Exception {
+		ArrayList<Pair<String, ArrayList<EQTL>>> topgtexfx = getGTExTopFx(gtextarball,
+				"egenes.txt.gz",
+				null,
+				false,
+				includeblood);
 		
 		// make a list of snp/gene combos to read from eqtlgen
 		HashSet<String> toread = new HashSet<>();
@@ -176,6 +247,7 @@ public class GTExRepl {
 				
 			}
 		}
+		
 		
 		System.out.println(toread.size() + " total snp/gene combos to read in");
 		HashMap<String, EQTL> eqtlmap = new HashMap<>();
@@ -193,7 +265,6 @@ public class GTExRepl {
 		while (elems != null) {
 			String snp = (elems[1]);
 			String gene = (elems[4]);
-			gene = gene.replaceAll("\\p{C}", "");
 			String query = null;
 			if (maponposition) {
 				query = (elems[2] + "_" + elems[3] + "_" + elems[4]);
@@ -207,7 +278,6 @@ public class GTExRepl {
 			double fdr = Double.parseDouble(elems[20]);
 			if (fdr < 0.05) {
 				nrsig++;
-				
 				significantGenes.add(gene);
 			}
 			
@@ -225,46 +295,29 @@ public class GTExRepl {
 					subqtl.setAlleles((elems[8]));
 					subqtl.setZscore(Double.parseDouble(elems[10]));
 					subqtl.setFDR(fdr);
-					
 					eqtlmap.put((query), subqtl);
 				}
 			}
-			if (ctr % 100000 == 0) {
+			if (ctr % 1000000 == 0) {
 				System.out.print("\r" + ctr + "\tqtls processed. " + eqtlmap.size() + " combos found so far");
 			}
 			ctr++;
-//			if (eqtlmap.size() >= 3000) {
-//				break;
-//			}
-			
 			elems = tf.readLineElems(TextFile.tab);
 		}
 		tf.close();
 		System.out.println();
 		System.out.println(eqtlmap.size() + " eqtls read from eqtlgen");
 		
-		// for debug purposes...
-		TextFile tfo = new TextFile(outputfile + "-00-eqtlgen-genes.txt", TextFile.W);
-		for (String gene : refgenes) {
-			tfo.writeln(gene);
-		}
-		tfo.close();
-		
-		TextFile tfo2 = new TextFile(outputfile + "-00-eqtlgen-snps.txt", TextFile.W);
-		for (String snp : refsnps) {
-			tfo2.writeln(snp);
-		}
-		tfo2.close();
-		
 		HashSet<String> gtexgenes = new HashSet<>();
 		HashSet<String> significantgtexgenes = new HashSet<>();
 		HashSet<String> gtexsnps = new HashSet<>();
 		
 		for (Pair<String, ArrayList<EQTL>> pair : topgtexfx) {
-			String tissue = pair.getLeft();
+			double bonferroni = 0.05 / pair.getRight().size();
 			for (EQTL e : pair.getRight()) {
-				if (e.getFDR() < 0.05) {
-					significantGenes.add(e.getProbe());
+				
+				if ((usebonferroni && e.getPvalue() < bonferroni) || (!usebonferroni && e.getFDR() < 0.05)) {
+					significantgtexgenes.add(e.getProbe());
 				}
 				gtexgenes.add(e.getProbe());
 				gtexsnps.add(e.getRsName());
@@ -310,89 +363,26 @@ public class GTExRepl {
 		
 		out.writeln(header);
 		
-		HashSet<String> noneqtlgenes = null;
-		int[][] noneqtlctr = null;
-		int[][] eqtlgenectrperbin = null;
-		int[][] testedgenesperbin = null;
-		int[][] testedmissinggenesperbin = null;
-		int[] missinggenesperbin = null;
-		int[] significantgenesperbin = new int[nrbins];
-		if (avgexpressionfile != null) {
-			// make sets of genes that are not an eQTL in eqtlgen
-			noneqtlgenes = new HashSet<String>();
-			for (String gene : rankedgenes.keySet()) {
-				if (!significantGenes.contains(gene)) {
-					noneqtlgenes.add(gene);
-				}
-			}
-			
-			// we need to count the number of times a gene is a cis-eQTL in a GTEx tissue, but not eQTLGen
-			noneqtlctr = new int[topgtexfx.size()][nrbins];
-			eqtlgenectrperbin = new int[topgtexfx.size()][nrbins];
-			testedgenesperbin = new int[topgtexfx.size()][nrbins];
-			testedmissinggenesperbin = new int[topgtexfx.size()][nrbins];
-			
-			missinggenesperbin = new int[nrbins];
-			
-			for (String gene : significantGenes) {
-				Integer bin = rankedgenes.get(gene);
-				if (bin != null) {
-					significantgenesperbin[bin]++;
-				}
-			}
-			
-			for (int i = 0; i < nrbins; i++) {
-				missinggenesperbin[i] = nrgenesperbin[i] - significantgenesperbin[i];
-			}
-			
-			TextFile outnever = new TextFile(outputfile + "-00-neversignificantgenes.txt", TextFile.W);
-			System.out.println("Gene\tBin");
-			for (String gene : noneqtlgenes) {
-				if (!significantgtexgenes.contains(gene)) {
-					Integer bin = rankedgenes.get(gene);
-					if (bin != null) {
-						outnever.writeln(gene + "\t" + bin);
-					}
-				}
-			}
-			outnever.close();
-		}
-		
 		int tissuectr = 0;
+		
+		String[] datasetnames = new String[topgtexfx.size() + 1];
+		datasetnames[datasetnames.length - 1] = "eQTLGen";
+		
+		Range range = new Range(-100, -50, 100, 50);
+		
+		Grid grid = new Grid(300, 300, 10, 5, 100, 100);
+		Grid gridsiggtex = new Grid(300, 300, 10, 5, 100, 100);
+		Grid gridsigeqtlgen = new Grid(300, 300, 10, 5, 100, 100);
+		Grid gridsigboth = new Grid(300, 300, 10, 5, 100, 100);
+		
+		
+		tissuectr = 0;
 		for (Pair<String, ArrayList<EQTL>> pair : topgtexfx) {
 			
 			String tissue = pair.getLeft();
+			String nicetissue = tissue.replaceAll("\\.v7\\.egenes\\.txt\\.gz", "");
+			datasetnames[tissuectr] = nicetissue;
 			int nringtex = pair.getRight().size();
-			
-			if (avgexpressionfile != null) {
-				HashSet<String> visitedGenes = new HashSet<String>();
-				HashSet<String> visitedGenes2 = new HashSet<String>();
-				for (EQTL e : pair.getRight()) {
-					String gene = e.getProbe();
-					if (e.getFDR() < 0.05 && !visitedGenes.contains(gene)) {
-						Integer bin = rankedgenes.get(gene);
-						if (bin != null) {
-							eqtlgenectrperbin[tissuectr][bin]++;
-							if (!significantGenes.contains(gene)) {
-								noneqtlctr[tissuectr][bin]++;
-							}
-						}
-						visitedGenes.add(e.getProbe());
-					}
-					
-					if (!visitedGenes2.contains(gene)) {
-						Integer bin = rankedgenes.get(gene);
-						if (bin != null) {
-							testedgenesperbin[tissuectr][bin]++;
-						}
-						if (noneqtlgenes.contains(gene)) {
-							testedmissinggenesperbin[tissuectr][bin]++;
-						}
-						visitedGenes2.add(gene);
-					}
-				}
-			}
-			
 			
 			int nrsigingtex = 0;
 			int shared = 0;
@@ -419,7 +409,21 @@ public class GTExRepl {
 				}
 			}
 			
-			TextFile nonc = new TextFile(outputfile + "-" + tissue + "-nonconcordant.txt.gz", TextFile.W);
+			double bonferroni = 0.05 / pair.getRight().size();
+			
+			TextFile zscoreout = new TextFile(outputfile + "-" + tissue + "-zcomp.txt.gz", TextFile.W);
+			String head = "Gene\tRsId\tRefAlleles\tRefAssessed\tRefZ\tRefFDR\tTestAlleles\tTestAssessed\tTestZ\tTestFDR\tConcordant";
+			zscoreout.writeln(head);
+			
+			ArrayList<Double> xval = new ArrayList<>();
+			ArrayList<Double> yval = new ArrayList<>();
+			ArrayList<Double> xvalsiggtex = new ArrayList<>();
+			ArrayList<Double> yvalsiggtex = new ArrayList<>();
+			ArrayList<Double> xvalsigeqtlgen = new ArrayList<>();
+			ArrayList<Double> yvalsigeqtlgen = new ArrayList<>();
+			ArrayList<Double> xvalsigeboth = new ArrayList<>();
+			ArrayList<Double> yvalsigeboth = new ArrayList<>();
+			
 			for (EQTL e : pair.getRight()) {
 				String query = null;
 				if (maponposition) {
@@ -430,7 +434,9 @@ public class GTExRepl {
 				
 				
 				EQTL ref = eqtlmap.get(query);
-				if (e.getFDR() < 0.05) {
+				boolean significantingtex = false;
+				if ((usebonferroni && e.getPvalue() < bonferroni) || (!usebonferroni && e.getFDR() < 0.05)) {
+					significantingtex = true;
 					nrsigingtex++;
 				}
 				if (ref == null) {
@@ -438,18 +444,6 @@ public class GTExRepl {
 					notfound.writeln(notfoundstr);
 				} else {
 					
-					
-					shared++;
-					if (e.getFDR() < 0.05) {
-						sharedsiggtex++;
-					}
-					// check concordance
-					if (ref.getFDR() < 0.05) {
-						sharedsigeqtlgen++;
-						if (e.getFDR() < 0.05) {
-							sharedsigboth++;
-						}
-					}
 					
 					Boolean flipalleles = BaseAnnot.flipalleles(ref.getAlleles(), ref.getAlleleAssessed(), e.getAlleles(), e.getAlleleAssessed());
 					boolean concordance = false;
@@ -464,44 +458,63 @@ public class GTExRepl {
 						}
 					}
 					
-					String outln = e.getProbe()
-							+ "\t" + e.getRsName()
-							+ "\t" + e.getRsChr()
-							+ "\t" + e.getRsChrPos()
-							+ "\t" + e.getAlleles()
-							+ "\t" + e.getAlleleAssessed()
-							+ "\t" + z
-							+ "\t" + e.getFDR()
-							+ "\t" + ref.getRsName()
-							+ "\t" + ref.getRsChr()
-							+ "\t" + ref.getRsChrPos()
-							+ "\t" + ref.getAlleles()
-							+ "\t" + ref.getAlleleAssessed()
-							+ "\t" + ref.getZscore()
-							+ "\t" + ref.getFDR();
+					
+					xval.add(ref.getZscore());
+					yval.add(e.getZscore());
+					
+					shared++;
+					if (significantingtex) {
+						sharedsiggtex++;
+						xvalsiggtex.add(ref.getZscore());
+						yvalsiggtex.add(e.getZscore());
+					}
+					
+					// check concordance
+					boolean significantinref = false;
+					if (ref.getFDR() < 0.05) {
+						significantinref = true;
+						xvalsigeqtlgen.add(ref.getZscore());
+						yvalsigeqtlgen.add(e.getZscore());
+						
+						sharedsigeqtlgen++;
+						if (significantingtex) {
+							sharedsigboth++;
+							xvalsigeboth.add(ref.getZscore());
+							yvalsigeboth.add(e.getZscore());
+						}
+					}
 					
 					if (concordance) {
 //						System.out.println(outln);
 						concordant++;
-						if (e.getFDR() < 0.05) {
+						if (significantingtex) {
 							concordantsiggtex++;
-							if (ref.getFDR() < 0.05) {
+							if (significantinref) {
 								concordantsigboth++;
 							}
 						}
-						if (ref.getFDR() < 0.05) {
+						if (significantinref) {
 							concordantsigeqtlgen++;
 						}
-					} else {
-						
-						nonc.writeln(outln);
-						
 					}
 					
+					String outln = e.getProbe()
+							+ "\t" + e.getRsName()
+							+ "\t" + ref.getRsName()
+							+ "\t" + ref.getAlleles()
+							+ "\t" + ref.getAlleleAssessed()
+							+ "\t" + ref.getZscore()
+							+ "\t" + ref.getFDR()
+							+ "\t" + e.getAlleles()
+							+ "\t" + e.getAlleleAssessed()
+							+ "\t" + z
+							+ "\t" + e.getFDR()
+							+ "\t" + concordance;
+					zscoreout.writeln(outln);
 				}
-				
 			}
-			nonc.close();
+			zscoreout.close();
+			
 			String ln = tissue
 					+ "\t" + nringtex
 					+ "\t" + nrsigingtex
@@ -518,88 +531,103 @@ public class GTExRepl {
 					+ "\t" + concordantsigboth;
 			out.writeln(ln);
 			tissuectr++;
+			
+			double xmax = Primitives.max(Primitives.toPrimitiveArr(xval));
+			double xmin = Primitives.min(Primitives.toPrimitiveArr(xval));
+			System.out.println("Max X: " + xmax);
+			System.out.println("Min X: " + xmin);
+			double ymax = Primitives.max(Primitives.toPrimitiveArr(yval));
+			double ymin = Primitives.min(Primitives.toPrimitiveArr(yval));
+			System.out.println("Max Y: " + ymax);
+			System.out.println("Min Y: " + ymin);
+			System.out.println();
+			xval = clip(xval, range.getMinX(), range.getMaxX());
+			yval = clip(yval, range.getMinY(), range.getMaxY());
+			xvalsigeboth = clip(xvalsigeboth, range.getMinX(), range.getMaxX());
+			yvalsigeboth = clip(yvalsigeboth, range.getMinY(), range.getMaxY());
+			xvalsiggtex = clip(xvalsiggtex, range.getMinX(), range.getMaxX());
+			yvalsiggtex = clip(yvalsiggtex, range.getMinY(), range.getMaxY());
+			xvalsigeqtlgen = clip(xvalsigeqtlgen, range.getMinX(), range.getMaxX());
+			yvalsigeqtlgen = clip(yvalsigeqtlgen, range.getMinY(), range.getMaxY());
+			
+			
+			ScatterplotPanel p = new ScatterplotPanel(1, 1);
+			p.setData(Primitives.toPrimitiveArr(xval), Primitives.toPrimitiveArr(yval));
+			
+			p.setDataRange(range);
+			p.setPlotElems(true, false);
+			p.setAlpha(0.2f);
+			DecimalFormat df = new DecimalFormat("##.##");
+			String percconcordant = df.format(((double) concordant / shared) * 100);
+			String psigtitle = "Shared: " + shared + "; concordant: " + concordant + " (" + percconcordant + "%)";
+			p.setTitle(psigtitle);
+			p.setLabels("eQTLGen", nicetissue);
+			
+			grid.addPanel(p);
+			
+			ScatterplotPanel psigboth = new ScatterplotPanel(1, 1);
+			percconcordant = df.format(((double) concordantsigboth / sharedsigboth) * 100);
+			psigtitle = "Shared: " + sharedsigboth + "; concordant: " + concordantsigboth + " (" + percconcordant + "%)";
+			psigboth.setTitle(psigtitle);
+			psigboth.setData(Primitives.toPrimitiveArr(xvalsigeboth), Primitives.toPrimitiveArr(yvalsigeboth));
+			psigboth.setDataRange(range);
+			psigboth.setPlotElems(true, false);
+			psigboth.setAlpha(0.2f);
+			psigboth.setLabels("eQTLGen", nicetissue);
+			gridsigboth.addPanel(psigboth);
+			
+			ScatterplotPanel psiggtex = new ScatterplotPanel(1, 1);
+			percconcordant = df.format(((double) concordantsiggtex / sharedsiggtex) * 100);
+			psigtitle = "Shared: " + sharedsigboth + "; concordant: " + concordantsigboth + " (" + percconcordant + "%)";
+			psiggtex.setTitle(psigtitle);
+			psiggtex.setData(Primitives.toPrimitiveArr(xvalsiggtex), Primitives.toPrimitiveArr(yvalsiggtex));
+			psiggtex.setDataRange(range);
+			psiggtex.setPlotElems(true, false);
+			psiggtex.setAlpha(0.2f);
+			psiggtex.setLabels("eQTLGen", nicetissue);
+			gridsiggtex.addPanel(psiggtex);
+			
+			ScatterplotPanel psigeqtlgen = new ScatterplotPanel(1, 1);
+			percconcordant = df.format(((double) concordantsigeqtlgen / sharedsigeqtlgen) * 100);
+			psigtitle = "Shared: " + sharedsigboth + "; concordant: " + concordantsigboth + " (" + percconcordant + "%)";
+			psigeqtlgen.setTitle(psigtitle);
+			psigeqtlgen.setData(Primitives.toPrimitiveArr(xvalsigeqtlgen), Primitives.toPrimitiveArr(yvalsigeqtlgen));
+			psigeqtlgen.setDataRange(range);
+			psigeqtlgen.setPlotElems(true, false);
+			psigeqtlgen.setAlpha(0.2f);
+			psigeqtlgen.setLabels("eQTLGen", nicetissue);
+			gridsigeqtlgen.addPanel(psigeqtlgen);
 		}
 		out.close();
 		notfound.close();
 		
-		if (avgexpressionfile != null) {
-			
-			
-			TextFile outbinsperc = new TextFile(outputfile + "-00-eqtlsperbin-perc.txt", TextFile.W);
-			TextFile outbinsnoneqtlperc = new TextFile(outputfile + "-00-eqtlsperbin-noteqtlgeneqtl-perc.txt", TextFile.W);
-			TextFile outbinsct = new TextFile(outputfile + "-00-eqtlsperbin-ct.txt", TextFile.W);
-			TextFile outbinsnonct = new TextFile(outputfile + "-00-eqtlsperbin-noteqtlgeneqtl-ct.txt", TextFile.W);
-			header = "Tissue\tNrEQTLs";
-			for (int i = 0; i < nrbins; i++) {
-				header += "\tBin" + i;
-			}
-			
-			outbinsperc.writeln(header);
-			outbinsnoneqtlperc.writeln(header);
-			outbinsct.writeln(header);
-			outbinsnonct.writeln(header);
-			
-			String header1 = "eQTLsPerBin\t-";
-			String header2 = "eQTLsPerBin\t-";
-			for (int i = 0; i < nrbins; i++) {
-				header1 += "\t" + nrgenesperbin[i];
-				header2 += "\t" + missinggenesperbin[i];
-			}
-			
-			outbinsperc.writeln(header1);
-			outbinsnoneqtlperc.writeln(header2);
-			outbinsct.writeln(header1);
-			outbinsnonct.writeln(header2);
-			
-			String lnout1 = "eqtlgen\t" + significantGenes.size();
-			for (int bin = 0; bin < nrbins; bin++) {
-				lnout1 += "\t" + significantgenesperbin[bin];
-			}
-			outbinsperc.writeln(lnout1);
-			outbinsct.writeln(lnout1);
-			
-			tissuectr = 0;
-			
-			for (Pair<String, ArrayList<EQTL>> pair : topgtexfx) {
-				
-				String lnout = pair.getLeft();
-				int sum = 0;
-				
-				for (int i = 0; i < nrbins; i++) {
-					sum += eqtlgenectrperbin[tissuectr][i];
-				}
-				
-				String eqtlsoutperc = lnout + "\t" + sum;
-				String noneqtlsoutperc = lnout + "\t" + sum;
-				
-				String eqtlsoutct = lnout + "\t" + sum;
-				String noneqtlsoutct = lnout + "\t" + sum;
-				for (int i = 0; i < nrbins; i++) {
-					double perc = (double) eqtlgenectrperbin[tissuectr][i] / testedgenesperbin[tissuectr][i];
-					eqtlsoutperc += "\t" + perc;
-					noneqtlsoutperc += "\t" + ((double) noneqtlctr[tissuectr][i] / testedmissinggenesperbin[tissuectr][i]);
-					
-					eqtlsoutct += "\t" + eqtlgenectrperbin[tissuectr][i];
-					noneqtlsoutct += "\t" + noneqtlctr[tissuectr][i];
-					
-				}
-				outbinsperc.writeln(eqtlsoutperc);
-				outbinsct.writeln(eqtlsoutct);
-				outbinsnoneqtlperc.writeln(noneqtlsoutperc);
-				outbinsnonct.writeln(noneqtlsoutct);
-				tissuectr++;
-			}
-			outbinsperc.close();
-			outbinsnoneqtlperc.close();
-			
-			outbinsct.close();
-			outbinsnonct.close();
-		}
+		
+		grid.draw(outputfile + "-zscoreplot.pdf");
+		gridsigboth.draw(outputfile + "-zscoreplot-sig-both.pdf");
+		gridsigeqtlgen.draw(outputfile + "-zscoreplot-sig-eqtlgen.pdf");
+		gridsiggtex.draw(outputfile + "-zscoreplot-sig-gtex.pdf");
+		
 		System.out.println(nrsig + " eqtls significant; " + significantGenes.size() + " genes significant our of " + refgenes.size());
+		
 		
 	}
 	
-	public void determineLDBetweenTopCisFx(String cisfxfile, String gtextarball, String ensembl, String tabixfile, String samplefilter) throws IOException {
+	private ArrayList<Double> clip(ArrayList<Double> xval, double min, double max) {
+		ArrayList<Double> output = new ArrayList<>();
+		for (Double z : xval) {
+			if (z < min) {
+				output.add(min);
+			} else if (z > max) {
+				output.add(max);
+			} else {
+				output.add(z);
+			}
+		}
+		return output;
+		
+	}
+	
+	public void determineLDBetweenTopCisFx(String cisfxfile, String gtextarball, String ensembl, String tabixfile, String samplefilter, boolean includeblood) throws IOException {
 		
 		// read top cis fx
 		QTLTextFile tf = new QTLTextFile(cisfxfile, TextFile.R);
@@ -651,7 +679,8 @@ public class GTExRepl {
 		ArrayList<Pair<String, ArrayList<EQTL>>> topgtexfx = getGTExTopFx(gtextarball,
 				"egenes.txt.gz",
 				topeqtlgencispergene.keySet(),
-				false
+				false,
+				includeblood
 		);
 		
 		// for convenience, plug into array of arrays
@@ -712,7 +741,8 @@ public class GTExRepl {
 	private ArrayList<Pair<String, ArrayList<EQTL>>> getGTExTopFx(String gtextarball,
 																  String filefilter,
 																  Set<String> genelimit,
-																  boolean includesexchr) throws IOException {
+																  boolean includesexchr,
+																  boolean includeblood) throws IOException {
 		
 		ArrayList<Pair<String, ArrayList<EQTL>>> eqtlspertissue = new ArrayList<>();
 		
@@ -728,16 +758,20 @@ public class GTExRepl {
 		}
 		File[] listOfFiles = folder.listFiles();
 		
+		// sort files
+		Arrays.sort(listOfFiles, NameFileComparator.NAME_COMPARATOR);
+		
 		for (File file : listOfFiles) {
 			if (file.getName().endsWith(filefilter)) {
 				TextFile br = new TextFile(file, TextFile.R); // new BufferedReader(new InputStreamReader(tarInput)); // Read directly from tarInput
 				br.readLine();
 //				System.out.println("For File = " + currentEntry.getName());
 				String tissue = file.getName();
-				HashMap<String, EQTL> topeqtlgencispergenegtextissue = new HashMap<>();
-				String line;
-				while ((line = br.readLine()) != null) {
-					String[] elems = line.split("\t");
+				if (includeblood || (!includeblood && !tissue.contains("Whole_Blood.v7.egenes"))) {
+					HashMap<String, EQTL> topeqtlgencispergenegtextissue = new HashMap<>();
+					String line;
+					while ((line = br.readLine()) != null) {
+						String[] elems = line.split("\t");
 					/*
 0	gene_id
 2	gene_chr
@@ -791,40 +825,17 @@ public class GTExRepl {
 32	log2_aFC_upper
 
 */
-					String geneid = (elems[0].split("\\.")[0]);
-					if (genelimit == null || genelimit.contains(geneid)) {
-						// check whether this is the top fx
-						
-						EQTL top = topeqtlgencispergenegtextissue.get(geneid);
-						double beta = Double.parseDouble(elems[24]);
-						double se = Double.parseDouble(elems[25]);
-						double zscore = beta / se;
-						if (top == null) {
-							// if not use this as the top
+						String geneid = (elems[0].split("\\.")[0]);
+						if (genelimit == null || genelimit.contains(geneid)) {
+							// check whether this is the top fx
 							
-							Chromosome chr = Chromosome.parseChr(elems[13]);
-							Chromosome chr2 = Chromosome.parseChr(elems[2]);
-							if (chr.isAutosome() || (!chr.isAutosome() && includesexchr)) {
-								if (chr2.isAutosome() || (!chr2.isAutosome() && includesexchr)) {
-									EQTL e = new EQTL();
-									e.setRsName((elems[18]));
-									e.setRsChr((byte) chr.getNumber());
-									e.setRsChrPos(Integer.parseInt(elems[14]));
-									e.setProbe(geneid);
-									e.setFDR(Double.parseDouble(elems[28]));
-									e.setProbeChr((byte) chr2.getNumber());
-									e.setAlleles((elems[15] + "/" + elems[16]));
-									e.setAlleleAssessed((elems[16]));
-									e.setZscore(zscore);
-									topeqtlgencispergenegtextissue.put(geneid, e);
-								}
-							}
-							
-						} else {
-							// compare absolute z-scores
-							double zref = Math.abs(top.getZscore());
-							double ztest = Math.abs(zscore);
-							if (zref < ztest) {
+							EQTL top = topeqtlgencispergenegtextissue.get(geneid);
+							double beta = Double.parseDouble(elems[24]);
+							double se = Double.parseDouble(elems[25]);
+							double zscore = beta / se;
+							if (top == null) {
+								// if not use this as the top
+								
 								Chromosome chr = Chromosome.parseChr(elems[13]);
 								Chromosome chr2 = Chromosome.parseChr(elems[2]);
 								if (chr.isAutosome() || (!chr.isAutosome() && includesexchr)) {
@@ -839,22 +850,146 @@ public class GTExRepl {
 										e.setAlleles((elems[15] + "/" + elems[16]));
 										e.setAlleleAssessed((elems[16]));
 										e.setZscore(zscore);
+										
+										Double pval = Double.parseDouble(elems[23]);
+										e.setPvalue(pval);
+										
 										topeqtlgencispergenegtextissue.put(geneid, e);
+									}
+								}
+								
+							} else {
+								// compare absolute z-scores
+								double zref = Math.abs(top.getZscore());
+								double ztest = Math.abs(zscore);
+								if (zref < ztest) {
+									Chromosome chr = Chromosome.parseChr(elems[13]);
+									Chromosome chr2 = Chromosome.parseChr(elems[2]);
+									if (chr.isAutosome() || (!chr.isAutosome() && includesexchr)) {
+										if (chr2.isAutosome() || (!chr2.isAutosome() && includesexchr)) {
+											EQTL e = new EQTL();
+											e.setRsName((elems[18]));
+											e.setRsChr((byte) chr.getNumber());
+											e.setRsChrPos(Integer.parseInt(elems[14]));
+											e.setProbe(geneid);
+											e.setFDR(Double.parseDouble(elems[28]));
+											e.setProbeChr((byte) chr2.getNumber());
+											e.setAlleles((elems[15] + "/" + elems[16]));
+											e.setAlleleAssessed((elems[16]));
+											e.setZscore(zscore);
+											topeqtlgencispergenegtextissue.put(geneid, e);
+										}
 									}
 								}
 							}
 						}
 					}
-				}
 //				br.close();
-				ArrayList<EQTL> eqtls = new ArrayList<>();
-				for (String key : topeqtlgencispergenegtextissue.keySet()) {
-					eqtls.add(topeqtlgencispergenegtextissue.get(key));
+					ArrayList<EQTL> eqtls = new ArrayList<>();
+					for (String key : topeqtlgencispergenegtextissue.keySet()) {
+						eqtls.add(topeqtlgencispergenegtextissue.get(key));
+					}
+					eqtlspertissue.add(new Pair<>(tissue, eqtls));
+					System.out.println(tissue + "\t" + eqtls.size());
 				}
-				eqtlspertissue.add(new Pair<>(tissue, eqtls));
-				System.out.println(tissue + "\t" + eqtls.size());
+				
 			}
 		}
 		return eqtlspertissue;
+	}
+	
+	class GenePair implements Comparable<GenePair> {
+		String gene;
+		Double exp;
+		
+		public GenePair(String gene, Double exp) {
+			this.gene = gene;
+			this.exp = exp;
+		}
+		
+		@Override
+		public boolean equals(Object o) {
+			if (this == o) return true;
+			if (o == null || getClass() != o.getClass()) return false;
+			
+			GenePair genePair = (GenePair) o;
+			
+			return exp.equals(genePair.exp);
+		}
+		
+		@Override
+		public int hashCode() {
+			return exp.hashCode();
+		}
+		
+		
+		@Override
+		public int compareTo(GenePair o) {
+			if (this.equals(o)) {
+				return 0;
+			} else if (this.exp > o.exp) {
+				return 1;
+			} else {
+				return -1;
+			}
+		}
+	}
+	
+	public Pair<int[], HashMap<String, Integer>> loadAndRankGenes(String expfile, int nrbins, boolean onlyautosomal, String gtf) throws IOException {
+		GTFAnnotation f = new GTFAnnotation(gtf);
+		
+		HashMap<String, Integer> geneToBin = new HashMap<String, Integer>();
+		TextFile tf = new TextFile(expfile, TextFile.R);
+		tf.readLine(); // header;
+		String[] elems = tf.readLineElems(TextFile.tab);
+		ArrayList<GenePair> pairs = new ArrayList<>();
+		while (elems != null) {
+			String gene = elems[0];
+			
+			String tested = elems[4];
+			if (!tested.equals("not_tested")) {
+				Double exp = Double.parseDouble(elems[1]);
+				
+				Gene geneObj = f.getStrToGene().get(gene);
+				
+				if (geneObj == null) {
+					System.out.println("Could not find gene: " + gene);
+				} else {
+					if (onlyautosomal && geneObj.getChromosome().isAutosome()) {
+						pairs.add(new GenePair(gene, exp));
+					}
+				}
+			}
+			elems = tf.readLineElems(TextFile.tab);
+		}
+		tf.close();
+		
+		System.out.println("File has " + pairs.size() + " genes, all autosome: " + onlyautosomal);
+		
+		Collections.sort(pairs);
+		
+		int nrgenes = pairs.size();
+		int genesperbin = pairs.size() / nrbins;
+		int ctr = 0;
+		int bin = 0;
+		int[] nrgenesperbin = new int[nrbins];
+		while (ctr < nrgenes) {
+			String gene = pairs.get(ctr).gene;
+			geneToBin.put(gene, bin);
+			nrgenesperbin[bin]++;
+			ctr++;
+			if (ctr % genesperbin == 0) {
+				if (bin < nrbins - 1) {
+					bin++;
+				}
+			}
+		}
+		for (int i = 0; i < nrbins; i++) {
+			System.out.println(i + "\t" + nrgenesperbin[i]);
+		}
+		
+		System.out.println("max bin: " + bin);
+		return new Pair<>(nrgenesperbin, geneToBin);
+		
 	}
 }
