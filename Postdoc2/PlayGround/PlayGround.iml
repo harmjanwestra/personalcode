@@ -122,7 +122,7 @@
     <orderEntry type="library" name="Maven: commons-beanutils:commons-beanutils:1.9.3" level="project" />
     <orderEntry type="library" name="Maven: commons-codec:commons-codec:1.11" level="project" />
     <orderEntry type="library" name="Maven: commons-digester:commons-digester:2.1" level="project" />
-    <orderEntry type="library" name="Maven: nl.systemsgenetics:imputation-tool:1.0.3" level="project" />
+    <orderEntry type="library" name="Maven: nl.systemsgenetics:imputation-tool:1.0.5-SNAPSHOT" level="project" />
     <orderEntry type="library" name="Maven: net.rforge:Rserve:0.6-8.1" level="project" />
     <orderEntry type="library" name="Maven: net.rforge:REngine:0.6-8.1" level="project" />
     <orderEntry type="library" name="Maven: net.sf.opencsv:opencsv:2.3" level="project" />

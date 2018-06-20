@@ -17,15 +17,16 @@ public class ConvertVCFToTT {
 		ConvertVCFToTT v = new ConvertVCFToTT();
 		boolean writegenotypes = true;
 		boolean parsevcf = true;
+		boolean useAD = false;
 		try {
-			v.run(args[0], args[1], parsevcf, writegenotypes);
+			v.run(args[0], args[1], parsevcf, writegenotypes, useAD);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		
 	}
 	
-	public void run(String vcffile, String output, boolean parseVCF, boolean writegenotypes) throws IOException {
+	public void run(String vcffile, String output, boolean parseVCF, boolean writegenotypes, boolean useAD) throws IOException {
 		
 		VCFGenotypeData d = new VCFGenotypeData(vcffile);
 		ArrayList<String> samples = d.getSamples();
@@ -67,18 +68,17 @@ public class ConvertVCFToTT {
 		String ln = tf.readLine();
 		int ctr = 0;
 		int written = 0;
+		int variantswithmissingness = 0;
 		int nrvarswithdosage = 0;
 		while (ln != null) {
 			if (!ln.startsWith("#")) {
 				
 				VCFVariant var = new VCFVariant(ln, VCFVariant.PARSE.ALL);
 				
-				if (!var.isIndel() && var.getAlleles().length == 2 && var.getMAF() > 0.001) {
+				if (!var.isIndel() && var.getAlleles().length == 2 && var.getMAF() > 0.01) {
 					
 					// if it has read depth, set <10 as missing
 					short[] apdepth = var.getApproximateDepth();
-					
-					
 					byte allele1 = BaseAnnot.toByte(var.getAlleles()[0]);
 					byte allele2 = BaseAnnot.toByte(var.getAlleles()[1]);
 					
@@ -103,10 +103,9 @@ public class ConvertVCFToTT {
 						double a1 = genotypes.getQuick(i, 0);
 						double a2 = genotypes.getQuick(i, 1);
 						
-						if (a1 == 0 || a2 == 0 || (apdepth != null && apdepth[i] < 10)) {
+						if (a1 == -1 || a2 == -1 || (useAD && (apdepth != null && apdepth[i] < 10))) {
 							missing++;
 						} else {
-							
 							if (a1 == 0) {
 								al1[i] = allele1;
 							} else if (a1 == 1) {
@@ -123,7 +122,8 @@ public class ConvertVCFToTT {
 						}
 					}
 					
-					if ((double) missing / samples.size() > 0.05) {
+					double missingness = (double) missing / samples.size();
+					if (missingness < 0.05) {
 						snpFileWriter.append(id);
 						snpFileWriter.append('\n');
 						
@@ -139,14 +139,13 @@ public class ConvertVCFToTT {
 							genotypeDosageDataFileWriter.write(dos);
 						}
 						written++;
+					} else {
+						variantswithmissingness++;
 					}
-					
-					
 				}
-				
 			}
 			if (ctr % 1000 == 0) {
-				System.out.print(ctr + "\tlines read. " + written + "\twritten. " + nrvarswithdosage + "\twith dosages\r");
+				System.out.print(ctr + "\tlines read. " + written + "\twritten. " + nrvarswithdosage + "\twith dosages. " + variantswithmissingness + " with MAF>0.001 and high missigness\r");
 				
 			}
 			ctr++;
@@ -155,7 +154,9 @@ public class ConvertVCFToTT {
 		tf.close();
 		System.out.println();
 		System.out.println("Done");
-		if (writegenotypes) {
+		if (writegenotypes)
+		
+		{
 			genotypeDataFileWriter.close();
 			genotypeDosageDataFileWriter.close();
 			if (nrvarswithdosage == 0) {

@@ -14,14 +14,15 @@ public class UpdateSNPMap {
 		UpdateSNPMap s = new UpdateSNPMap();
 		
 		try {
-			s.runSNPMap(args[0], args[1]);
+//			s.runSNPMap(args[0], args[1]);
+			s.runSNPs(args[0], args[1]);
 //			s.bimToBed(args[0], args[1], args[2]);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 	
-	public void run(String snpmap, String indir) throws IOException {
+	public void runSNPs(String snpmap, String indir) throws IOException {
 		
 		HashMap<String, String> posToRS = new HashMap<>();
 		HashMap<String, String> rsToPos = new HashMap<>();
@@ -65,6 +66,12 @@ public class UpdateSNPMap {
 						tfso.writeln(ln + "-retired");
 						tfsm.writeln("0\t0\t" + ln + "-retired");
 						removed++;
+					} else {
+						String pos = rsToPos.get(ln);
+						String[] poselems = pos.split(":");
+						tfso.writeln(ln);
+						tfsm.writeln(poselems[0] + "\t" + poselems[1] + "\t" + ln);
+						updated++;
 					}
 				} else {
 					String[] snpelems = ln.split(":");
