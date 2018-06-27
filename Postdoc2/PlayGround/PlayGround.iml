@@ -11,6 +11,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="Maven: nl.systemsgenetics:imputation-tool:1.0.5-SNAPSHOT" level="project" />
     <orderEntry type="library" name="Maven: nl.systemsgenetics:genetica-libraries:1.0.9-SNAPSHOT" level="project" />
     <orderEntry type="library" name="Maven: com.googlecode.matrix-toolkits-java:mtj:1.0.2" level="project" />
     <orderEntry type="library" name="Maven: net.sourceforge.f2j:arpack_combined_all:0.1" level="project" />
