@@ -12,9 +12,9 @@ import java.util.regex.Pattern;
 public class MergeAuthorList {
 	
 	public static void main(String[] args) {
-		String aut = "D:\\Sync\\Dropbox\\FineMap\\2018-04-Rebuttal2\\2018-05-08-StagingArea\\Authorlist.txt";
-		String aff = "D:\\Sync\\Dropbox\\FineMap\\2018-04-Rebuttal2\\2018-05-08-StagingArea\\AffiliationList.txt";
-		String output = "D:\\Sync\\Dropbox\\FineMap\\2018-04-Rebuttal2\\2018-05-08-StagingArea\\Authorlist.html";
+		String aut = "D:\\Sync\\Dropbox\\FineMap\\2018-06-EditorComments\\Authors\\Authorlist.txt";
+		String aff = "D:\\Sync\\Dropbox\\FineMap\\2018-06-EditorComments\\Authors\\AffiliationList.txt";
+		String output = "D:\\Sync\\Dropbox\\FineMap\\2018-06-EditorComments\\Authors\\Affiliations.html";
 		
 		MergeAuthorList m = new MergeAuthorList();
 		try {

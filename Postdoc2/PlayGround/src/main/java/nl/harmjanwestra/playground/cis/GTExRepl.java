@@ -1,8 +1,5 @@
 package nl.harmjanwestra.playground.cis;
 
-import eqtlmappingpipeline.binarymeta.meta.graphics.ZScorePlot;
-import eqtlmappingpipeline.metaqtl3.FDR;
-import eqtlmappingpipeline.metaqtl3.graphics.EQTLDotPlot;
 import nl.harmjanwestra.utilities.annotation.gtf.GTFAnnotation;
 import nl.harmjanwestra.utilities.enums.Chromosome;
 import nl.harmjanwestra.utilities.features.FeatureComparator;
@@ -15,7 +12,6 @@ import nl.harmjanwestra.utilities.math.DetermineLD;
 import nl.harmjanwestra.utilities.vcf.VCFTabix;
 import nl.harmjanwestra.utilities.vcf.VCFVariant;
 import org.apache.commons.io.comparator.NameFileComparator;
-import org.apache.hadoop.hive.metastore.api.Decimal;
 import umcg.genetica.containers.Pair;
 import umcg.genetica.io.text.TextFile;
 import umcg.genetica.io.trityper.EQTL;
@@ -223,7 +219,6 @@ public class GTExRepl {
 				}
 			}
 		}
-		
 	}
 	
 	public void determineConcordanceBetweenTopGTExAndFullCis(String fullcis, String gtextarball, boolean maponposition, String outputfile, boolean includeblood, boolean usebonferroni) throws Exception {
@@ -354,11 +349,15 @@ public class GTExRepl {
 				"\tnrGTExeQTLsPossibleInEQTLGen" +
 				"\tShared" +
 				"\tSharedSignificantInGTEx" +
+				"\tSharedSignificantInGTExAlsoSignificantInEQTLGen" +
 				"\tSharedSignificantInEQTLGen" +
+				"\tSharedSignificantInEQTLGenAlsoSignificantInGTEx" +
 				"\tSharedSignificantInBoth" +
 				"\tConcordant" +
 				"\tConcordantSignificantInGTEx" +
+				"\tConcordantSignificantInGTExAlsoSignificantInEQTLGen" +
 				"\tConcordantSignificantInEQTLGen" +
+				"\tConcordantSignificantInEQTLGenAlsoSignificantInGTEx" +
 				"\tConcordantSignificantInBoth";
 		
 		out.writeln(header);
@@ -387,11 +386,15 @@ public class GTExRepl {
 			int nrsigingtex = 0;
 			int shared = 0;
 			int sharedsiggtex = 0;
+			int sharedsiggtexalsosigeqtlgen = 0;
 			int sharedsigeqtlgen = 0;
+			int sharedsigeqtlgenalsosiggtex = 0;
 			int sharedsigboth = 0;
 			int concordant = 0;
 			int concordantsiggtex = 0;
+			int concordantsiggtexalsosigeqtlgen = 0;
 			int concordantsigeqtlgen = 0;
+			int concordantsigeqtlgenalsosiggtex = 0;
 			int concordantsigboth = 0;
 			int nrsharedgenes = 0;
 			int nrsharedsnps = 0;
@@ -458,6 +461,14 @@ public class GTExRepl {
 						}
 					}
 					
+					if (significantingtex) {
+						if (ref.getFDR() < 0.05) {
+							sharedsiggtexalsosigeqtlgen++;
+							if (concordance) {
+								concordantsiggtexalsosigeqtlgen++;
+							}
+						}
+					}
 					
 					xval.add(ref.getZscore());
 					yval.add(e.getZscore());
@@ -472,6 +483,12 @@ public class GTExRepl {
 					// check concordance
 					boolean significantinref = false;
 					if (ref.getFDR() < 0.05) {
+						if (significantingtex) {
+							sharedsigeqtlgenalsosiggtex++;
+							if (concordance) {
+								concordantsigeqtlgenalsosiggtex++;
+							}
+						}
 						significantinref = true;
 						xvalsigeqtlgen.add(ref.getZscore());
 						yvalsigeqtlgen.add(e.getZscore());
@@ -523,11 +540,15 @@ public class GTExRepl {
 					+ "\t" + nrpossiblydetectedineqtlgen
 					+ "\t" + shared
 					+ "\t" + sharedsiggtex
+					+ "\t" + sharedsiggtexalsosigeqtlgen
 					+ "\t" + sharedsigeqtlgen
+					+ "\t" + sharedsigeqtlgenalsosiggtex
 					+ "\t" + sharedsigboth
 					+ "\t" + concordant
 					+ "\t" + concordantsiggtex
+					+ "\t" + concordantsiggtexalsosigeqtlgen
 					+ "\t" + concordantsigeqtlgen
+					+ "\t" + concordantsigeqtlgenalsosiggtex
 					+ "\t" + concordantsigboth;
 			out.writeln(ln);
 			tissuectr++;
