@@ -23,7 +23,7 @@ public class DeIdentify {
 //
         };
         String[] bamnsout = new String[]{
-//        
+//
         };
         for (int b = 0; b < bams.length; b++) {
             DeIdentify d = new DeIdentify();
