@@ -9,6 +9,7 @@ import umcg.genetica.text.Strings;
 
 import java.awt.*;
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Locale;
@@ -19,6 +20,9 @@ public class DonutGraphPanelTest {
 	
 	public static void main(String[] args) {
 		
+		boolean onlysig = false;
+		boolean excludewbinavg = true;
+		
 		Grid g = new Grid(200, 200, 7, 7, 20, 20);
 		ArrayList<String> abbs = new ArrayList<String>();
 		TextFile tf = null;
@@ -28,13 +32,38 @@ public class DonutGraphPanelTest {
 			tf.readLine();
 			
 			String[] elems = tf.readLineElems(TextFile.tab);
+			double allavg = 0;
+			double overlapavg = 0;
+			double concordantavg = 0;
+			int ctr = 0;
+			
 			while (elems != null) {
 				DonutGraphPanel p = new DonutGraphPanel(1, 1);
 				
+				
+				int allcol = 3;
+				int overlapcol = 8;
+				int concordantcol = 15;
+				
+				if (onlysig) {
+					allcol = 8;
+					overlapcol = 9;
+					concordantcol = 15;
+				}
+				
+				
 				String abb = elems[1];
-				Double all = Double.parseDouble(elems[3]);
-				double overlap = Double.parseDouble(elems[8]);
-				double concordant = Double.parseDouble(elems[15]);
+				Double all = Double.parseDouble(elems[allcol]);
+				double overlap = Double.parseDouble(elems[overlapcol]);
+				double concordant = Double.parseDouble(elems[concordantcol]);
+				
+				if (!excludewbinavg || excludewbinavg && !abb.equals("WB")) {
+					allavg += all;
+					overlapavg += overlap;
+					concordantavg += concordant;
+					ctr++;
+				}
+				
 				
 				double perc0 = overlap / all;
 				double perc1 = concordant / all;
@@ -48,6 +77,21 @@ public class DonutGraphPanelTest {
 				g.addPanel(p);
 				elems = tf.readLineElems(TextFile.tab);
 			}
+			
+			// draw average panel
+			DonutGraphPanel p = new DonutGraphPanel(1, 1);
+			double avgn = allavg / ctr;
+			double perc0 = overlapavg / allavg;
+			double perc1 = concordantavg / allavg;
+			System.out.println(perc0 + "\t" + perc1);
+			System.out.println(overlapavg + "\t" + concordantavg);
+			p.setData(new double[]{perc0, perc1});
+			
+			DecimalFormat df = new DecimalFormat("###,###.#");
+			p.setText("AVG\n(n=" + df.format(avgn) + ")");
+			p.setTheme(new eQTLGenTheme());
+			abbs.add("AVG: Average");
+			g.addPanel(p);
 			
 			
 			tf.close();
@@ -84,8 +128,8 @@ public class DonutGraphPanelTest {
 		private final Color lightgrey = new Color(225, 225, 225, 75);
 		private final Color[] colors = new Color[]{
 				new Color(255, 0, 0),
-				new Color(0, 0, 255),
-				new Color(98, 182, 177),
+				new Color(157, 226, 244),
+				new Color(73, 176, 204),
 				new Color(116, 156, 80),
 				new Color(124, 87, 147),
 				new Color(174, 164, 140),

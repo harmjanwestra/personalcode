@@ -1,15 +1,22 @@
 package nl.harmjanwestra.playground.cis;
 
+import com.itextpdf.text.DocumentException;
 import nl.harmjanwestra.utilities.enums.Chromosome;
 import nl.harmjanwestra.utilities.features.Feature;
+import nl.harmjanwestra.utilities.graphics.Grid;
+import nl.harmjanwestra.utilities.graphics.Range;
+import nl.harmjanwestra.utilities.graphics.panels.ScatterplotPanel;
 import nl.harmjanwestra.utilities.legacy.genetica.containers.Pair;
 import nl.harmjanwestra.utilities.math.DetermineLD;
 import nl.harmjanwestra.utilities.vcf.VCFTabix;
 import nl.harmjanwestra.utilities.vcf.VCFVariant;
+import org.apache.commons.math3.stat.correlation.PearsonsCorrelation;
 import umcg.genetica.io.text.TextFile;
 import umcg.genetica.text.Strings;
+import umcg.genetica.util.Primitives;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 
@@ -17,19 +24,35 @@ public class LDValidator {
 	
 	
 	public static void main(String[] args) {
+		LDValidator v = new LDValidator();
+		String in1 = args[0];
+		String out1 = args[1];
 		
+		try {
+			v.plot(in1, out1);
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (DocumentException e) {
+			e.printStackTrace();
+		}
+		System.exit(0);
 		
 		String snpannot = "D:\\Sync\\SyncThing\\Postdoc2\\2018-05-eQTLMeta\\data\\GiantSNPMappings_Filtered_on_Maf0.001_Indels.txt.gz";
 		String refgenome = "D:\\Sync\\SyncThing\\Data\\Ref\\1kg-eqtlgen\\eur\\chrCHR.phase1_release_v3.20101123.snps_indels_svs.genotypes.refpanel.EUR.vcf.gz";
 		String filter = null;
 		
+		snpannot = args[0];
+		refgenome = args[1];
+		String ldfile = args[2];
+		String output = args[3];
 		
 		try {
-			LDValidator v = new LDValidator();
-			String ldfile = "D:\\ld\\ENSG00000223972.txt.gz";
-			String output = "D:\\ld\\ENSG00000223972-compTo1Kg.txt";
+
+//			String ldfile = "D:\\ld\\ENSG00000223972.txt.gz";
+//			String output = "D:\\ld\\ENSG00000223972-compTo1Kg.txt";
 //			refgenome = "D:\\Sync\\SyncThing\\Data\\Ref\\1kg-eqtlgen\\all\\chrCHR.phase1_release_v3.20101123.snps_indels_svs.genotypes.refpanel.ALL.vcf.gz";
-//			v.comparewithreference(ldfile, snpannot, refgenome, filter, output);
+			v.comparewithreference(ldfile, snpannot, refgenome, filter, output);
 			
 			ldfile = "D:\\ld\\ENSG00000227232.txt.gz";
 			output = "D:\\ld\\ENSG00000227232-compTo1Kg.txt";
@@ -38,8 +61,8 @@ public class LDValidator {
 			String file1 = "D:\\ld\\ENSG00000223972.txt.gz";
 			String file2 = "D:\\ld\\ENSG00000227232.txt.gz";
 			String out = "D:\\ld\\ENSG00000227232-vs-ENSG00000223972.txt";
-			
-			v.compareLDFiles(file1, file2, out);
+
+//			v.compareLDFiles(file1, file2, out);
 			
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -209,5 +232,58 @@ public class LDValidator {
 		System.out.println(data.size() + " annotations loaded");
 		
 		return data;
+	}
+	
+	public void plot(String in, String out) throws IOException, DocumentException {
+		
+		Grid grid = new Grid(500, 500, 1, 1, 10, 10);
+		
+		ArrayList<Double> x = new ArrayList<Double>();
+		ArrayList<Double> y = new ArrayList<Double>();
+		
+		TextFile tf = new TextFile(in, TextFile.R);
+		String[] header = tf.readLineElems(TextFile.tab);
+		int xpos = header.length - 2;
+		int ypos = header.length - 1;
+		System.out.println("X= " + header[xpos] + "\ty: " + header[ypos]);
+		
+		String[] elems = tf.readLineElems(TextFile.tab);
+		int ctr = 0;
+		while (elems != null) {
+			
+			
+			Double xval = Double.parseDouble(elems[xpos]);
+			Double yval = Double.parseDouble(elems[ypos]);
+			
+			x.add(xval);
+			y.add(yval);
+			
+			ctr++;
+			if (ctr % 10000 == 0) {
+				System.out.print(ctr + " linss processed.\r");
+			} else if (ctr > 10000000) {
+				break;
+			}
+			elems = tf.readLineElems(TextFile.tab);
+			
+		}
+		tf.close();
+		System.out.println();
+		System.out.println("Done.");
+		
+		ScatterplotPanel p = new ScatterplotPanel(1, 1);
+		p.setPlotElems(true, false);
+		p.setAlpha(0.2f);
+		p.setLabels("eQTLGen", "1KG");
+		p.setDataRange(new Range(0, 0, 1, 1));
+		p.setData(Primitives.toPrimitiveArr(x), Primitives.toPrimitiveArr(y));
+		
+		PearsonsCorrelation c = new PearsonsCorrelation();
+		double corr = c.correlation(Primitives.toPrimitiveArr(x), Primitives.toPrimitiveArr(y));
+		p.setTitle("Pearson correlation: " + corr);
+		System.out.println("Pearson correlation: " + corr);
+		grid.addPanel(p);
+		grid.draw(out);
+		
 	}
 }
