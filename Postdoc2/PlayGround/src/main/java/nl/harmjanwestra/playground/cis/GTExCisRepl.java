@@ -200,7 +200,7 @@ public class GTExCisRepl {
 		return eqtlspertissue;
 	}
 	
-	private HashMap<String, HashMap<String, EQTL>> getGTExTopFx(String gtexloc,
+	public HashMap<String, HashMap<String, EQTL>> getGTExTopFx(String gtexloc,
 																String filefilter,
 																Set<String> genelimit,
 																boolean includesexchr,
