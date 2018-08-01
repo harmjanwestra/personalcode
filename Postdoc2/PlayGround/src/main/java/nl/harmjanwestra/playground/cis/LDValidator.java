@@ -5,7 +5,6 @@ import nl.harmjanwestra.utilities.enums.Chromosome;
 import nl.harmjanwestra.utilities.features.Feature;
 import nl.harmjanwestra.utilities.graphics.Grid;
 import nl.harmjanwestra.utilities.graphics.Range;
-import nl.harmjanwestra.utilities.graphics.panels.ScatterplotPanel;
 import nl.harmjanwestra.utilities.legacy.genetica.containers.Pair;
 import nl.harmjanwestra.utilities.math.DetermineLD;
 import nl.harmjanwestra.utilities.vcf.VCFTabix;
@@ -236,7 +235,7 @@ public class LDValidator {
 	
 	public void plot(String in, String out) throws IOException, DocumentException {
 		
-		Grid grid = new Grid(500, 500, 1, 1, 10, 10);
+		Grid grid = new Grid(500, 500, 1, 1, 50, 50);
 		
 		ArrayList<Double> x = new ArrayList<Double>();
 		ArrayList<Double> y = new ArrayList<Double>();
@@ -271,12 +270,13 @@ public class LDValidator {
 		System.out.println();
 		System.out.println("Done.");
 		
-		ScatterplotPanel p = new ScatterplotPanel(1, 1);
+		DensityGraphPanel p = new DensityGraphPanel(1, 1);
 		p.setPlotElems(true, false);
-		p.setAlpha(0.2f);
+		
 		p.setLabels("eQTLGen", "1KG");
 		p.setDataRange(new Range(0, 0, 1, 1));
 		p.setData(Primitives.toPrimitiveArr(x), Primitives.toPrimitiveArr(y));
+		p.setPlotElems(true, false);
 		
 		PearsonsCorrelation c = new PearsonsCorrelation();
 		double corr = c.correlation(Primitives.toPrimitiveArr(x), Primitives.toPrimitiveArr(y));
