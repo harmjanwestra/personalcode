@@ -9,14 +9,14 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.regex.Pattern;
 
-public class MergeAuthorList {
+public class AuthorListGenerator {
 	
 	public static void main(String[] args) {
 		String aut = "D:\\Sync\\Dropbox\\FineMap\\2018-06-EditorComments\\Authors\\Authorlist.txt";
 		String aff = "D:\\Sync\\Dropbox\\FineMap\\2018-06-EditorComments\\Authors\\AffiliationList.txt";
 		String output = "D:\\Sync\\Dropbox\\FineMap\\2018-06-EditorComments\\Authors\\Affiliations.html";
 		
-		MergeAuthorList m = new MergeAuthorList();
+		AuthorListGenerator m = new AuthorListGenerator();
 		try {
 			m.run(aut, aff, output);
 		} catch (IOException e) {
