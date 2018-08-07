@@ -1,6 +1,10 @@
 package nl.harmjanwestra.playground.cis;
 
+import com.itextpdf.text.DocumentException;
 import nl.harmjanwestra.utilities.enums.Chromosome;
+import nl.harmjanwestra.utilities.graphics.Grid;
+import nl.harmjanwestra.utilities.graphics.Range;
+import nl.harmjanwestra.utilities.graphics.panels.HistogramPanel;
 import nl.harmjanwestra.utilities.legacy.genetica.containers.Pair;
 import nl.harmjanwestra.utilities.legacy.genetica.io.text.TextFile;
 import nl.harmjanwestra.utilities.features.*;
@@ -8,14 +12,14 @@ import nl.harmjanwestra.utilities.legacy.genetica.text.Strings;
 import nl.harmjanwestra.utilities.math.DetermineLD;
 import nl.harmjanwestra.utilities.vcf.VCFTabix;
 import nl.harmjanwestra.utilities.vcf.VCFVariant;
+import org.apache.commons.io.comparator.NameFileComparator;
 import org.jfree.util.ArrayUtils;
 import umcg.genetica.io.trityper.EQTL;
 import umcg.genetica.util.Primitives;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
+import java.text.DecimalFormat;
+import java.util.*;
 
 public class GTExCisTopFXLD {
 
@@ -23,6 +27,7 @@ public class GTExCisTopFXLD {
     public static void main(String[] args) {
 
         String eqtlgenfile = "D:\\Sync\\SyncThing\\Postdoc2\\2018-05-eQTLMeta\\data\\2018-05-22-assoc\\cis\\2018-01-31-cis-eQTLsFDR0.05-ProbeLevel-CohortInfoRemoved.txt.gz";
+        String eqtlgenfiletop = "D:\\Sync\\SyncThing\\Postdoc2\\2018-05-eQTLMeta\\data\\2018-05-22-assoc\\cis\\2018-01-31-cis-eQTLsFDR0.05-ProbeLevel-CohortInfoRemoved-topfx.txt.gz";
         String gtextoploc = "D:\\Sync\\SyncThing\\Data\\eQTLs\\GTEx\\GTEx_Analysis_v7_eQTL\\";
         String tabixprefix = "D:\\Sync\\SyncThing\\Data\\Ref\\1kg-eqtlgen\\eur\\chrCHR.phase1_release_v3.20101123.snps_indels_svs.genotypes.refpanel.EUR.vcf.gz";
         String samplelimit = null;
@@ -32,14 +37,48 @@ public class GTExCisTopFXLD {
         GTExCisTopFXLD ld = new GTExCisTopFXLD();
 
         try {
-            ld.run(gtextoploc, eqtlgenfile, tabixprefix, samplelimit, outfileloc);
+//            ld.gettopfx(eqtlgenfile, eqtlgenfiletop);
+            ld.run(gtextoploc, eqtlgenfiletop, tabixprefix, samplelimit, outfileloc);
         } catch (IOException e) {
+            e.printStackTrace();
+        } catch (DocumentException e) {
             e.printStackTrace();
         }
     }
 
+    private void gettopfx(String eqtlgenfile, String output) throws IOException {
+        HashMap<String, EQTL> eqtlgentopfx = new HashMap<>();
+        TextFile tf = new TextFile(eqtlgenfile, TextFile.R);
+        TextFile tfo = new TextFile(output, TextFile.W);
+        tfo.writeln(tf.readLine());
+        String[] elems = tf.readLineElems(TextFile.tab);
+        System.out.println("Parsing: " + eqtlgenfile);
+        int ectr = 0;
+        while (elems != null) {
+            String gene = elems[4];
+            if (!eqtlgentopfx.containsKey(gene)) {
+                EQTL e = new EQTL();
+                e.setRsName(elems[1]);
+                e.setRsChr(Byte.parseByte(elems[2]));
+                e.setRsChrPos(Integer.parseInt(elems[3]));
+                e.setZscore(Double.parseDouble(elems[10]));
+                eqtlgentopfx.put(gene, e);
+                tfo.writeln(Strings.concat(elems, Strings.tab));
+            }
 
-    public void run(String gtextoploc, String eqtlgenfile, String tabixprefix, String samplelimit, String outfileloc) throws IOException {
+            ectr++;
+            if (ectr % 1000000 == 0) {
+                System.out.println(ectr + " eqtls parsed. " + eqtlgentopfx.size() + " loaded.");
+            }
+            elems = tf.readLineElems(TextFile.tab);
+        }
+        tf.close();
+
+        tfo.close();
+    }
+
+
+    public void run(String gtextoploc, String eqtlgenfile, String tabixprefix, String samplelimit, String outfileloc) throws IOException, DocumentException {
 
         HashMap<String, EQTL> eqtlgentopfx = new HashMap<>();
 
@@ -70,13 +109,18 @@ public class GTExCisTopFXLD {
         GTExCisRepl c = new GTExCisRepl();
         HashMap<String, HashMap<String, EQTL>> gtextopfx = c.getGTExTopFx(gtextoploc, "v7.egenes.txt.gz", null, true, true);
 
+
+        ArrayList<String> keys = new ArrayList<>();
+        keys.addAll(gtextopfx.keySet());
+        Collections.sort(keys);
+
         DetermineLD ld = new DetermineLD();
 
         int nrbins = 10;
 
         TextFile out = new TextFile(outfileloc, TextFile.W);
 
-        String header = "tissue\tnrAll\tnrSig\tmeanAll\tmedianall\tmeanSig\tmedianSig";
+        String header = "tissue\tnrAll\tnrSig\tmeanAll\tmedianall\tAboveThreshold\tmeanSig\tmedianSig\tAboveThresholdAll";
         for (int b = 0; b < nrbins; b++) {
             header += "\tBinAll" + b;
         }
@@ -89,7 +133,24 @@ public class GTExCisTopFXLD {
         HashMap<SNPFeature, VCFVariant> variantHash = new HashMap<>();
 
         int tctr = 0;
-        for (String tissue : gtextopfx.keySet()) {
+
+
+        int nrcols = 5;
+        int remainder = gtextopfx.size() % nrcols;
+        int nrrows = (int) Math.floor(gtextopfx.size() / nrcols);
+        if (remainder > 0) {
+            nrrows++;
+        }
+
+        Grid gridsig = new Grid(200, 200, nrrows, nrcols, 75, 100);
+        Grid gridall = new Grid(200, 200, nrrows, nrcols, 75, 100);
+
+        int colctr = 0;
+        int rowctr = 0;
+
+        for (String tissue : keys) {
+            String nicetissue = tissue.replaceAll("_", " ");
+            nicetissue = nicetissue.replaceAll("\\.", "");
             System.out.println("Tissue: " + tissue + " " + tctr + "/" + gtextopfx.size());
             int[] binssig = new int[nrbins];
             int[] binsall = new int[nrbins];
@@ -97,6 +158,8 @@ public class GTExCisTopFXLD {
             ArrayList<Double> varsAll = new ArrayList<>();
 
 
+            int abovethresholdsig = 0;
+            int abovethresholdall = 0;
             HashMap<String, EQTL> tissuetopfx = gtextopfx.get(tissue);
             int gctr = 0;
             int gtestedctr = 0;
@@ -144,15 +207,24 @@ public class GTExCisTopFXLD {
                         double rsq = ldvars.getRight();
                         if (!Double.isNaN(rsq)) {
                             gtestedctr++;
+                            if (rsq > 0.8) {
+                                abovethresholdall++;
+                            }
                             int binno = (int) Math.floor(rsq * nrbins);
                             if (binno > nrbins - 1) {
                                 binno = nrbins - 1;
                             }
+//                            if (varsAll.size() > 1000) {
+//                                break;
+//                            }
 
                             varsAll.add(rsq);
                             binsall[binno]++;
                             if (gtexsig) {
                                 varsSig.add(rsq);
+                                if (rsq > 0.8) {
+                                    abovethresholdsig++;
+                                }
                                 binssig[binno]++;
                             }
                         }
@@ -165,9 +237,12 @@ public class GTExCisTopFXLD {
             }
             System.out.println();
             // TODO: mean LD for all variants that have same direction too.. ??
+
             double[] varsallarr = Primitives.toPrimitiveArr(varsAll);
             double[] varssigarr = Primitives.toPrimitiveArr(varsSig);
 
+            int maxall = JSci.maths.ArrayMath.max(binsall);
+            int maxsig = JSci.maths.ArrayMath.max(binssig);
 
             double meanall = JSci.maths.ArrayMath.mean(varsallarr);
             double meansig = JSci.maths.ArrayMath.mean(varssigarr);
@@ -176,13 +251,15 @@ public class GTExCisTopFXLD {
 
 
             // add a line or something
-            String ln = tissue
+            String ln = nicetissue
                     + "\t" + varsAll.size()
                     + "\t" + varsSig.size()
                     + "\t" + meanall
                     + "\t" + medianall
+                    + "\t" + abovethresholdall
                     + "\t" + meansig
                     + "\t" + mediansig
+                    + "\t" + abovethresholdsig
                     + "\t" + Strings.concat(binsall, Strings.tab)
                     + "\t" + Strings.concat(binssig, Strings.tab);
 
@@ -190,8 +267,43 @@ public class GTExCisTopFXLD {
             System.out.println(varsAll.size() + "all\t" + meanall + " mean all\t" + varsSig.size() + " sig\t" + meansig + " mean sig\t" + medianall + " median all\t" + mediansig + " median sig");
             Arrays.sort(varsallarr);
             tctr++;
+
+
+            DecimalFormat format = new DecimalFormat("#.#");
+            DecimalFormat usdf = (DecimalFormat) DecimalFormat.getNumberInstance(Locale.US);
+
+            HistogramPanel p = new HistogramPanel(1, 1);
+            p.setAxisLabels("LD between top variants", "Frequency");
+            p.setData(binssig);
+            p.setTitle(nicetissue + " (n=" + usdf.format(varsSig.size()) + ")");
+            p.setRange(new Range(0, 0, 1, maxsig));
+            String percabovesig = format.format(((double) abovethresholdsig / varsSig.size()) * 100);
+            p.setMarginBetweenBinClusters(0);
+
+            p.setThreshold(0.8, "" + usdf.format(abovethresholdsig) + "\n(" + percabovesig + "%)");
+            gridsig.addPanel(p);
+
+            HistogramPanel p2 = new HistogramPanel(1, 1);
+            p2.setAxisLabels("LD between top variants", "Frequency");
+            Range rangeall = new Range(0, 0, 1, maxall);
+            System.out.println("Input range: " + rangeall);
+            p2.setRange(rangeall);
+
+
+            p2.setData(binsall);
+            p2.setTitle(nicetissue + " (n=" + usdf.format(varsAll.size()) + ")");
+
+            String percaboveall = format.format(((double) abovethresholdall / varsAll.size()) * 100);
+            p2.setThreshold(0.8, "" + usdf.format(abovethresholdall) + "\n(" + percaboveall + "%)");
+            p2.setMarginBetweenBinClusters(0);
+            gridall.addPanel(p2);
+
+
         }
         out.close();
+
+        gridall.draw(outfileloc + "gridAll.pdf");
+        gridsig.draw(outfileloc + "gridSig.pdf");
 
     }
 

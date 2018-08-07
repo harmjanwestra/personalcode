@@ -6,6 +6,7 @@ import nl.harmjanwestra.utilities.vcf.VCFGenotypeData;
 import nl.harmjanwestra.utilities.vcf.VCFVariant;
 import umcg.genetica.io.text.TextFile;
 import umcg.genetica.io.trityper.util.BaseAnnot;
+import umcg.genetica.text.Strings;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -40,6 +41,7 @@ public class ConvertVCFToTT {
 		File snpMapFile = new File(folder, "SNPMappings.txt.gz");
 		File individualFile = new File(folder, "Individuals.txt");
 		File phenotypeAnnotationFile = new File(folder, "PhenotypeInformation.txt");
+		File logfile = new File(folder, "ConversionLog.txt.gz");
 		
 		BufferedWriter phenowriter = new BufferedWriter(new FileWriter(phenotypeAnnotationFile));
 		TextFile indsout = new TextFile(individualFile, TextFile.W);
@@ -63,6 +65,7 @@ public class ConvertVCFToTT {
 		TextFile snpFileWriter = new TextFile(snpFile, TextFile.W);
 		TextFile snpMapFileWriter = new TextFile(snpMapFile, TextFile.W);
 		
+		TextFile logout = new TextFile(logfile, TextFile.W);
 		
 		TextFile tf = new TextFile(vcffile, TextFile.R);
 		String ln = tf.readLine();
@@ -70,12 +73,25 @@ public class ConvertVCFToTT {
 		int written = 0;
 		int variantswithmissingness = 0;
 		int nrvarswithdosage = 0;
+		int nrindels = 0;
+		int nrmultiallelic = 0;
+		int lowmaf = 0;
+		double mafthresold = 0.001;
+		double missingnessthreshold = 0.05;
+		int allelicdepththreshold = 10;
+		String header = "var\talleles\tisIndel\tisMultiAllelic\tMAF\tMissingness\tnrMissing\tAvgDepth\tVarIncluded";
+		logout.writeln(header);
 		while (ln != null) {
 			if (!ln.startsWith("#")) {
 				
 				VCFVariant var = new VCFVariant(ln, VCFVariant.PARSE.ALL);
+				double missingness = 0;
+				int missing = 0;
 				
-				if (!var.isIndel() && var.getAlleles().length == 2 && var.getMAF() > 0.01) {
+				int nrcalled = 0;
+				boolean varincluded = false;
+				double sumdepth = 0;
+				if (!var.isIndel() && var.getAlleles().length == 2 && var.getMAF() > mafthresold) {
 					
 					// if it has read depth, set <10 as missing
 					short[] apdepth = var.getApproximateDepth();
@@ -98,12 +114,14 @@ public class ConvertVCFToTT {
 						nrvarswithdosage++;
 					}
 					
-					int missing = 0;
+					missing = 0;
 					for (int i = 0; i < samples.size(); i++) {
 						double a1 = genotypes.getQuick(i, 0);
 						double a2 = genotypes.getQuick(i, 1);
-						
-						if (a1 == -1 || a2 == -1 || (useAD && (apdepth != null && apdepth[i] < 10))) {
+						if (apdepth != null) {
+							sumdepth += apdepth[i];
+						}
+						if (a1 == -1 || a2 == -1 || (useAD && (apdepth != null && apdepth[i] < allelicdepththreshold))) {
 							missing++;
 						} else {
 							if (a1 == 0) {
@@ -121,12 +139,11 @@ public class ConvertVCFToTT {
 							}
 						}
 					}
-					
-					double missingness = (double) missing / samples.size();
-					if (missingness < 0.05) {
+					sumdepth /= samples.size();
+					missingness = (double) missing / samples.size();
+					if (missingness < missingnessthreshold) {
 						snpFileWriter.append(id);
 						snpFileWriter.append('\n');
-						
 						snpMapFileWriter.append(var.getChr());
 						snpMapFileWriter.append('\t');
 						snpMapFileWriter.append(String.valueOf(var.getPos()));
@@ -139,24 +156,37 @@ public class ConvertVCFToTT {
 							genotypeDosageDataFileWriter.write(dos);
 						}
 						written++;
+						varincluded = true;
 					} else {
 						variantswithmissingness++;
 					}
+				} else if (var.getMAF() < mafthresold) {
+					lowmaf++;
+				} else if (var.isIndel()) {
+					nrindels++;
+				} else if (var.isMultiallelic()) {
+					nrmultiallelic++;
 				}
+				
+				String incvar = "NotWritten";
+				if (varincluded) {
+					incvar = "Written";
+				}
+				String log = var.toString() + "\t" + Strings.concat(var.getAlleles(), Strings.semicolon) + "\t" + var.isIndel() + "\t" + var.isMultiallelic() + "\t" + var.getMAF() + "\t" + missingness + "\t" + missing + "\t" + sumdepth + "\t" + incvar;
+				logout.writeln(log);
 			}
 			if (ctr % 1000 == 0) {
-				System.out.print(ctr + "\tlines read. " + written + "\twritten. " + nrvarswithdosage + "\twith dosages. " + variantswithmissingness + " with MAF>0.001 and high missigness\r");
+				System.out.print(ctr + "\tlines read. " + written + " written, " + nrvarswithdosage + " with dosages. " + lowmaf + " maf<" + mafthresold + ", " + nrindels + " indels ," + nrmultiallelic + " multiallelic, " + variantswithmissingness + " with MAF>" + mafthresold + " and high missigness\r");
 				
 			}
 			ctr++;
 			ln = tf.readLine();
 		}
+		logout.close();
 		tf.close();
 		System.out.println();
 		System.out.println("Done");
-		if (writegenotypes)
-		
-		{
+		if (writegenotypes) {
 			genotypeDataFileWriter.close();
 			genotypeDosageDataFileWriter.close();
 			if (nrvarswithdosage == 0) {
