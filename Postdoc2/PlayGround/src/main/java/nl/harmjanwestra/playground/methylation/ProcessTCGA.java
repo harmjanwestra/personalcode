@@ -17,6 +17,22 @@ public class ProcessTCGA {
 
     public static void main(String[] args) {
 
+        String dir = "S:\\projects\\2018-tcga\\solidtissue\\dnameth\\";
+        String projectfile = "S:\\projects\\2018-tcga\\inputmeth\\gdc_sample_sheet.2018-08-06.tsv";
+        String outloc = "S:\\projects\\2018-tcga\\solidtissue\\dnamethmerged\\";
+
+        ProcessTCGA t = new ProcessTCGA();
+        try {
+//            t.runMeth(projectfile, dir, outloc);
+
+            dir = "S:\\projects\\2018-tcga\\solidtissue\\rna\\";
+            projectfile = "S:\\projects\\2018-tcga\\inputrna\\gdc_sample_sheet.2018-08-06.tsv";
+            outloc = "S:\\projects\\2018-tcga\\solidtissue\\rnamerged\\";
+            t.run(projectfile, dir, outloc);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
     public void run(String projectfile, String indir, String outloc) throws IOException {
@@ -25,15 +41,19 @@ public class ProcessTCGA {
         TextFile tf = new TextFile(projectfile, TextFile.R);
         String[] elems = tf.readLineElems(TextFile.tab);
         while (elems != null) {
-            String project = elems[0];
-            projects.add(project);
+
+            if (elems[7].contains("Solid")) {
+                String project = elems[4];
+                projects.add(project);
+            }
+
             elems = tf.readLineElems(TextFile.tab);
         }
         tf.close();
 
-
+        int pctr = 0;
         for (String project : projects) {
-            System.out.println("Parsing project: " + project);
+            System.out.println("Parsing project: " + project + "\t" + pctr + "/" + projects.size());
             String folder = indir + project;
             File[] files = new File(folder).listFiles();
             ArrayList<File> selected = new ArrayList<>();
@@ -44,6 +64,7 @@ public class ProcessTCGA {
             ArrayList<String> inds = new ArrayList<>();
             for (File f : files) {
                 if (f.isFile() && f.getName().endsWith(".gz")) {
+
                     selected.add(f);
 
                     ArrayList<Pair<String, Double>> indData = new ArrayList<>();
@@ -51,23 +72,31 @@ public class ProcessTCGA {
                     tf2.readLine();
                     String[] melems = tf2.readLineElems(TextFile.tab);
                     while (melems != null) {
-                        String probe = Strings.cache(elems[0]);
+                        String probe = Strings.cache(melems[0]);
                         if (!probemap.containsKey(probe)) {
                             probemap.put(probe, probes.size());
                             probes.add(probe);
                         }
 
-                        Double val = Double.parseDouble(elems[1]);
+                        Double val = Double.NaN;
+                        if (!melems[1].contains("NA")) {
+                            val = Double.parseDouble(melems[1]);
+                        }
 
                         Pair<String, Double> d = new Pair<String, Double>(probe, val);
                         indData.add(d);
                         melems = tf2.readLineElems(TextFile.tab);
                     }
+                    String indname = f.getName().replaceAll(".txt.gz", "");
+                    System.out.println(project + "\t" + inds.size() + "/" + files.length + "\t" + indname + "\t" + indData.size() + " probes");
                     tf2.close();
                     data.add(indData);
-                    inds.add(f.getName());
+                    inds.add(indname);
                 }
+
             }
+
+            System.out.println(project + "\t" + inds.size() + " individuals");
 
             if (!inds.isEmpty()) {
                 DoubleMatrixDataset<String, String> out = new DoubleMatrixDataset<>(probes.size(), inds.size());
@@ -82,21 +111,23 @@ public class ProcessTCGA {
                             out.getMatrix().setQuick(pid, i, p.getRight());
                         }
                     }
-
+                    System.out.println("Saving: " + outloc + project + "-beta.txt.gz");
                     out.save(outloc + project + "-beta.txt.gz");
 
                     // convert to M-values
                     double[][] raw = out.getMatrix().toArray();
                     ConvertBetaAndMvalues.transformToMvalue(raw);
                     out.setMatrix(raw);
+                    System.out.println("Saving: " + outloc + project + "-Mval.txt.gz");
                     out.save(outloc + project + "-Mval.txt.gz");
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
 
 
             }
-
+            pctr++;
 
         }
 

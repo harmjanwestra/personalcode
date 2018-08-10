@@ -22,8 +22,8 @@ public class PCAPlot {
     public static void main(String[] args) {
         String knownClasses = "D:\\Sync\\SyncThing\\Data\\Ref\\1kg-p3v5a-sampleinfo.txt";
         String superclasses = "D:\\Sync\\SyncThing\\Data\\Ref\\1kg-p3v5a-superpopulations.txt";
-        String pcafile = "D:\\Sync\\SyncThing\\Postdoc2\\2018-04-BioGen\\data\\2018-08-02-AMPAdPCA\\plink.eigenvec.txt";
-        String output = "D:\\Sync\\SyncThing\\Postdoc2\\2018-04-BioGen\\data\\2018-08-02-AMPAdPCA\\AMPAD-";
+        String pcafile = "D:\\Sync\\SyncThing\\Postdoc2\\2018-04-BioGen\\data\\2018-08-02-TargetALS\\plink.eigenvec.txt";
+        String output = "D:\\Sync\\SyncThing\\Postdoc2\\2018-04-BioGen\\data\\2018-08-02-TargetALS\\TargetALS-";
         PCAPlot p = new PCAPlot();
 
         try {
