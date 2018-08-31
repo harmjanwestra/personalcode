@@ -93,6 +93,7 @@ public class EQTMFlipper {
 				}
 			}
 			if (include) {
+
 				if (!me.getAlleleAssessed().equals("C")) {
 					flip = true;
 				}

@@ -24,18 +24,18 @@ public class LDValidator {
 	
 	public static void main(String[] args) {
 		LDValidator v = new LDValidator();
-		String in1 = args[0];
-		String out1 = args[1];
-		
-		try {
-			v.plot(in1, out1);
-			
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (DocumentException e) {
-			e.printStackTrace();
-		}
-		System.exit(0);
+//		String in1 = args[0];
+//		String out1 = args[1];
+//
+//		try {
+//			v.plot(in1, out1);
+//
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		} catch (DocumentException e) {
+//			e.printStackTrace();
+//		}
+//		System.exit(0);
 		
 		String snpannot = "D:\\Sync\\SyncThing\\Postdoc2\\2018-05-eQTLMeta\\data\\GiantSNPMappings_Filtered_on_Maf0.001_Indels.txt.gz";
 		String refgenome = "D:\\Sync\\SyncThing\\Data\\Ref\\1kg-eqtlgen\\eur\\chrCHR.phase1_release_v3.20101123.snps_indels_svs.genotypes.refpanel.EUR.vcf.gz";
@@ -45,6 +45,9 @@ public class LDValidator {
 		refgenome = args[1];
 		String ldfile = args[2];
 		String output = args[3];
+		if (args.length > 4) {
+			filter = args[4];
+		}
 		
 		try {
 
@@ -191,7 +194,7 @@ public class LDValidator {
 			}
 			elems = tf.readLineElems(TextFile.tab);
 			q++;
-			if (q % 10 == 0) {
+			if (q % 10000 == 0) {
 				System.out.print("\r" + q + " lines processed out of " + c + " : " + ((double) q / c));
 			}
 		}
