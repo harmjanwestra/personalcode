@@ -2,7 +2,9 @@ package nl.harmjanwestra.playground.cis;
 
 import cern.colt.matrix.tdouble.DoubleMatrix2D;
 import cern.colt.matrix.tdouble.impl.DenseDoubleMatrix2D;
+import nl.harmjanwestra.utilities.legacy.genetica.io.BinaryFile;
 import nl.harmjanwestra.utilities.legacy.genetica.io.text.TextFile;
+import umcg.genetica.console.ProgressBar;
 import umcg.genetica.io.Gpio;
 import umcg.genetica.io.trityper.util.BaseAnnot;
 import umcg.genetica.math.matrix2.DoubleMatrixDataset;
@@ -11,6 +13,8 @@ import umcg.genetica.util.Primitives;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.IntStream;
 
 public class LDFromZMat {
 	
@@ -18,9 +22,9 @@ public class LDFromZMat {
 	public static void main(String[] args) {
 		LDFromZMat z = new LDFromZMat();
 		try {
-//			z.createCombos("D:\\Sync\\SyncThing\\Postdoc2\\2018-05-eQTLMeta\\data\\sortedGeneSNPCombos.txt.gz",
-//					"D:\\snpgenecombos\\");
-			
+//            z.createCombos("D:\\Sync\\SyncThing\\Postdoc2\\2018-05-eQTLMeta\\data\\sortedGeneSNPCombos.txt.gz",
+//                    "D:\\snpgenecombos\\");
+//
 			if (args.length >= 7) {
 				String genecovariancematrixloc = args[0];
 				String cohortselectionfile = args[1];
@@ -30,22 +34,33 @@ public class LDFromZMat {
 				String referenceallelefile = args[5];
 				String outloc = args[6];
 				Integer minnrvals = null;
+				boolean providelist = false;
+				boolean binaryoutput = true;
+				
 				if (args.length >= 8) {
 					minnrvals = Integer.parseInt(args[7]);
 				}
-				z.calculateLD(genecovariancematrixloc, cohortselectionfile, zmatloc, genedefloc, genelistfile, referenceallelefile, outloc, minnrvals);
+				
+				if (args.length > 9) {
+					providelist = Boolean.parseBoolean(args[8]);
+				}
+				if (args.length > 10) {
+					binaryoutput = Boolean.parseBoolean(args[9]);
+				}
+				z.calculateLD(genecovariancematrixloc, cohortselectionfile, zmatloc, genedefloc, genelistfile, referenceallelefile, outloc, minnrvals, providelist, binaryoutput);
 			} else {
-				System.out.println("Arguments:\ngenecovariancematrix cohortselectionfile zmatloc genedefloc genelistfile referenceallelefile outploc [minnrvals]");
+				System.out.println("Arguments:\ngenecovariancematrix cohortselectionfile zmatloc genedefloc genelistfile referenceallelefile outploc [minnrvals] [providelist] [binaryoutput]");
 				
 			}
 			
-			System.exit();
 			
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
+		System.exit(0);
 	}
 	
 	public void createCombos(String genesnpcombos, String snpgeneout) throws IOException {
@@ -55,30 +70,32 @@ public class LDFromZMat {
 		String[] elems = tf.readLineElems(TextFile.tab);
 		
 		
-		LinkedHashMap<String, Short> geneMap = new LinkedHashMap<String, Short>();
+		HashMap<String, Integer> geneMap = new HashMap<String, Integer>();
+		ArrayList<String> geneList = new ArrayList<>();
 		
-		HashMap<String, ArrayList<Short>> snpgenecombos = new HashMap<>();
+		HashMap<String, ArrayList<Integer>> snpgenecombos = new HashMap<>();
 		
 		
-		short gctr = 0;
+		int gctr = 0;
 		int lctr = 0;
 		while (elems != null) {
 			
-			String gene = Strings.cache(elems[0]);
-			String snp = Strings.cache(elems[1]);
+			String gene = elems[0];
+			String snp = elems[1];
 			
 			if (!geneMap.containsKey(gene)) {
 				geneMap.put(gene, gctr);
+				geneList.add(gene);
 				gctr++;
 				if (gctr < 0) {
 					System.exit(-1);
 				}
 			}
 			
-			short geneId = geneMap.get(gene);
+			Integer geneId = geneMap.get(gene);
 			
 			
-			ArrayList<Short> genes = snpgenecombos.get(snp);
+			ArrayList<Integer> genes = snpgenecombos.get(snp);
 			if (genes == null) {
 				genes = new ArrayList<>();
 			}
@@ -97,17 +114,13 @@ public class LDFromZMat {
 		System.out.println(snpgenecombos.size() + " snps loaded. ");
 		tf.open();
 		
-		
-		ArrayList<String> geneList = new ArrayList<>();
-		geneList.addAll(geneMap.keySet());
-		
 		elems = tf.readLineElems(TextFile.tab);
 		String prevgene = null;
 		TextFile out = null;
 		lctr = 0;
 		while (elems != null) {
-			String gene = Strings.cache(elems[0]);
-			String snp = Strings.cache(elems[1]);
+			String gene = elems[0];
+			String snp = elems[1];
 			
 			if (prevgene == null || !gene.equals(prevgene)) {
 				if (out != null) {
@@ -118,10 +131,10 @@ public class LDFromZMat {
 			
 			prevgene = gene;
 			
-			ArrayList<Short> combos = snpgenecombos.get(snp);
+			ArrayList<Integer> combos = snpgenecombos.get(snp);
 			String[] genes = new String[combos.size()];
 			for (int i = 0; i < genes.length; i++) {
-				genes[i] = geneList.get(i);
+				genes[i] = geneList.get(combos.get(i));
 			}
 			out.writeln(snp + "\t" + Strings.concat(genes, Strings.semicolon));
 			
@@ -146,13 +159,12 @@ public class LDFromZMat {
 							String geneListFile,
 							String referenceAlleleFile,
 							String outloc,
-							Integer minNrVals) throws Exception {
+							Integer minNrVals,
+							boolean writelist,
+							boolean writebinary) throws Exception {
 		
 		boolean run = true;
-		if (!Gpio.exists(genecovariancematrixloc)) {
-			System.out.println("Could not find gene covariance file: " + genecovariancematrixloc);
-			run = false;
-		}
+		
 		if (!Gpio.exists(cohortSelectionFile)) {
 			System.out.println("Could not find cohort selection file: " + cohortSelectionFile);
 			run = false;
@@ -174,7 +186,7 @@ public class LDFromZMat {
 			run = false;
 		}
 		if (!run) {
-			System.out.println("Some run conditions not met.");
+			System.out.println("Some gtfToProbeAnnotationFile conditions not met.");
 			System.exit(-1);
 		}
 		if (!Gpio.exists(outloc)) {
@@ -202,7 +214,7 @@ public class LDFromZMat {
 		
 		System.out.println("Selected " + genesToRun.size() + " genes to calculate LD for.");
 		if (genesToRun.isEmpty()) {
-			System.out.println("No genes found to run");
+			System.out.println("No genes found to gtfToProbeAnnotationFile");
 			System.exit(-1);
 		}
 		
@@ -212,28 +224,38 @@ public class LDFromZMat {
 			TextFile tfcs = new TextFile(cohortSelectionFile, TextFile.R);
 			ArrayList<String> cohortsToInclude = tfcs.readAsArrayList();
 			tfcs.close();
+			System.out.println("Cohorts to include: " + cohortsToInclude.size());
 			
 			for (int c = 0; c < cohortsToInclude.size(); c++) {
 				for (int perm = 1; perm <= 10; perm++) {
 					hashCohortsEuropean.add(cohortsToInclude.get(c) + "-perm-" + perm);
 				}
 			}
+			System.out.println(hashCohortsEuropean.size() + " cohorts/permutation names selected");
 		}
 		
+		System.out.println("Reading reference allele map: " + referenceAlleleFile);
 		HashMap<String, String> referenceAlleleMap = new HashMap<String, String>();
 		{
 			TextFile tf = new TextFile(referenceAlleleFile, TextFile.R);
 			String[] elems = tf.readLineElems(TextFile.tab);
+			int ctr = 0;
 			while (elems != null) {
 				String snp = elems[0];
 				String alleles = elems[1] + ";" + elems[2];
-				referenceAlleleMap.put(new String(snp.getBytes("UTF-8")), Strings.cache(alleles));
+				referenceAlleleMap.put(snp, Strings.cache(alleles));
+				ctr++;
+//                if (ctr % 10000 == 0) {
+//                    System.out.print(ctr + " lines parsed sofar\r");
+//                }
 				elems = tf.readLineElems(TextFile.tab);
 			}
 			tf.close();
+			System.out.println();
 		}
+		System.out.println("Reference alleles loaded for: " + referenceAlleleMap.size() + " snps.");
 		
-		System.out.println("Requested: " + hashCohortsEuropean.size() + " cohorts.");
+		
 		if (hashCohortsEuropean.isEmpty()) {
 			System.out.println("No cohorts specified");
 			System.exit(-1);
@@ -245,20 +267,29 @@ public class LDFromZMat {
 			
 			String geneDef = geneDefLoc + querygene + ".txt.gz";
 			if (!Gpio.exists(geneDef)) {
-				System.out.println("Could not find gene definition: " + geneDef);
+				System.out.println(querygene + "\tCould not find gene definition: " + geneDef);
 				break;
 			} else {
-				LinkedHashSet<String> snpSet = new LinkedHashSet<String>();
+				
+				HashSet<String> snpSet = new HashSet<String>();
 				ArrayList<String> snpList = new ArrayList<>();
 				LinkedHashSet<String> geneSet = new LinkedHashSet<String>();
 				
+				
+				System.out.println(querygene + "\t" + "Loading gene definition: " + geneDef);
+				
 				TextFile tf = new TextFile(geneDef, TextFile.R);
 				String[] elems = tf.readLineElems(TextFile.tab);
+				int sctr = 0;
 				while (elems != null) {
 					String snp = elems[0];
+					if (sctr < 10) {
+						System.out.println(snp);
+					}
+					sctr++;
 					
 					String[] genes = elems[1].split(";");
-					snpSet.add(new String(snp.getBytes("UTF-8")));
+					snpSet.add(snp);
 					
 					for (String gene : genes) {
 						geneSet.add(new String(gene.getBytes("UTF-8")));
@@ -267,6 +298,9 @@ public class LDFromZMat {
 				}
 				tf.close();
 				
+				System.out.println(querygene + "\t" + geneSet.size() + " genes loaded for gene");
+				System.out.println(querygene + "\t" + snpSet.size() + " snps for gene");
+				
 				snpList.addAll(snpSet);
 				
 				double[] weights = null;
@@ -274,6 +308,8 @@ public class LDFromZMat {
 				{
 					DoubleMatrixDataset<String, String> datasetCorr = DoubleMatrixDataset.loadSubsetOfBinaryDoubleData(
 							genecovariancematrixloc, geneSet, geneSet);
+					
+					System.out.println(querygene + "\t" + datasetCorr.rows() + " genes present in gene covariance matrix");
 					
 					//Calculate the factorloadings:
 					Jama.EigenvalueDecomposition eig = eigenValueDecomposition(datasetCorr.getMatrix().toArray());
@@ -310,7 +346,7 @@ public class LDFromZMat {
 						}
 						
 						weights[p] = weight;
-						System.out.println(p + "\t" + datasetCorr.getRowObjects().get(p) + "\t" + weights[p]);
+						System.out.println(querygene + "\t" + p + "\t" + datasetCorr.getRowObjects().get(p) + "\t" + weights[p]);
 					}
 				}
 				
@@ -323,7 +359,8 @@ public class LDFromZMat {
 					String allelefile = zmatloc + genesWithWeights[g] + "-referenceAlleles.txt.gz";
 					
 					if (Gpio.exists(geneToLoad)) {
-						DoubleMatrixDataset<String, String> ds = DoubleMatrixDataset.loadSubsetOfTextDoubleData(zmatloc, '\t', hashCohortsEuropean, snpSet);
+						System.out.println(querygene + "\tLoading gene z-score matrix: " + g + "/" + genesWithWeights.length + "\t" + geneToLoad);
+						DoubleMatrixDataset<String, String> ds = DoubleMatrixDataset.loadSubsetOfTextDoubleData(geneToLoad, '\t', hashCohortsEuropean, snpSet);
 						zmats.add(ds);
 						// flip alleles
 						TextFile tfa = new TextFile(allelefile, TextFile.R);
@@ -370,66 +407,147 @@ public class LDFromZMat {
 				
 				int nrSNPs = snpSet.size();
 				
+				
 				DoubleMatrixDataset<String, String> ldmatrix = new DoubleMatrixDataset<String, String>(nrSNPs, nrSNPs);
+				ldmatrix.getMatrix().assign(Double.NaN);
 				ldmatrix.setRowObjects(snpList);
 				ldmatrix.setColObjects(snpList);
-				TextFile tfout = new TextFile(outloc + querygene + "-list.txt.gz", TextFile.W);
+				System.out.println(querygene + "\tSaving list file here: " + outloc + querygene + "-list.txt.gz");
+				
+				TextFile tfout = null;
+				if (writelist) {
+					tfout = new TextFile(outloc + querygene + "-list.txt.gz", TextFile.W);
+					String header = "SNP1\tSNP2\tNrValues\tNrSamples\tR\tRSq";
+					tfout.writeln(header);
+				}
+//SNP1    SNP2    NrValues        NrSamples       R(PEARSON)      Rsq
+				
 				
 				DoubleMatrix2D matrixObj = ldmatrix.getMatrix();
-				for (int snp1 = 0; snp1 < nrSNPs; snp1++) {
-					String snp1Name = snpList.get(snp1);
-					matrixObj.setQuick(snp1, snp1, 1d);
-					
-					for (int snp2 = snp1 + 1; snp2 < nrSNPs; snp2++) {
-						ArrayList<Double> snp1d = new ArrayList<>();
-						ArrayList<Double> snp2d = new ArrayList<>();
-						ArrayList<Double> weightsd = new ArrayList<>();
-						String snp2Name = snpList.get(snp2);
-						
-						// accumulate data over genes
-						for (int g = 0; g < zmats.size(); g++) {
-							DoubleMatrixDataset<String, String> geneZmat = zmats.get(g);
-							if (geneZmat != null) {
-								Integer snp1id = geneZmat.getHashCols().get(snp1Name);
-								Integer snp2id = geneZmat.getHashCols().get(snp2Name);
-								
-								if (snp1id != null && snp2id != null) {
-									for (int row = 0; row < geneZmat.rows(); row++) {
-										double v1 = geneZmat.getElementQuick(row, snp1id);
-										double v2 = geneZmat.getElementQuick(row, snp2id);
-										
-										if (!Double.isNaN(v1) && !Double.isNaN(v2)) {
-											snp1d.add(v1);
-											snp2d.add(v2);
-											weightsd.add(weights[g]);
-										}
-									}
-								}
-							}
-						}
-						
-						// calculate weighted correlation
-						if (snp1d.size() >= minNrVals) {
-							double[] vals1 = Primitives.toPrimitiveArr(snp1d);
-							double[] vals2 = Primitives.toPrimitiveArr(snp2d);
-							double[] valWeights = Primitives.toPrimitiveArr(weightsd);
-							
-							double corr = JSci.maths.ArrayMath.correlation(vals1, vals2);
-							double weightedCorr = weightedCorrelation(vals1, vals2, valWeights);
-							System.out.println(snp1 + "\t" + snp2 + "\t" + snp1Name + "\t" + snp2Name + "\t" + snp1d.size() + "\t" + corr + "\t" + weightedCorr);
-							tfout.writeln(snp1 + "\t" + snp2 + "\t" + snp1Name + "\t" + snp2Name + "\t" + snp1d.size() + "\t" + corr + "\t" + weightedCorr);
-							matrixObj.setQuick(snp1, snp2, weightedCorr);
-							matrixObj.setQuick(snp2, snp1, weightedCorr);
-						}
-						
+				ProgressBar pb = new ProgressBar(nrSNPs, querygene + " - Calculating correlations:");
+				
+				double[] finalWeights = weights;
+				Integer finalMinNrVals = minNrVals;
+				AtomicInteger ctr = new AtomicInteger();
+				TextFile finalTfout = tfout;
+				IntStream.range(0, nrSNPs).parallel().forEach(v -> {
+					try {
+						run(snpList, v, nrSNPs, zmats, finalWeights, finalMinNrVals, matrixObj, ctr, pb, finalTfout);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				});
+				
+				
+				pb.close();
+				if (writelist) {
+					tfout.close();
+				}
+				System.out.println(querygene + "\tSaving LD matrix here: " + outloc + querygene + "-ldmatrix.txt.gz");
+				
+				
+				// save upper triangle in a binary format
+
+//				if (writebinary) {
+				BinaryFile bf = new BinaryFile(outloc + querygene + "-ldmatrix.bin.gz", BinaryFile.W);
+				bf.writeInt(snpList.size());
+				for (String s : snpList) {
+					bf.writeString(s);
+				}
+				
+				for (int i = 0; i < snpList.size(); i++) {
+					for (int j = i + 1; j < snpList.size(); j++) {
+						float f = (float) ldmatrix.getMatrix().getQuick(i, j);
+						bf.writeFloat(f);
 					}
 				}
-				tfout.close();
+				bf.close();
 				ldmatrix.save(outloc + querygene + "-ldmatrix.txt.gz");
+//				} else {
+//
+//				}
 			}
 		}
 		
 		
+	}
+	
+	
+	public void run(ArrayList<String> snpList, int snp1, int nrSNPs,
+					ArrayList<DoubleMatrixDataset<String, String>> zmats, double[] weights,
+					int minNrVals, DoubleMatrix2D matrixObj, AtomicInteger ctr, ProgressBar pb, TextFile tfout) throws IOException {
+		String snp1Name = snpList.get(snp1);
+		
+		ArrayList<double[]> snp1dd = new ArrayList<>();
+		for (int g = 0; g < zmats.size(); g++) {
+			DoubleMatrixDataset<String, String> geneZmat = zmats.get(g);
+			Integer snp1id = geneZmat.getHashCols().get(snp1Name);
+			if (snp1id == null) {
+				snp1dd.add(null);
+			} else {
+				double[] col1 = geneZmat.getMatrix().viewColumn(snp1id).toArray();
+				snp1dd.add(col1);
+			}
+		}
+		
+		for (int snp2 = snp1 + 1; snp2 < nrSNPs; snp2++) {
+			ArrayList<Double> snp1d = new ArrayList<>();
+			ArrayList<Double> snp2d = new ArrayList<>();
+			ArrayList<Double> weightsd = new ArrayList<>();
+			String snp2Name = snpList.get(snp2);
+			
+			// accumulate data over genes
+			for (int g = 0; g < zmats.size(); g++) {
+				DoubleMatrixDataset<String, String> geneZmat = zmats.get(g);
+				if (geneZmat != null) {
+					double[] col1 = snp1dd.get(g);
+					if (col1 != null) {
+						
+						LinkedHashMap<String, Integer> zmatcolhash = geneZmat.getHashCols();
+						Integer snp2id = zmatcolhash.get(snp2Name);
+						if (snp2id != null) {
+							double[] col2 = geneZmat.getMatrix().viewColumn(snp2id).toArray();
+							
+							for (int row = 0; row < geneZmat.rows(); row++) {
+								double v1 = col1[row]; //col1.get(row); //geneZmat.getElementQuick(row, snp1id);
+								double v2 = col2[row]; //col2.get(row); // geneZmat.getElementQuick(row, snp2id);
+								
+								if (!Double.isNaN(v1) && !Double.isNaN(v2)) {
+									snp1d.add(v1);
+									snp2d.add(v2);
+									weightsd.add(weights[g]);
+								}
+							}
+						}
+					}
+				}
+			}
+			
+			// calculate weighted correlation
+			if (snp1d.size() >= minNrVals) {
+				double[] vals1 = Primitives.toPrimitiveArr(snp1d);
+				double[] vals2 = Primitives.toPrimitiveArr(snp2d);
+				double[] valWeights = Primitives.toPrimitiveArr(weightsd);
+
+//				double corr = JSci.maths.ArrayMath.correlation(vals1, vals2);
+				double weightedCorr = weightedCorrelation(vals1, vals2, valWeights);
+//                            System.out.println(snp1 + "\t" + snp2 + "\t" + snp1Name + "\t" + snp2Name + "\t" + snp1d.size() + "\t" + corr + "\t" + weightedCorr);
+				if (tfout != null) {
+					tfout.writelnsynced(snp1Name + "\t" + snp2Name + "\t" + snp1d.size() + "\t" + snp1d.size() + "\t" + weightedCorr + "\t" + (weightedCorr * weightedCorr));
+				}
+				matrixObj.setQuick(snp1, snp2, weightedCorr);
+//				matrixObj.setQuick(snp2, snp1, weightedCorr);
+			}
+		}
+		
+		matrixObj.setQuick(snp1, snp1, 1d);
+		for (int snp2 = snp1 + 1; snp2 < nrSNPs; snp2++) {
+			double weightedCorr = matrixObj.getQuick(snp1, snp2);
+			matrixObj.setQuick(snp2, snp1, weightedCorr);
+		}
+		
+		ctr.getAndIncrement();
+		pb.set(ctr.get());
 	}
 	
 	public double weightedCorrelation(double[] x, double[] y, double[] weights) {

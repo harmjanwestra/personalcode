@@ -35,7 +35,7 @@ public class CompareLDForNeighboringGenes {
 		
 		CompareLDForNeighboringGenes g = new CompareLDForNeighboringGenes();
 		try {
-//			g.run(args[0], args[1], args[2]);
+//			g.gtfToProbeAnnotationFile(args[0], args[1], args[2]);
 			g.run(ludefile, hjfile, out);
 		} catch (IOException e) {
 			e.printStackTrace();

@@ -17,7 +17,7 @@
         <dependency>
             <groupId>nl.systemsgenetics</groupId>
             <artifactId>eqtl-mapping-pipeline</artifactId>
-            <version>1.4.0-SNAPSHOT</version>
+            <version>1.4.1-SNAPSHOT</version>
         </dependency>
 
         <dependency>
@@ -44,7 +44,7 @@
                     </descriptorRefs>
                     <archive>
                         <manifest>
-                            <mainClass>nl.harmjanwestra.playground.cis.LDFromZMat</mainClass>
+                            <mainClass>nl.harmjanwestra.playground.methylation.RemoveNaNs</mainClass>
                             <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
                             <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
                         </manifest>

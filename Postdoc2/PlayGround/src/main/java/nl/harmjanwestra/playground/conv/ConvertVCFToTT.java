@@ -18,7 +18,7 @@ public class ConvertVCFToTT {
         ConvertVCFToTT v = new ConvertVCFToTT();
         boolean writegenotypes = true;
         boolean parsevcf = true;
-        boolean useAD = false;
+        boolean useAD = true;
         try {
             v.run(args[0], args[1], parsevcf, writegenotypes, useAD);
         } catch (IOException e) {

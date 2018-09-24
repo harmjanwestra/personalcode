@@ -4,9 +4,11 @@ import cern.colt.matrix.tdouble.DoubleMatrix1D;
 import cern.colt.matrix.tdouble.DoubleMatrix2D;
 import cern.colt.matrix.tdouble.impl.DenseDoubleMatrix2D;
 import com.itextpdf.text.DocumentException;
+import nl.harmjanwestra.playground.cis.DensityGraphPanel;
 import nl.harmjanwestra.utilities.graphics.Grid;
 import nl.harmjanwestra.utilities.graphics.Range;
 import nl.harmjanwestra.utilities.graphics.panels.ScatterplotPanel;
+import org.apache.commons.math3.stat.correlation.PearsonsCorrelation;
 import umcg.genetica.console.ProgressBar;
 import umcg.genetica.io.text.TextFile;
 import umcg.genetica.io.trityper.EQTL;
@@ -16,6 +18,7 @@ import umcg.genetica.math.stats.Descriptives;
 import umcg.genetica.util.Primitives;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -25,7 +28,7 @@ public class CompareCorrelations {
 	public static void main(String[] args) {
 		CompareCorrelations c = new CompareCorrelations();
 		String correlationdata = "D:\\Sync\\SyncThing\\Postdoc2\\2018-02-eQTMPredict\\2018-05-15-RNACpGCorrelationComparison\\correlationData.txt.gz";
-		String plotout = "D:\\Sync\\SyncThing\\Postdoc2\\2018-02-eQTMPredict\\2018-05-15-RNACpGCorrelationComparison\\plot.png";
+		String plotout = "D:\\Sync\\SyncThing\\Postdoc2\\2018-02-eQTMPredict\\2018-05-15-RNACpGCorrelationComparison\\plot-density.png";
 		
 		try {
 			c.plot(correlationdata, plotout);
@@ -78,13 +81,21 @@ public class CompareCorrelations {
 		
 		System.out.println(x.size() + " data points loaded");
 		
+		PearsonsCorrelation correl = new PearsonsCorrelation();
+		double r = correl.correlation(Primitives.toPrimitiveArr(x), Primitives.toPrimitiveArr(y));
+		double rsq = r * r;
 		Grid g = new Grid(500, 500, 1, 1, 100, 100);
-		ScatterplotPanel p = new ScatterplotPanel(1, 1);
-		p.setAlpha(0.1f);
+		
+		DecimalFormat format = new DecimalFormat("###,###,###,###");
+		DecimalFormat format2 = new DecimalFormat("#.###");
+		DensityGraphPanel p = new DensityGraphPanel(1, 1);
+//		p.setAlpha(0.1f);
 		p.setData(Primitives.toPrimitiveArr(x), Primitives.toPrimitiveArr(y));
 		p.setDataRange(new Range(-1, -1, 1, 1));
 		p.setLabels("RNA-correl", "CpG-correl");
 		p.setPlotElems(true, false);
+		p.setTitle("Correlation (rsq): " + format2.format(rsq) + " (n=" + format.format(x.size()) + ")");
+		
 		g.addPanel(p);
 		
 		g.draw(plotout);

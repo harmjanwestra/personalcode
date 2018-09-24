@@ -43,6 +43,7 @@ public class LDValidator {
 		
 		snpannot = args[0];
 		refgenome = args[1];
+		
 		String ldfile = args[2];
 		String output = args[3];
 		if (args.length > 4) {
@@ -156,24 +157,30 @@ public class LDValidator {
 			if (snpf1 != null && snpf2 != null) {
 				if (prevsnp == null || !snp1.equals(prevsnp)) {
 					
-					if (tabix == null || !prevsnpObj.getChromosome().equals(snpf1.getChromosome())) {
-						String vcffile = refgenome.replaceAll("CHR", "" + snpf1.getChromosome().getNumber());
-						tabix = new VCFTabix(vcffile);
-						if (filter != null) {
-							samplefilter = tabix.getSampleFilter(filter);
-						}
-					}
-					
-					prevsnpObj = snpf1;
-					prevsnp = snp1;
-					VCFVariant var1 = null;
-					if (snpToVariant.get(snp1) == null) {
-						var1 = tabix.getVariant(snpf1, samplefilter);
-						snpToVariant.put(snp1, var1);
+					if (snpToVariant.containsKey(snp1)) {
+						prevsnp1var = snpToVariant.get(snp1);
+						prevsnp = snp1;
 					} else {
-						var1 = snpToVariant.get(snp1);
+						
+						if (tabix == null || !prevsnpObj.getChromosome().equals(snpf1.getChromosome())) {
+							String vcffile = refgenome.replaceAll("CHR", "" + snpf1.getChromosome().getNumber());
+							tabix = new VCFTabix(vcffile);
+							if (filter != null) {
+								samplefilter = tabix.getSampleFilter(filter);
+							}
+						}
+						
+						prevsnpObj = snpf1;
+						prevsnp = snp1;
+						VCFVariant var1 = null;
+						if (snpToVariant.get(snp1) == null) {
+							var1 = tabix.getVariant(snpf1, samplefilter);
+							snpToVariant.put(snp1, var1);
+						} else {
+							var1 = snpToVariant.get(snp1);
+						}
+						prevsnp1var = var1;
 					}
-					prevsnp1var = var1;
 				}
 				VCFVariant snp2var = null;
 				if (snpToVariant.get(snp2) == null) {
@@ -194,7 +201,7 @@ public class LDValidator {
 			}
 			elems = tf.readLineElems(TextFile.tab);
 			q++;
-			if (q % 10000 == 0) {
+			if (q % 100000 == 0) {
 				System.out.print("\r" + q + " lines processed out of " + c + " : " + ((double) q / c));
 			}
 		}
@@ -257,8 +264,10 @@ public class LDValidator {
 			Double xval = Double.parseDouble(elems[xpos]);
 			Double yval = Double.parseDouble(elems[ypos]);
 			
-			x.add(xval);
-			y.add(yval);
+			if (!Double.isNaN(xval) && !Double.isNaN(yval)) {
+				x.add(xval);
+				y.add(yval);
+			}
 			
 			ctr++;
 			if (ctr % 10000 == 0) {
@@ -275,7 +284,7 @@ public class LDValidator {
 		
 		DensityGraphPanel p = new DensityGraphPanel(1, 1);
 		p.setPlotElems(true, false);
-		
+		p.setAlpha(0.1f);
 		p.setLabels("eQTLGen", "1KG");
 		p.setDataRange(new Range(0, 0, 1, 1));
 		p.setData(Primitives.toPrimitiveArr(x), Primitives.toPrimitiveArr(y));
@@ -283,7 +292,7 @@ public class LDValidator {
 		
 		PearsonsCorrelation c = new PearsonsCorrelation();
 		double corr = c.correlation(Primitives.toPrimitiveArr(x), Primitives.toPrimitiveArr(y));
-		p.setTitle("Pearson correlation: " + corr);
+		p.setTitle("Pearson correlation: " + corr + ", n=" + x.size());
 		System.out.println("Pearson correlation: " + corr);
 		grid.addPanel(p);
 		grid.draw(out);

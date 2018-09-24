@@ -16,7 +16,7 @@ public class CreateGTExCisSummaryTable {
         CreateGTExCisSummaryTable c = new CreateGTExCisSummaryTable();
 
         try {
-            // c.run(infile, false);
+            // c.gtfToProbeAnnotationFile(infile, false);
             c.run(trans, true);
         } catch (IOException e) {
             e.printStackTrace();
