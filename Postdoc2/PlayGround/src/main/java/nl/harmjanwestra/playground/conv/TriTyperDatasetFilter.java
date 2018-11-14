@@ -76,7 +76,10 @@ public class TriTyperDatasetFilter {
         int nrBytesToRead = inds.length * 2;
         pb = new ProgressBar(snpsToKeep.size(), "Writing SNPs.");
         for (int i = 0; i < snpsToKeep.size(); i++) {
-            long seekLoc = (long) i * (long) nrBytesToRead;
+
+            Integer snpId = snpsToKeep.get(i);
+
+            long seekLoc = (long) snpId * (long) nrBytesToRead;
             long seekEnd = seekLoc + (long) (inds.length * 2);
 
             rf.seek(seekLoc);
@@ -84,8 +87,8 @@ public class TriTyperDatasetFilter {
             rf.read(data);
             bf.write(data);
 
-            snpout.writeln(snps[i]);
-            snpmapout.writeln(d.getChr(i) + "\t" + d.getChrPos(i) + "\t" + snps[i]);
+            snpout.writeln(snps[snpId]);
+            snpmapout.writeln(d.getChr(snpId) + "\t" + d.getChrPos(snpId) + "\t" + snps[snpId]);
             pb.iterate();
         }
         pb.close();

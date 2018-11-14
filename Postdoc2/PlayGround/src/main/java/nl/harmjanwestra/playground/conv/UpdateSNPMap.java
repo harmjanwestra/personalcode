@@ -107,17 +107,23 @@ public class UpdateSNPMap {
 
             String[] elems = ln.split(":");
             Chromosome chr = Chromosome.parseChr(elems[0]);
-            Integer pos = Integer.parseInt(elems[1]);
+            String[] poselems = elems[1].split("_");
+            Integer pos = Integer.parseInt(poselems[0]);
 
             HashMap<Integer, String> set = posToRs.get(chr);
             String rs = set.get(pos);
             if (rs == null) {
 
-                tfosnps.writeln(chr.getNumber() + ":" + pos);
-                tfosnpmap.writeln(chr.getNumber() + "\t" + pos + "\t" + chr.getNumber() + ":" + pos);
+                tfosnps.writeln(ln);
+                tfosnpmap.writeln(chr.getNumber() + "\t" + pos + "\t" + ln);
             } else {
-                tfosnps.writeln(rs);
-                tfosnpmap.writeln(chr.getNumber() + "\t" + pos + "\t" + rs);
+                if (poselems.length > 1) {
+                    tfosnps.writeln(rs + "_" + poselems[1]);
+                    tfosnpmap.writeln(chr.getNumber() + "\t" + pos + "\t" + rs + "_" + poselems[1]);
+                } else {
+                    tfosnps.writeln(rs);
+                    tfosnpmap.writeln(chr.getNumber() + "\t" + pos + "\t" + rs);
+                }
             }
 
             ln = tf.readLine();

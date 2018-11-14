@@ -35,7 +35,7 @@ public class CompareMultipleTissues {
 //            c.run(tissues, basedir, compdir, outputfilename);
             String eqtlgenb38 = "D:\\Sync\\SyncThing\\Postdoc2\\2018-05-eQTLMeta\\data\\2018-05-22-assoc\\cis\\2018-01-31-cis-eQTLsFDR0.05-ProbeLevel-CohortInfoRemoved-b38-topfxpergene.txt.gz";
             basedir = "D:\\Sync\\SyncThing\\Postdoc2\\2018-04-BioGen\\data\\2018-08-02-TargetALS\\ciseqtls\\bloodcombos";
-            outputfilename = "D:\\Sync\\SyncThing\\Postdoc2\\2018-04-BioGen\\data\\2018-08-02-TargetALS\\ciseqtls\\eqtlgencom-fdr.png";
+            outputfilename = "D:\\Sync\\SyncThing\\Postdoc2\\2018-04-BioGen\\data\\2018-08-02-TargetALS\\ciseqtls\\eqtlgencom-fdr.pdf";
             c.compareWithEQTLGen(basedir, eqtlgenb38, tissues, outputfilename);
         } catch (IOException e) {
             e.printStackTrace();

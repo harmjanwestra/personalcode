@@ -22,8 +22,12 @@ public class Merge450KData {
 				"S:\\projects\\2018-methylation\\code\\450K_DataProcessing\\ADDITIONAL_INFO\\ProbeFiltering\\ProbesBindingNonOptimal\\Source&BSProbesMappingMultipleTimesOrNotBothToBSandNormalGenome.txt"
 		};
 
+
 //		String infolder = "S:\\projects\\2018-methylation\\GPL13534_450k_OUT\\";
-		String probelistfile = args[0]; //"S:\\projects\\2018-methylation\\GPL13534_450k_probelist.txt";
+		if (args.length < 3) {
+			System.out.println("Usage: probelist infolder outfile");
+		} else {
+			String probelistfile = args[0]; //"S:\\projects\\2018-methylation\\GPL13534_450k_probelist.txt";
 //		try {
 //			m.makeprobelist(infolder, probelistfile, exclusion);
 //		} catch (IOException e) {
@@ -31,14 +35,14 @@ public class Merge450KData {
 //		}
 
 //		String probelistfile = "";
-		String infolder = args[1]; //"S:\\projects\\2018-methylation\\GPL13534_450k_OUT\\";
-		String outfile = args[2]; // "S:\\projects\\2018-methylation\\GPL13534_450k_OUT_Merged\\FromIdat.txt.gz";
-		
-		
-		try {
-			m.run(probelistfile, infolder, outfile);
-		} catch (IOException e) {
-			e.printStackTrace();
+			String infolder = args[1]; //"S:\\projects\\2018-methylation\\GPL13534_450k_OUT\\";
+			String outfile = args[2]; // "S:\\projects\\2018-methylation\\GPL13534_450k_OUT_Merged\\FromIdat.txt.gz";
+			
+			try {
+				m.run(probelistfile, infolder, outfile);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 	
@@ -151,11 +155,14 @@ public class Merge450KData {
 			
 			// GSE100134_T1_Grn_M_Signal.txt.gz  GSE100134_T1_Grn_U_Signal.txt.gz  GSE100134_T1_Red_M_Signal.txt.gz  GSE100134_T1_Red_U_Signal.txt.gz  GSE100134_T2_M_Signal.txt.gz  GSE100134_T2_U_Signal.txt.gz
 			
+			String gse = "";
+			
 			HashSet<String> uniqueSamples = new HashSet<String>();
 			for (File f : list) {
 				if (f.getName().endsWith("T1_Grn_M_Signal.txt.gz")) {
 					m1grn = DoubleMatrixDataset.loadDoubleData(f.getPath());
 					uniqueSamples.addAll(m1grn.getColObjects());
+					gse = f.getName().replaceAll("_T1_Grn_M_Signal.txt.gz", "");
 				} else if (f.getName().endsWith("T1_Grn_U_Signal.txt.gz")) {
 					u1grn = DoubleMatrixDataset.loadDoubleData(f.getPath());
 					uniqueSamples.addAll(u1grn.getColObjects());
@@ -172,6 +179,7 @@ public class Merge450KData {
 					u2 = DoubleMatrixDataset.loadDoubleData(f.getPath());
 					uniqueSamples.addAll(u2.getColObjects());
 				}
+				
 			}
 			
 			// get a list of samples
@@ -220,6 +228,7 @@ public class Merge450KData {
 					}
 				});
 			}
+			
 			System.out.println("Indexing T2");
 			int[] m2tou = new int[m2.getRowObjects().size()];
 			int[] m2ind = new int[probeHashs.size()];
@@ -251,17 +260,17 @@ public class Merge450KData {
 			DoubleMatrixDataset<String, String> finalM = m2;
 			DoubleMatrixDataset<String, String> finalU = u2;
 			AtomicInteger ctr = new AtomicInteger();
+			String finalGse = gse;
 			allsamples.stream().parallel().forEach(sample ->
 					{
 						try {
-							
 							Integer vm1grn = finalM1grn.getHashCols().get(sample);
 							Integer vu1grn = finalU1grn.getHashCols().get(sample);
 							Integer vm1red = finalM1red.getHashCols().get(sample);
 							Integer vu1red = finalU1red.getHashCols().get(sample);
 							Integer vm2 = finalM.getHashCols().get(sample);
 							Integer vu2 = finalU.getHashCols().get(sample);
-							
+
 //							System.out.println("Sample: " + sample);
 							// now iterate probes
 //							System.out.println(sample + "\tinit");
@@ -277,7 +286,7 @@ public class Merge450KData {
 									output[index] = mval;
 								}
 							}
-							
+
 //							System.out.println(sample + "\tdone init m1 grn");
 							int nrt1red = finalM1red.getRowObjects().size();
 							for (int i = 0; i < nrt1red; i++) {
@@ -298,9 +307,12 @@ public class Merge450KData {
 									output[index] = mval;
 								}
 							}
-							
+
 //							System.out.println(sample + "\tdone init m2");
-							out.writelnsynced(sample + "\t" + Strings.concat(output, Strings.tab));
+							String mergedsample = finalGse + "_" + sample;
+							out.writelnsynced(mergedsample + "\t" + Strings.concat(output, Strings.tab));
+							
+							System.out.println("Writing: " + mergedsample);
 							
 							pb.set(ctr.getAndIncrement());
 						} catch (NoSuchElementException e) {

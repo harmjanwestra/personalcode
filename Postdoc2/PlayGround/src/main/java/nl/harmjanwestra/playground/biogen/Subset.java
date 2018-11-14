@@ -28,18 +28,36 @@ public class Subset {
             String[] mapfile = new String[]{
                     "D:\\Sync\\SyncThing\\Postdoc2\\2018-04-BioGen\\data\\2018-08-02-AMPAd\\linksToRNA\\MayoCBE_final.txt",
                     "D:\\Sync\\SyncThing\\Postdoc2\\2018-04-BioGen\\data\\2018-08-02-AMPAd\\linksToRNA\\MayoTCX_final.txt",
-                    "D:\\Sync\\SyncThing\\Postdoc2\\2018-04-BioGen\\data\\2018-08-02-AMPAd\\linksToRNA\\MSBB_final.txt",
+//                    "D:\\Sync\\SyncThing\\Postdoc2\\2018-04-BioGen\\data\\2018-08-02-AMPAd\\linksToRNA\\MSBB_final.txt",
                     "D:\\Sync\\SyncThing\\Postdoc2\\2018-04-BioGen\\data\\2018-08-02-AMPAd\\linksToRNA\\ROSMAP_final.txt"
+            };
+            String[] rnaoutliers = new String[]{
+                    "D:\\Sync\\SyncThing\\Postdoc2\\2018-04-BioGen\\data\\2018-10-09-AMPAD\\mayocbe-outliers.txt",
+                    "D:\\Sync\\SyncThing\\Postdoc2\\2018-04-BioGen\\data\\2018-10-09-AMPAD\\mayotcx-outliers.txt",
+                    "D:\\Sync\\SyncThing\\Postdoc2\\2018-04-BioGen\\data\\2018-10-09-AMPAD\\rosmap-outliers.txt",
+            };
+
+            for (int i = 0; i < mapfile.length; i++) {
+
+//                s.filterdups(mapfile[i], europeanfilter, duplicateDNAs, rnaoutliers[i]);
+            }
+
+            // CMC
+            europeanfilter = "D:\\Sync\\SyncThing\\Postdoc2\\2018-04-BioGen\\data\\2018-10-09-CMC\\genotypepca\\CMC-Europeans-gtids.txt";
+            duplicateDNAs = "D:\\Sync\\SyncThing\\Postdoc2\\2018-04-BioGen\\data\\2018-10-09-CMC\\geneticsimilarity\\dnadup.txt";
+            String rnastoremove = "D:\\Sync\\SyncThing\\Postdoc2\\2018-04-BioGen\\data\\2018-10-09-CMC\\outliers.txt";
+            mapfile = new String[]{
+                    "D:\\Sync\\SyncThing\\Postdoc2\\2018-04-BioGen\\data\\2018-10-09-CMC\\linkfiles\\genotype-rna-CMC.txt"
             };
 
             for (String map : mapfile) {
-//                s.filterdups(map, europeanfilter, dupfilter);
+                s.filterdups(map, europeanfilter, duplicateDNAs, rnastoremove);
             }
 
             // TargetALS
             europeanfilter = "D:\\Sync\\SyncThing\\Postdoc2\\2018-04-BioGen\\data\\2018-08-02-TargetALS\\TargetALS-europeans.txt";
             duplicateDNAs = "D:\\Sync\\SyncThing\\Postdoc2\\2018-04-BioGen\\data\\2018-08-02-TargetALS\\geneticsimilarity\\duplicates.txt";
-            String rnastoremove = "D:\\Sync\\SyncThing\\Postdoc2\\2018-04-BioGen\\data\\2018-08-02-TargetALS\\rnapca\\outliers-pc1lt0.041.txt";
+             rnastoremove = "D:\\Sync\\SyncThing\\Postdoc2\\2018-04-BioGen\\data\\2018-08-02-TargetALS\\rnapca\\outliers-pc1lt0.041.txt";
             mapfile = new String[]{
 
                     "D:\\Sync\\SyncThing\\Postdoc2\\2018-04-BioGen\\data\\2018-08-02-TargetALS\\gtepertissue\\GTE-Cell_line.txt",
@@ -51,7 +69,7 @@ public class Subset {
                     "D:\\Sync\\SyncThing\\Postdoc2\\2018-04-BioGen\\data\\2018-08-02-TargetALS\\gtepertissue\\GTE-SpinalCord.txt"
             };
             for (String map : mapfile) {
-                s.filterdups(map, europeanfilter, duplicateDNAs, rnastoremove);
+//                s.filterdups(map, europeanfilter, duplicateDNAs, rnastoremove);
             }
 
 
