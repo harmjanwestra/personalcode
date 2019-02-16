@@ -7,6 +7,7 @@ import nl.harmjanwestra.utilities.graphics.panels.ScatterplotPanel;
 import nl.harmjanwestra.utilities.graphics.themes.DefaultTheme;
 import nl.harmjanwestra.utilities.legacy.genetica.containers.Triple;
 import nl.harmjanwestra.utilities.legacy.genetica.io.text.TextFile;
+import umcg.genetica.math.stats.ZScores;
 import umcg.genetica.util.Primitives;
 
 import java.awt.*;
@@ -21,8 +22,10 @@ public class PCAPlot {
 	public static void main(String[] args) {
 		String knownClasses = "D:\\Sync\\SyncThing\\Data\\Ref\\1kg-p3v5a-sampleinfo.txt";
 		String superclasses = "D:\\Sync\\SyncThing\\Data\\Ref\\1kg-p3v5a-superpopulations.txt";
-		String pcafile = "D:\\Sync\\SyncThing\\Postdoc2\\2018-04-BioGen\\data\\2018-09-27-GTEx\\genotypepca\\plink.eigenvec";
-		String output = "D:\\Sync\\SyncThing\\Postdoc2\\2018-04-BioGen\\data\\2018-09-27-GTEx\\genotypepca\\GTEx-";
+		String pcafile = "D:\\Sync\\SyncThing\\Postdoc2\\2018-04-BioGen\\data\\2018-08-02-AMPAd\\genotypepca\\plink.eigenvec.txt";
+		String output = "D:\\Sync\\SyncThing\\Postdoc2\\2018-04-BioGen\\data\\2018-08-02-AMPAd\\genotypepca\\AMPAD-";
+//		String pcafile = "D:\\Sync\\SyncThing\\Postdoc2\\2018-04-BioGen\\data\\2018-09-27-GTEx\\genotypepca\\plink.eigenvec";
+//		String output = "D:\\Sync\\SyncThing\\Postdoc2\\2018-04-BioGen\\data\\2018-09-27-GTEx\\genotypepca\\GTEx-";
 //        String pcafile = "D:\\Sync\\SyncThing\\Postdoc2\\2018-04-BioGen\\data\\2018-08-02-TargetALS\\plink.eigenvec.txt";
 //        String output = "D:\\Sync\\SyncThing\\Postdoc2\\2018-04-BioGen\\data\\2018-08-02-TargetALS\\TargetALS-";
 //        String pcafile = "D:\\Sync\\SyncThing\\Postdoc2\\2018-04-BioGen\\data\\2018-10-09-CMC\\genotypepca\\plink.eigenvec.txt";
@@ -343,6 +346,8 @@ public class PCAPlot {
 						ctr.put(pop2, ct);
 						sumd.put(pop2, sum);
 					}
+					
+					
 					
 					int maxct = 0;
 					String maxpop = null;
