@@ -1,6 +1,5 @@
 package nl.harmjanwestra.playground.methylation.binarymatrixtools;
 
-import nl.harmjanwestra.utilities.legacy.genetica.io.Gpio;
 import umcg.genetica.text.Strings;
 
 import java.io.File;

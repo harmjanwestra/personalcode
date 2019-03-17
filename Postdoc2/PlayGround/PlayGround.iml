@@ -34,11 +34,16 @@
     <orderEntry type="library" name="Maven: nl.systemsgenetics:Genotype-IO:1.0.6-SNAPSHOT" level="project" />
     <orderEntry type="library" name="Maven: commons-io:commons-io:2.4" level="project" />
     <orderEntry type="library" name="Maven: org.utgenome.thirdparty:picard:1.102.0" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.ant:ant:1.8.4" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.ant:ant-launcher:1.8.4" level="project" />
+    <orderEntry type="library" name="Maven: org.xerial.snappy:snappy-java:1.1.0" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.commons:commons-jexl:2.1.1" level="project" />
     <orderEntry type="library" name="Maven: org.apache.ant:ant-apache-bcel:1.8.4" level="project" />
     <orderEntry type="library" name="Maven: bcel:bcel:5.1" level="project" />
     <orderEntry type="library" name="Maven: regexp:regexp:1.2" level="project" />
     <orderEntry type="library" name="Maven: org.mockito:mockito-all:1.8.4" level="project" />
     <orderEntry type="library" name="Maven: org.apache.commons:commons-lang3:3.1" level="project" />
+    <orderEntry type="library" name="Maven: com.google.guava:guava:14.0.1" level="project" />
     <orderEntry type="library" name="Maven: com.kenai.nbpwr:edu-umd-cs-findbugs-annotations:1.3.2-201002241900" level="project" />
     <orderEntry type="library" name="Maven: net.sourceforge.findbugs:annotations:1.3.2" level="project" />
     <orderEntry type="library" name="Maven: com.google.code.findbugs:jsr305:2.0.1" level="project" />
@@ -46,7 +51,6 @@
     <orderEntry type="library" name="Maven: com.facebook.presto:presto-array:0.188-SNAPSHOT" level="project" />
     <orderEntry type="library" name="Maven: it.unimi.dsi:fastutil:6.5.9" level="project" />
     <orderEntry type="library" name="Maven: com.facebook.presto.orc:orc-protobuf:5" level="project" />
-    <orderEntry type="library" name="Maven: com.facebook.presto.hive:hive-apache:1.2.0-2" level="project" />
     <orderEntry type="library" name="Maven: io.airlift:slice:0.32" level="project" />
     <orderEntry type="library" name="Maven: io.airlift:units:1.0" level="project" />
     <orderEntry type="library" name="Maven: io.airlift:log:0.155" level="project" />
@@ -117,7 +121,9 @@
     <orderEntry type="library" name="Maven: jdom:jdom:1.0" level="project" />
     <orderEntry type="library" name="Maven: commons-jxpath:commons-jxpath:1.3" level="project" />
     <orderEntry type="library" name="Maven: net.sf.trove4j:trove4j:3.0.3" level="project" />
-    <orderEntry type="library" name="Maven: nl.systemsgenetics:eqtl-mapping-pipeline:1.4.1-SNAPSHOT" level="project" />
+    <orderEntry type="library" name="Maven: com.opencsv:opencsv:4.0" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.commons:commons-text:1.1" level="project" />
+    <orderEntry type="library" name="Maven: nl.systemsgenetics:eqtl-mapping-pipeline:1.4.3-SNAPSHOT" level="project" />
     <orderEntry type="library" name="Maven: commons-cli:commons-cli:1.4" level="project" />
     <orderEntry type="library" name="Maven: commons-beanutils:commons-beanutils:1.9.3" level="project" />
     <orderEntry type="library" name="Maven: commons-codec:commons-codec:1.11" level="project" />
@@ -127,23 +133,14 @@
     <orderEntry type="library" name="Maven: net.rforge:REngine:0.6-8.1" level="project" />
     <orderEntry type="library" name="Maven: net.sf.opencsv:opencsv:2.3" level="project" />
     <orderEntry type="library" name="Maven: org.apache.commons:commons-collections4:4.1" level="project" />
-    <orderEntry type="library" name="Maven: nl.harmjanwestra:Utilities:1.0-SNAPSHOT" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.logging.log4j:log4j-1.2-api:2.1" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.logging.log4j:log4j-api:2.1" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.logging.log4j:log4j-core:2.1" level="project" />
-    <orderEntry type="library" name="Maven: com.github.samtools:htsjdk:1.134" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.commons:commons-jexl:2.1.1" level="project" />
-    <orderEntry type="library" name="Maven: org.xerial.snappy:snappy-java:1.0.3-rc3" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.commons:commons-compress:1.4.1" level="project" />
-    <orderEntry type="library" name="Maven: org.tukaani:xz:1.5" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.ant:ant:1.8.2" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.ant:ant-launcher:1.8.2" level="project" />
-    <orderEntry type="library" name="Maven: org.testng:testng:6.8.8" level="project" />
-    <orderEntry type="library" name="Maven: org.beanshell:bsh:2.0b4" level="project" />
-    <orderEntry type="library" name="Maven: com.beust:jcommander:1.27" level="project" />
+    <orderEntry type="library" name="Maven: javax.xml.bind:jaxb-api:2.2.11" level="project" />
+    <orderEntry type="library" name="Maven: com.sun.xml.bind:jaxb-core:2.2.11" level="project" />
+    <orderEntry type="library" name="Maven: com.sun.xml.bind:jaxb-impl:2.2.11" level="project" />
+    <orderEntry type="library" name="Maven: javax.activation:activation:1.1.1" level="project" />
+    <orderEntry type="library" name="Maven: net.jpountz.lz4:lz4:1.3.0" level="project" />
     <orderEntry type="library" name="Maven: com.goldmansachs:gs-collections:6.1.0" level="project" />
     <orderEntry type="library" name="Maven: com.goldmansachs:gs-collections-api:6.1.0" level="project" />
-    <orderEntry type="library" name="Maven: com.google.guava:guava:18.0" level="project" />
-    <orderEntry type="library" name="Maven: net.jpountz.lz4:lz4:1.3.0" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.commons:commons-compress:1.4.1" level="project" />
+    <orderEntry type="library" name="Maven: org.tukaani:xz:1.0" level="project" />
   </component>
 </module>

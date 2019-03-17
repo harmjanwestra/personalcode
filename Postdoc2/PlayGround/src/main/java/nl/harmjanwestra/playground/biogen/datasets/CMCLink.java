@@ -1,7 +1,8 @@
 package nl.harmjanwestra.playground.biogen.datasets;
 
-import nl.harmjanwestra.utilities.legacy.genetica.containers.Pair;
-import nl.harmjanwestra.utilities.legacy.genetica.io.text.TextFile;
+
+import umcg.genetica.containers.Pair;
+import umcg.genetica.io.text.TextFile;
 
 import java.io.IOException;
 import java.util.ArrayList;

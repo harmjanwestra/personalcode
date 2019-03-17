@@ -1,11 +1,11 @@
 package nl.harmjanwestra.playground.biogen;
 
 import com.itextpdf.text.DocumentException;
-import nl.harmjanwestra.utilities.graphics.Grid;
-import nl.harmjanwestra.utilities.graphics.panels.ScatterplotPanel;
-import nl.harmjanwestra.utilities.graphics.themes.DefaultTheme;
-import nl.harmjanwestra.utilities.legacy.genetica.containers.Pair;
-import nl.harmjanwestra.utilities.legacy.genetica.io.text.TextFile;
+import umcg.genetica.containers.Pair;
+import umcg.genetica.graphics.Grid;
+import umcg.genetica.graphics.panels.ScatterplotPanel;
+import umcg.genetica.graphics.themes.DefaultTheme;
+import umcg.genetica.io.text.TextFile;
 
 import java.awt.*;
 import java.io.IOException;

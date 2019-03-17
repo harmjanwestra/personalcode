@@ -1,18 +1,18 @@
 package nl.harmjanwestra.playground.cis.gtex;
 
-import nl.harmjanwestra.utilities.annotation.gtf.GTFAnnotation;
-import nl.harmjanwestra.utilities.enums.Chromosome;
-import nl.harmjanwestra.utilities.features.FeatureComparator;
-import nl.harmjanwestra.utilities.features.Gene;
-import nl.harmjanwestra.utilities.features.SNPFeature;
-import nl.harmjanwestra.utilities.graphics.Grid;
-import nl.harmjanwestra.utilities.graphics.Range;
-import nl.harmjanwestra.utilities.graphics.panels.ScatterplotPanel;
-import nl.harmjanwestra.utilities.math.DetermineLD;
-import nl.harmjanwestra.utilities.vcf.VCFTabix;
-import nl.harmjanwestra.utilities.vcf.VCFVariant;
+import nl.harmjanwestra.playground.legacy.GTFAnnotation;
+import nl.harmjanwestra.playground.legacy.vcf.DetermineLD;
+import nl.harmjanwestra.playground.legacy.vcf.VCFTabix;
+import nl.harmjanwestra.playground.legacy.vcf.VCFVariant;
 import org.apache.commons.io.comparator.NameFileComparator;
 import umcg.genetica.containers.Pair;
+import umcg.genetica.enums.Chromosome;
+import umcg.genetica.features.FeatureComparator;
+import umcg.genetica.features.Gene;
+import umcg.genetica.features.SNPFeature;
+import umcg.genetica.graphics.Grid;
+import umcg.genetica.graphics.Range;
+import umcg.genetica.graphics.panels.ScatterplotPanel;
 import umcg.genetica.io.text.TextFile;
 import umcg.genetica.io.trityper.EQTL;
 import umcg.genetica.io.trityper.QTLTextFile;
@@ -749,7 +749,7 @@ public class GTExRepl {
 						// check LD
 						SNPFeature snpfeat2 = new SNPFeature(Chromosome.parseChr("" + chr), testqtl.getRsChrPos(), testqtl.getRsChrPos());
 						VCFVariant var2 = tabixref.getVariant(snpfeat2, filter);
-						nl.harmjanwestra.utilities.legacy.genetica.containers.Pair<Double, Double> ldvals = ldcalc.getLD(var1, var2);
+						Pair<Double, Double> ldvals = ldcalc.getLD(var1, var2);
 						rsq = ldvals.getRight();
 					}
 				}

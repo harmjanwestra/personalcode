@@ -1,7 +1,6 @@
 package nl.harmjanwestra.playground;
 
-import it.unimi.dsi.fastutil.Hash;
-import nl.harmjanwestra.utilities.legacy.genetica.io.text.TextFile;
+import umcg.genetica.io.text.TextFile;
 import umcg.genetica.text.Strings;
 
 import java.io.IOException;

@@ -1,11 +1,12 @@
 package nl.harmjanwestra.playground.cis;
 
-import nl.harmjanwestra.utilities.enums.Chromosome;
-import nl.harmjanwestra.utilities.legacy.genetica.io.text.TextFile;
+import umcg.genetica.enums.Chromosome;
+import umcg.genetica.io.text.TextFile;
 import umcg.genetica.io.trityper.util.BaseAnnot;
 import umcg.genetica.text.Strings;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -169,7 +170,7 @@ public class RewriteAlleleFrequencyFile {
 				String snp = elems[2];
 				
 				if (snplist == null || snplist.containsKey(snp)) {
-					snp = new String(elems[2].getBytes(), "UTF-8");
+					snp = new String(elems[2].getBytes(), StandardCharsets.UTF_8);
 					Chromosome chr = Chromosome.parseChr(elems[0]);
 					Integer pos = Integer.parseInt(elems[1]);
 					

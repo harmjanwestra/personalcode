@@ -14,6 +14,7 @@ import umcg.genetica.util.Primitives;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.IntStream;
@@ -303,7 +304,7 @@ public class LDFromZMat {
             }
         }
 
-        System.out.println("");
+        System.out.println();
 
 
         if (hashCohortsEuropean.isEmpty()) {
@@ -342,7 +343,7 @@ public class LDFromZMat {
                     snpSet.add(snp);
 
                     for (String gene : genes) {
-                        geneSet.add(new String(gene.getBytes("UTF-8")));
+                        geneSet.add(new String(gene.getBytes(StandardCharsets.UTF_8)));
                     }
                     elems = tf.readLineElems(TextFile.tab);
                 }

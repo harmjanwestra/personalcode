@@ -123,7 +123,7 @@ public class QTLmeQTLCompare {
                 + "--splitGeneNames\t\t\tSplit gene names on ;");
     }
 
-    public final void compareOverlapAndZScoreDirectionTwoEQTLFiles(String eQTL, String meQTL, String eQTMFile, String outputFile, boolean matchOnGeneName, double fdrCutt, boolean matchSnpOnPos, boolean splitGeneNames, boolean flipUsingEQTM, boolean topeffect) throws IOException, Exception {
+    public final void compareOverlapAndZScoreDirectionTwoEQTLFiles(String eQTL, String meQTL, String eQTMFile, String outputFile, boolean matchOnGeneName, double fdrCutt, boolean matchSnpOnPos, boolean splitGeneNames, boolean flipUsingEQTM, boolean topeffect) throws Exception {
         System.out.println("Performing comparison of eQTLs and meQTLs");
         double filterOnFDR = fdrCutt; //Do we want to use another FDR measure? When set to -1 this is not used at all.
 
@@ -376,7 +376,7 @@ public class QTLmeQTLCompare {
                         String alleles = eQtlData[8];
                         String alleleAssessed = eQtlData[9];
 
-                        String correlations[] = (eQtlData[17]).split(";");
+                        String[] correlations = (eQtlData[17]).split(";");
                         double correlation = 0;
                         int numCorr1 = 0;
                         for (int c = 0; c < correlations.length; c++) {
@@ -400,7 +400,7 @@ public class QTLmeQTLCompare {
                         double zScore2 = Double.parseDouble(data[10]);
 
 //                        double pValue2 = Double.parseDouble(data[0]);
-                        String correlations2[] = data[17].split(";");
+                        String[] correlations2 = data[17].split(";");
                         double correlation2 = 0;
 
                         boolean alleleflipped = false;
@@ -568,7 +568,7 @@ public class QTLmeQTLCompare {
 
         TextFile outSummary = new TextFile(outputFile + "-Summary.txt", TextFile.W);
 
-        System.out.println("");
+        System.out.println();
         System.out.println("Nr of eQTLs:\t" + hashEQTLs.size() + "\tin file:\t" + eQTL + "\tNrUniqueProbes:\t" + nrUniqueProbes + "\tNrUniqueGenes:\t" + nrUniqueGenes);
         outSummary.writeln("Nr of eQTLs:\t" + hashEQTLs.size() + "\tin file:\t" + eQTL + "\tNrUniqueProbes:\t" + nrUniqueProbes + "\tNrUniqueGenes:\t" + nrUniqueGenes);
 
@@ -581,7 +581,7 @@ public class QTLmeQTLCompare {
         System.out.println("Overlap:\t" + overlap + "\tNrUniqueProbesOverlap:\t" + hashUniqueProbesOverlap.size() + "\tNrUniqueGenesOverlap:\t" + hashUniqueGenesOverlap.size());
         outSummary.writeln("Overlap:\t" + overlap + "\tNrUniqueProbesOverlap:\t" + hashUniqueProbesOverlap.size() + "\tNrUniqueGenesOverlap:\t" + hashUniqueGenesOverlap.size());
 
-        System.out.println("");
+        System.out.println();
         outSummary.writeln();
 
         System.out.println("Nr eQTLs with identical direction:\t" + nreQTLsIdenticalDirection);

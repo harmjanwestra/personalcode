@@ -1,12 +1,12 @@
 package nl.harmjanwestra.playground.eprs;
 
-import nl.harmjanwestra.utilities.annotation.gtf.GTFAnnotation;
-import nl.harmjanwestra.utilities.features.Gene;
-import nl.harmjanwestra.utilities.legacy.genetica.text.Strings;
+import nl.harmjanwestra.playground.legacy.GTFAnnotation;
+import umcg.genetica.features.Gene;
 import umcg.genetica.io.text.TextFile;
 import umcg.genetica.io.trityper.EQTL;
 import umcg.genetica.io.trityper.QTLTextFile;
 import umcg.genetica.io.trityper.util.BaseAnnot;
+import umcg.genetica.text.Strings;
 
 import java.io.IOException;
 import java.util.ArrayList;

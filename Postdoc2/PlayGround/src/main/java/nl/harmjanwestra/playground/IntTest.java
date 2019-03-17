@@ -1,6 +1,5 @@
 package nl.harmjanwestra.playground;
 
-import htsjdk.samtools.SamReader;
 
 public class IntTest {
 	

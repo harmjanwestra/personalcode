@@ -1,11 +1,10 @@
 package nl.harmjanwestra.playground.cis;
 
 import com.itextpdf.text.DocumentException;
-import eqtlmappingpipeline.binarymeta.meta.ZScoreComparison;
-import nl.harmjanwestra.utilities.graphics.Grid;
-import nl.harmjanwestra.utilities.graphics.Range;
-import nl.harmjanwestra.utilities.graphics.panels.ScatterplotPanel;
-import nl.harmjanwestra.utilities.graphics.panels.SpacerPanel;
+import umcg.genetica.graphics.Grid;
+import umcg.genetica.graphics.Range;
+import umcg.genetica.graphics.panels.ScatterplotPanel;
+import umcg.genetica.graphics.panels.SpacerPanel;
 import umcg.genetica.io.trityper.EQTL;
 import umcg.genetica.io.trityper.QTLTextFile;
 import umcg.genetica.io.trityper.util.BaseAnnot;

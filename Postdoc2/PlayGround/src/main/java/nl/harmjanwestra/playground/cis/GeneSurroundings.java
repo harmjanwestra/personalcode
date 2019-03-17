@@ -1,9 +1,10 @@
 package nl.harmjanwestra.playground.cis;
 
-import nl.harmjanwestra.utilities.annotation.gtf.GTFAnnotation;
-import nl.harmjanwestra.utilities.features.FeatureComparator;
-import nl.harmjanwestra.utilities.features.Gene;
-import nl.harmjanwestra.utilities.legacy.genetica.io.text.TextFile;
+
+import nl.harmjanwestra.playground.legacy.GTFAnnotation;
+import umcg.genetica.features.FeatureComparator;
+import umcg.genetica.features.Gene;
+import umcg.genetica.io.text.TextFile;
 
 import java.io.IOException;
 import java.util.*;

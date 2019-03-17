@@ -1,6 +1,6 @@
 package nl.harmjanwestra.playground.conv;
 
-import nl.harmjanwestra.utilities.legacy.genetica.console.ProgressBar;
+import umcg.genetica.console.ProgressBar;
 import umcg.genetica.io.Gpio;
 import umcg.genetica.io.bin.BinaryFile;
 import umcg.genetica.io.text.TextFile;

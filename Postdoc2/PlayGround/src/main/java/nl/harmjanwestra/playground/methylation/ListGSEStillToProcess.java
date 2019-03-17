@@ -1,9 +1,9 @@
 package nl.harmjanwestra.playground.methylation;
 
-import nl.harmjanwestra.utilities.legacy.genetica.io.text.TextFile;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import umcg.genetica.io.Gpio;
+import umcg.genetica.io.text.TextFile;
 
 import java.io.Console;
 import java.io.File;

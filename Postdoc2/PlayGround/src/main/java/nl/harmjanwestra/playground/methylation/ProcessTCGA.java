@@ -1,7 +1,7 @@
 package nl.harmjanwestra.playground.methylation;
 
-import nl.harmjanwestra.utilities.legacy.genetica.containers.Pair;
-import nl.harmjanwestra.utilities.legacy.genetica.io.text.TextFile;
+import umcg.genetica.containers.Pair;
+import umcg.genetica.io.text.TextFile;
 import umcg.genetica.math.matrix2.DoubleMatrixDataset;
 import umcg.genetica.methylation.ConvertBetaAndMvalues;
 import umcg.genetica.methylation.ConverteUandMTo;

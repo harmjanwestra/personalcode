@@ -1,7 +1,7 @@
 package nl.harmjanwestra.playground;
 
-import nl.harmjanwestra.utilities.legacy.genetica.io.text.TextFile;
 import org.apache.commons.io.comparator.NameFileComparator;
+import umcg.genetica.io.text.TextFile;
 
 import java.io.File;
 import java.io.IOException;

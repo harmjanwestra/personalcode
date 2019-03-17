@@ -1,23 +1,21 @@
 package nl.harmjanwestra.playground.transeqtl;
 
-import nl.harmjanwestra.utilities.annotation.gtf.GTFAnnotation;
-import nl.harmjanwestra.utilities.enums.Chromosome;
-import nl.harmjanwestra.utilities.enums.Strand;
-import nl.harmjanwestra.utilities.features.Feature;
-import nl.harmjanwestra.utilities.features.FeatureComparator;
-import nl.harmjanwestra.utilities.features.Gene;
-import nl.harmjanwestra.utilities.features.SNPFeature;
-import nl.harmjanwestra.utilities.legacy.genetica.console.ProgressBar;
-import nl.harmjanwestra.utilities.legacy.genetica.io.text.TextFile;
-import nl.harmjanwestra.utilities.legacy.genetica.math.stats.Descriptives;
-import nl.harmjanwestra.utilities.legacy.genetica.text.Strings;
-import org.apache.tools.ant.Executor;
+import nl.harmjanwestra.playground.legacy.GTFAnnotation;
 import umcg.genetica.containers.Triple;
+import umcg.genetica.enums.Chromosome;
+import umcg.genetica.enums.Strand;
+import umcg.genetica.features.Feature;
+import umcg.genetica.features.FeatureComparator;
+import umcg.genetica.features.Gene;
+import umcg.genetica.features.SNPFeature;
 import umcg.genetica.io.Gpio;
 
+import umcg.genetica.io.text.TextFile;
+import umcg.genetica.text.Strings;
 import umcg.genetica.util.Primitives;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.*;
 
@@ -382,7 +380,7 @@ public class MakeTranscriptomeEPRS extends MakeTranscriptome {
 				ArrayList<String> snps1 = new ArrayList<>();
 				while (elems != null) {
 					if (elems.length >= 4) {
-						String snp = new String(elems[0].getBytes(), "UTF-8");
+						String snp = new String(elems[0].getBytes(), StandardCharsets.UTF_8);
 						double p = Double.parseDouble(elems[3]);
 						if (p < pvalthresh) {
 							// includes
@@ -592,7 +590,7 @@ public class MakeTranscriptomeEPRS extends MakeTranscriptome {
 				String snp = elems[2];
 				
 				if (query == null || query.contains(snp)) {
-					snp = new String(elems[2].getBytes(), "UTF-8");
+					snp = new String(elems[2].getBytes(), StandardCharsets.UTF_8);
 					Chromosome chr = Chromosome.parseChr(elems[0]);
 					Integer pos = Integer.parseInt(elems[1]);
 					Feature f = new Feature();
@@ -658,7 +656,7 @@ public class MakeTranscriptomeEPRS extends MakeTranscriptome {
 				ArrayList<SNPFeature> tmp = new ArrayList<>();
 				while (elems != null) {
 					if (elems.length >= 4) {
-						String snp = new String(elems[0].getBytes(), "UTF-8");
+						String snp = new String(elems[0].getBytes(), StandardCharsets.UTF_8);
 						double p = Double.parseDouble(elems[3]);
 						if (p < pvalthresh) {
 							// includes

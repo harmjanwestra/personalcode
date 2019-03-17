@@ -1,9 +1,9 @@
 package nl.harmjanwestra.playground.conv;
 
 import cern.colt.matrix.tdouble.DoubleMatrix2D;
-import nl.harmjanwestra.utilities.legacy.genetica.io.Gpio;
-import nl.harmjanwestra.utilities.vcf.VCFGenotypeData;
-import nl.harmjanwestra.utilities.vcf.VCFVariant;
+import nl.harmjanwestra.playground.legacy.vcf.VCFGenotypeData;
+import nl.harmjanwestra.playground.legacy.vcf.VCFVariant;
+import umcg.genetica.io.Gpio;
 import umcg.genetica.io.text.TextFile;
 import umcg.genetica.io.trityper.util.BaseAnnot;
 import umcg.genetica.text.Strings;

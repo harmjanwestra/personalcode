@@ -1,7 +1,7 @@
 package nl.harmjanwestra.playground.methylation;
 
-import nl.harmjanwestra.utilities.legacy.genetica.console.ProgressBar;
-import nl.harmjanwestra.utilities.legacy.genetica.io.text.TextFile;
+import umcg.genetica.console.ProgressBar;
+import umcg.genetica.io.text.TextFile;
 import umcg.genetica.math.matrix2.DoubleMatrixDataset;
 import umcg.genetica.text.Strings;
 
@@ -130,6 +130,8 @@ public class Merge450KData {
 					System.gc();
 				} catch (IOException e) {
 					e.printStackTrace();
+				} catch (Exception e) {
+					e.printStackTrace();
 				}
 			}
 		}
@@ -142,7 +144,7 @@ public class Merge450KData {
 		out.close();
 	}
 	
-	public void append(File v, TextFile out, HashMap<String, Integer> probeHashs) throws IOException {
+	public void append(File v, TextFile out, HashMap<String, Integer> probeHashs) throws Exception {
 		
 		File[] list = v.listFiles();
 		if (list.length > 5) {

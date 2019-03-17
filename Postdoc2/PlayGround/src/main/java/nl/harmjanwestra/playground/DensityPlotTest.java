@@ -1,9 +1,9 @@
 package nl.harmjanwestra.playground;
 
 import com.itextpdf.text.DocumentException;
-import nl.harmjanwestra.playground.cis.DensityGraphPanel;
-import nl.harmjanwestra.utilities.graphics.Grid;
 import org.apache.commons.math3.distribution.NormalDistribution;
+import umcg.genetica.graphics.Grid;
+import umcg.genetica.graphics.panels.DensityGraphPanel;
 
 import java.io.IOException;
 import java.util.ArrayList;

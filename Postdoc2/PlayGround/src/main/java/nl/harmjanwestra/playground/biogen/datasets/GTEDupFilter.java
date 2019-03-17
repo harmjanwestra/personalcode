@@ -167,7 +167,7 @@ public class GTEDupFilter {
 				boolean written = false;
 				for (String dna : dnaelems) {
 					
-					String origS = new String(dna);
+					String origS = dna;
 					if (!dna.equals("Not Applicable")) {
 						
 						if (dna.contains("01696")) {
@@ -204,7 +204,7 @@ public class GTEDupFilter {
 							dnasfound.add(dna);
 //							if (!uniqueRNAseq.contains(rna)) {
 							// try combo with external id
-							String origrna = new String(rna);
+							String origrna = rna;
 							String match = null;
 							for (String rnaseqs : uniqueRNAseq) {
 								if (rnaseqs.contains(rna)) {

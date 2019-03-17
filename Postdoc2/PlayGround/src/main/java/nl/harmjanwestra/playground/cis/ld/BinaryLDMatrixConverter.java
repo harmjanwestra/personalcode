@@ -1,7 +1,7 @@
 package nl.harmjanwestra.playground.cis.ld;
 
 
-import nl.harmjanwestra.utilities.legacy.genetica.io.BinaryFile;
+import umcg.genetica.io.bin.BinaryFile;
 import umcg.genetica.math.matrix2.DoubleMatrixDataset;
 
 import java.io.IOException;

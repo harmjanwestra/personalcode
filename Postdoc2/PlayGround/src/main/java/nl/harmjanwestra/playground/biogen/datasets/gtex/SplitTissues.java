@@ -1,6 +1,7 @@
 package nl.harmjanwestra.playground.biogen.datasets.gtex;
 
-import nl.harmjanwestra.utilities.legacy.genetica.io.text.TextFile;
+
+import umcg.genetica.io.text.TextFile;
 
 import java.io.IOException;
 import java.util.ArrayList;

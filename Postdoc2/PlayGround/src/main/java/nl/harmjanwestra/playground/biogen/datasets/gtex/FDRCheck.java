@@ -1,13 +1,14 @@
 package nl.harmjanwestra.playground.biogen.datasets.gtex;
 
 import com.itextpdf.text.DocumentException;
-import nl.harmjanwestra.utilities.annotation.gtf.GTFAnnotation;
-import nl.harmjanwestra.utilities.enums.Strand;
-import nl.harmjanwestra.utilities.features.Gene;
-import nl.harmjanwestra.utilities.graphics.Grid;
-import nl.harmjanwestra.utilities.graphics.Range;
-import nl.harmjanwestra.utilities.graphics.panels.HistogramPanel;
-import nl.harmjanwestra.utilities.graphics.panels.ScatterplotPanel;
+
+import nl.harmjanwestra.playground.legacy.GTFAnnotation;
+import umcg.genetica.enums.Strand;
+import umcg.genetica.features.Gene;
+import umcg.genetica.graphics.Grid;
+import umcg.genetica.graphics.Range;
+import umcg.genetica.graphics.panels.HistogramPanel;
+import umcg.genetica.graphics.panels.ScatterplotPanel;
 import umcg.genetica.io.text.TextFile;
 import umcg.genetica.io.trityper.util.BaseAnnot;
 import umcg.genetica.math.stats.ZScores;

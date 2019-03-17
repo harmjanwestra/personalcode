@@ -1,11 +1,11 @@
 package nl.harmjanwestra.playground.cis.perm;
 
 import cern.colt.matrix.tdouble.DoubleMatrix1D;
-import nl.harmjanwestra.utilities.legacy.genetica.console.ProgressBar;
-import nl.harmjanwestra.utilities.legacy.genetica.text.Strings;
+import umcg.genetica.console.ProgressBar;
 import umcg.genetica.io.Gpio;
 import umcg.genetica.io.text.TextFile;
 import umcg.genetica.math.matrix2.DoubleMatrixDataset;
+import umcg.genetica.text.Strings;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -25,12 +25,14 @@ public class DetermineMaxAbsZScore {
                 d.run(args[0], args[1], args[2]);
             } catch (IOException e) {
                 e.printStackTrace();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
     }
 
     // generate table with max permuted z-score per gene
-    public void run(String genelist, String zmatloc, String out) throws IOException {
+    public void run(String genelist, String zmatloc, String out) throws Exception {
         TextFile tf = new TextFile(genelist, TextFile.R);
         ArrayList<String> genes = tf.readAsArrayList();
         tf.close();
@@ -87,6 +89,8 @@ public class DetermineMaxAbsZScore {
 
                     tfo.writelnsynced(gene + "\t" + Strings.concat(maxZs, Strings.tab));
                 } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
 

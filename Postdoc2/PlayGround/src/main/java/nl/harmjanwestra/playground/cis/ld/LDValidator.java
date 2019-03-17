@@ -1,17 +1,18 @@
 package nl.harmjanwestra.playground.cis.ld;
 
 import com.itextpdf.text.DocumentException;
-import nl.harmjanwestra.playground.cis.DensityGraphPanel;
-import nl.harmjanwestra.utilities.enums.Chromosome;
-import nl.harmjanwestra.utilities.features.Feature;
-import nl.harmjanwestra.utilities.graphics.Grid;
-import nl.harmjanwestra.utilities.graphics.Range;
-import nl.harmjanwestra.utilities.legacy.genetica.containers.Pair;
-import nl.harmjanwestra.utilities.math.DetermineLD;
-import nl.harmjanwestra.utilities.vcf.VCFTabix;
-import nl.harmjanwestra.utilities.vcf.VCFVariant;
+import nl.harmjanwestra.playground.legacy.vcf.DetermineLD;
+import nl.harmjanwestra.playground.legacy.vcf.VCFTabix;
+import nl.harmjanwestra.playground.legacy.vcf.VCFVariant;
 import org.apache.commons.math3.stat.correlation.PearsonsCorrelation;
+import umcg.genetica.containers.Pair;
+import umcg.genetica.enums.Chromosome;
+import umcg.genetica.features.Feature;
+import umcg.genetica.graphics.Grid;
+import umcg.genetica.graphics.Range;
+import umcg.genetica.graphics.panels.DensityGraphPanel;
 import umcg.genetica.io.text.TextFile;
+
 import umcg.genetica.text.Strings;
 import umcg.genetica.util.Primitives;
 
@@ -236,7 +237,7 @@ public class LDValidator {
 			elems = tf.readLineElems(TextFile.tab);
 		}
 		tf.close();
-		System.out.println("");
+		System.out.println();
 		System.out.println("Done");
 		
 		System.out.println(data.size() + " annotations loaded");

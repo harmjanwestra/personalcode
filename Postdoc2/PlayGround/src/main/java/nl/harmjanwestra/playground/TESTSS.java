@@ -1,8 +1,8 @@
 package nl.harmjanwestra.playground;
 
-import nl.harmjanwestra.utilities.annotation.gtf.GTFAnnotation;
-import nl.harmjanwestra.utilities.features.Gene;
-import nl.harmjanwestra.utilities.features.Transcript;
+import nl.harmjanwestra.playground.legacy.GTFAnnotation;
+import umcg.genetica.features.Gene;
+import umcg.genetica.features.Transcript;
 import umcg.genetica.io.text.TextFile;
 
 import java.io.IOException;

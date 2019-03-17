@@ -1,10 +1,9 @@
 package nl.harmjanwestra.playground.eprs;
 
-import nl.harmjanwestra.utilities.graphics.Grid;
-import nl.harmjanwestra.utilities.legacy.genetica.text.Strings;
 import umcg.genetica.io.text.TextFile;
 import umcg.genetica.io.trityper.EQTL;
 import umcg.genetica.io.trityper.QTLTextFile;
+import umcg.genetica.text.Strings;
 
 import java.io.IOException;
 import java.util.*;

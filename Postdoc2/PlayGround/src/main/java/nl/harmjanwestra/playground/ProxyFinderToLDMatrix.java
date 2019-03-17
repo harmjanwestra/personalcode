@@ -1,8 +1,8 @@
 package nl.harmjanwestra.playground;
 
-import nl.harmjanwestra.utilities.legacy.genetica.io.text.TextFile;
-import nl.harmjanwestra.utilities.legacy.genetica.text.Strings;
+import umcg.genetica.io.text.TextFile;
 import umcg.genetica.io.trityper.util.BaseAnnot;
+import umcg.genetica.text.Strings;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -107,11 +107,7 @@ public class ProxyFinderToLDMatrix {
 				
 				if (flip1 != null && flip2 != null) {
 					boolean finalflip = false;
-					if ((flip1 && flip2) || (!flip1 && flip2)) {
-						finalflip = false;
-					} else {
-						finalflip = true;
-					}
+					finalflip = (!flip1 || !flip2) && (flip1 || !flip2);
 					
 					double ld = Double.parseDouble(elems[elems.length - 2]);
 					if (finalflip) {

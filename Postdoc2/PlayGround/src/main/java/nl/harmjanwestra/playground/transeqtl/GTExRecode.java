@@ -63,7 +63,7 @@ public class GTExRecode {
 		// sort eQTL file
 		QTLFileSorter sorter = new QTLFileSorter();
 		String tmpout = out + "tmp.txt.gz";
-		sorter.run(out, tmpout);
+		sorter.run(out, tmpout, QTLFileSorter.SORTBY.Z);
 		Gpio.moveFile(tmpout, out);
 		
 		

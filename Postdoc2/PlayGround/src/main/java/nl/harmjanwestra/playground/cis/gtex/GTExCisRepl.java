@@ -1,8 +1,8 @@
 package nl.harmjanwestra.playground.cis.gtex;
 
-import nl.harmjanwestra.utilities.enums.Chromosome;
 import org.apache.commons.io.comparator.NameFileComparator;
 import umcg.genetica.containers.Pair;
+import umcg.genetica.enums.Chromosome;
 import umcg.genetica.io.text.TextFile;
 import umcg.genetica.io.trityper.EQTL;
 import umcg.genetica.io.trityper.util.BaseAnnot;

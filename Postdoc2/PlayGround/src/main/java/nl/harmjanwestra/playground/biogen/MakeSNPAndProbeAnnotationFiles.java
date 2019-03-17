@@ -1,9 +1,9 @@
 package nl.harmjanwestra.playground.biogen;
 
-import nl.harmjanwestra.utilities.annotation.gtf.GTFAnnotation;
-import nl.harmjanwestra.utilities.enums.Chromosome;
-import nl.harmjanwestra.utilities.features.Gene;
-import nl.harmjanwestra.utilities.vcf.VCFVariant;
+import nl.harmjanwestra.playground.legacy.GTFAnnotation;
+import nl.harmjanwestra.playground.legacy.vcf.VCFVariant;
+import umcg.genetica.enums.Chromosome;
+import umcg.genetica.features.Gene;
 import umcg.genetica.io.text.TextFile;
 
 import java.io.IOException;

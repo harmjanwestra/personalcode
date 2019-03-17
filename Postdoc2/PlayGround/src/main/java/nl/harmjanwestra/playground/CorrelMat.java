@@ -1,11 +1,11 @@
 package nl.harmjanwestra.playground;
 
-import nl.harmjanwestra.utilities.annotation.gtf.GTFAnnotation;
-import nl.harmjanwestra.utilities.enums.Chromosome;
-import nl.harmjanwestra.utilities.enums.Strand;
-import nl.harmjanwestra.utilities.features.Gene;
-import nl.harmjanwestra.utilities.legacy.genetica.console.ProgressBar;
+import nl.harmjanwestra.playground.legacy.GTFAnnotation;
 import org.apache.commons.math3.stat.correlation.SpearmansCorrelation;
+import umcg.genetica.console.ProgressBar;
+import umcg.genetica.enums.Chromosome;
+import umcg.genetica.enums.Strand;
+import umcg.genetica.features.Gene;
 import umcg.genetica.io.text.TextFile;
 import umcg.genetica.math.matrix2.DoubleMatrixDataset;
 import umcg.genetica.math.stats.Correlation;
@@ -67,6 +67,8 @@ public class CorrelMat {
             tf.close();
 
         } catch (IOException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

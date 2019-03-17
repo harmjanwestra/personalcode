@@ -1,15 +1,16 @@
 package nl.harmjanwestra.playground.cis;
 
-import nl.harmjanwestra.utilities.annotation.gtf.GTFAnnotation;
-import nl.harmjanwestra.utilities.enums.Chromosome;
-import nl.harmjanwestra.utilities.features.Feature;
-import nl.harmjanwestra.utilities.features.Gene;
-import nl.harmjanwestra.utilities.graphics.Grid;
-import nl.harmjanwestra.utilities.graphics.panels.AssociationPanel;
-import nl.harmjanwestra.utilities.graphics.panels.GenePanel;
-import nl.harmjanwestra.utilities.graphics.panels.LDPanel;
-import nl.harmjanwestra.utilities.legacy.genetica.containers.Pair;
-import nl.harmjanwestra.utilities.legacy.genetica.io.text.TextFile;
+
+import nl.harmjanwestra.playground.legacy.GTFAnnotation;
+import umcg.genetica.containers.Pair;
+import umcg.genetica.enums.Chromosome;
+import umcg.genetica.features.Feature;
+import umcg.genetica.features.Gene;
+import umcg.genetica.graphics.Grid;
+import umcg.genetica.graphics.panels.AssociationPanel;
+import umcg.genetica.graphics.panels.GenePanel;
+import umcg.genetica.graphics.panels.LDPanel;
+import umcg.genetica.io.text.TextFile;
 import umcg.genetica.io.trityper.EQTL;
 import umcg.genetica.io.trityper.QTLTextFile;
 import umcg.genetica.math.matrix2.DoubleMatrixDataset;
@@ -23,7 +24,7 @@ import java.util.Iterator;
 public class EQTLRegionPlot {
 
 
-    public void run(String eqtlfile, String ldmatrix, String gene, String geneAnnotation) throws IOException {
+    public void run(String eqtlfile, String ldmatrix, String gene, String geneAnnotation) throws Exception {
 
 
         ArrayList<EQTL> eqtls = new ArrayList<EQTL>();

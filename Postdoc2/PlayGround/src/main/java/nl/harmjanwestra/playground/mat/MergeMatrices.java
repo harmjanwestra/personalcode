@@ -2,7 +2,7 @@ package nl.harmjanwestra.playground.mat;
 
 import cern.colt.matrix.tdouble.DoubleMatrix2D;
 import cern.colt.matrix.tdouble.impl.DenseDoubleMatrix2D;
-import nl.harmjanwestra.utilities.legacy.genetica.console.ProgressBar;
+import umcg.genetica.console.ProgressBar;
 import umcg.genetica.io.text.TextFile;
 import umcg.genetica.math.matrix2.DoubleMatrixDataset;
 

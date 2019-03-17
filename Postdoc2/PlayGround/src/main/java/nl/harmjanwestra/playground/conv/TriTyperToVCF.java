@@ -1,12 +1,11 @@
 package nl.harmjanwestra.playground.conv;
 
-import nl.harmjanwestra.utilities.enums.Chromosome;
-import nl.harmjanwestra.utilities.legacy.genetica.io.text.TextFile;
-import nl.harmjanwestra.utilities.legacy.genetica.text.Strings;
-import umcg.genetica.io.Gpio;
+import umcg.genetica.enums.Chromosome;
 import umcg.genetica.io.bin.BinaryFile;
+import umcg.genetica.io.text.TextFile;
 import umcg.genetica.io.trityper.SNP;
 import umcg.genetica.io.trityper.util.BaseAnnot;
+import umcg.genetica.text.Strings;
 
 import java.io.IOException;
 import java.util.HashMap;

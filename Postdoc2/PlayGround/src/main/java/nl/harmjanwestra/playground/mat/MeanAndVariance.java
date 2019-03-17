@@ -19,12 +19,14 @@ public class MeanAndVariance {
 				v.run(args[0], args[1], args[2], args[3]);
 			} catch (IOException e) {
 				e.printStackTrace();
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
 		}
 	}
 	
 	
-	public void run(String input, String output, String rowsToSelect, String colsToSelect) throws IOException {
+	public void run(String input, String output, String rowsToSelect, String colsToSelect) throws Exception {
 		
 		HashSet<String> rowselect = null;
 		if (rowsToSelect != null) {

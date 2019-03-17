@@ -1,17 +1,17 @@
 package nl.harmjanwestra.playground.meqtl;
 
-import nl.harmjanwestra.utilities.annotation.gtf.GTFAnnotation;
-import nl.harmjanwestra.utilities.bedfile.BedFileReader;
-import nl.harmjanwestra.utilities.enums.Chromosome;
-import nl.harmjanwestra.utilities.features.Feature;
-import nl.harmjanwestra.utilities.features.FeatureComparator;
-import nl.harmjanwestra.utilities.features.Gene;
-import nl.harmjanwestra.utilities.legacy.genetica.text.Strings;
+import nl.harmjanwestra.playground.legacy.GTFAnnotation;
+import nl.harmjanwestra.playground.legacy.bedfile.BedFileReader;
 import org.apache.commons.math3.stat.correlation.PearsonsCorrelation;
 import umcg.genetica.containers.Pair;
+import umcg.genetica.enums.Chromosome;
+import umcg.genetica.features.Feature;
+import umcg.genetica.features.FeatureComparator;
+import umcg.genetica.features.Gene;
 import umcg.genetica.io.text.TextFile;
 import umcg.genetica.io.trityper.EQTL;
 import umcg.genetica.io.trityper.QTLTextFile;
+import umcg.genetica.text.Strings;
 
 import java.io.File;
 import java.io.IOException;

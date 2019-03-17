@@ -1,7 +1,7 @@
 package nl.harmjanwestra.playground.cis;
 
-import nl.harmjanwestra.utilities.legacy.genetica.console.ProgressBar;
-import nl.harmjanwestra.utilities.legacy.genetica.io.text.TextFile;
+import umcg.genetica.console.ProgressBar;
+import umcg.genetica.io.text.TextFile;
 import umcg.genetica.text.Strings;
 
 import java.io.File;

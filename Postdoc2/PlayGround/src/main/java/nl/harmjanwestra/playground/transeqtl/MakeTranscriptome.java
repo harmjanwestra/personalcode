@@ -1,24 +1,26 @@
 package nl.harmjanwestra.playground.transeqtl;
 
-import htsjdk.samtools.reference.FastaSequenceFile;
-import htsjdk.samtools.reference.ReferenceSequence;
+import net.sf.picard.reference.FastaSequenceFile;
+import net.sf.picard.reference.ReferenceSequence;
 import net.sf.samtools.AlignmentBlock;
 import net.sf.samtools.SAMFileReader;
 import net.sf.samtools.SAMRecordIterator;
 import net.sf.samtools.SAMSequenceDictionary;
-import nl.harmjanwestra.utilities.annotation.gtf.GTFAnnotation;
-import nl.harmjanwestra.utilities.enums.Chromosome;
-import nl.harmjanwestra.utilities.features.*;
-import nl.harmjanwestra.utilities.legacy.genetica.text.Strings;
+import nl.harmjanwestra.playground.legacy.GTFAnnotation;
+import umcg.genetica.console.ProgressBar;
 import umcg.genetica.containers.Triple;
+import umcg.genetica.enums.Chromosome;
+import umcg.genetica.features.*;
 import umcg.genetica.io.Gpio;
 import umcg.genetica.io.text.TextFile;
 import umcg.genetica.io.trityper.EQTL;
 import umcg.genetica.io.trityper.QTLTextFile;
+import umcg.genetica.text.Strings;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -374,7 +376,7 @@ public class MakeTranscriptome {
 		String[] elems = tf.readLineElems(TextFile.tab);
 		int nrsubmitted = 0;
 		AtomicInteger nrdone = new AtomicInteger();
-		nl.harmjanwestra.utilities.legacy.genetica.console.ProgressBar pb = new nl.harmjanwestra.utilities.legacy.genetica.console.ProgressBar(nrAlignments);
+		ProgressBar pb = new ProgressBar(nrAlignments);
 		while (elems != null) {
 			
 			String snpname = elems[0];
@@ -603,7 +605,7 @@ public class MakeTranscriptome {
 	}
 	
 	private String byteToStr(byte[] bytes) throws UnsupportedEncodingException {
-		return new String(bytes, "UTF-8");
+		return new String(bytes, StandardCharsets.UTF_8);
 	}
 	
 	protected void exportSNPs(ArrayList<Triple<String, Chromosome, Integer>> snps, String genomeFasta, int windowsize,

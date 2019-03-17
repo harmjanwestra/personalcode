@@ -1,8 +1,8 @@
 package nl.harmjanwestra.playground.cis.gtex;
 
-import nl.harmjanwestra.utilities.graphics.DefaultGraphics;
-import nl.harmjanwestra.utilities.graphics.Range;
-import nl.harmjanwestra.utilities.graphics.panels.Panel;
+import umcg.genetica.graphics.panels.Panel;
+import umcg.genetica.graphics.DefaultGraphics;
+import umcg.genetica.graphics.Range;
 
 import java.awt.*;
 

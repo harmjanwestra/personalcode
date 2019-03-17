@@ -1,6 +1,6 @@
 package nl.harmjanwestra.playground.cis;
 
-import nl.harmjanwestra.utilities.legacy.genetica.io.text.TextFile;
+import umcg.genetica.io.text.TextFile;
 import umcg.genetica.io.trityper.QTLTextFile;
 
 import java.io.IOException;

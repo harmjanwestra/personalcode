@@ -1,7 +1,7 @@
 package nl.harmjanwestra.playground.methylation.binarymatrixtools;
 
 
-import nl.harmjanwestra.utilities.legacy.genetica.console.ProgressBar;
+import umcg.genetica.console.ProgressBar;
 import umcg.genetica.io.bin.BinaryFile;
 import umcg.genetica.io.text.TextFile;
 import umcg.genetica.text.Strings;

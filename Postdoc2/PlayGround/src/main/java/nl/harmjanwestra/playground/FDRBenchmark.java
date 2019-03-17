@@ -20,7 +20,7 @@ public class FDRBenchmark {
 		GW, SNPGENE, GENEALLSNPS, SNPALLGENES
 	}
 	
-	public void run(String ttdir, String exp, String eneannotation) throws IOException {
+	public void run(String ttdir, String exp, String eneannotation) throws Exception {
 		DoubleMatrixDataset<String, String> ds = DoubleMatrixDataset.loadDoubleData(exp);
 		
 		TriTyperGenotypeData d = new TriTyperGenotypeData(ttdir);

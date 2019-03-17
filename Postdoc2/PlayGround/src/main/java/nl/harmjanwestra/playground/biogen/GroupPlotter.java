@@ -3,10 +3,11 @@ package nl.harmjanwestra.playground.biogen;
 import JSci.maths.ArrayMath;
 import cern.colt.matrix.tdouble.DoubleMatrix1D;
 import com.itextpdf.text.DocumentException;
-import nl.harmjanwestra.utilities.graphics.Grid;
-import nl.harmjanwestra.utilities.graphics.Range;
-import nl.harmjanwestra.utilities.graphics.panels.ScatterplotPanel;
-import nl.harmjanwestra.utilities.legacy.genetica.io.text.TextFile;
+import umcg.genetica.graphics.Grid;
+import umcg.genetica.graphics.Range;
+import umcg.genetica.graphics.panels.ScatterplotPanel;
+import umcg.genetica.graphics.themes.ColorBlindTheme;
+import umcg.genetica.io.text.TextFile;
 import umcg.genetica.math.matrix2.DoubleMatrixDataset;
 import umcg.genetica.util.Primitives;
 
@@ -52,9 +53,11 @@ public class GroupPlotter {
 			e.printStackTrace();
 		} catch (DocumentException e) {
 			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-		
-		
+
+
 		// MSBB
 //        String datafile = "D:\\Sync\\SyncThing\\Postdoc2\\2018-04-BioGen\\data\\2018-08-02-AMPAd\\rnapca\\MSBB_pc1_2.txt";
 //        String groupfile = "D:\\Sync\\SyncThing\\Postdoc2\\2018-04-BioGen\\data\\2018-08-02-AMPAd\\MSBB-brainregions.txt";
@@ -69,7 +72,7 @@ public class GroupPlotter {
 //        }
 	}
 	
-	public void plot(String datafile, Integer col1, Integer col2, String groupfile, String outfile, String samplefilterinclude, String gte) throws IOException, DocumentException {
+	public void plot(String datafile, Integer col1, Integer col2, String groupfile, String outfile, String samplefilterinclude, String gte) throws Exception {
 		if (col1 == null) {
 			col1 = 0;
 		}

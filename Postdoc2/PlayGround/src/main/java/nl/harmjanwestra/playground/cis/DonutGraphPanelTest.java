@@ -1,9 +1,10 @@
 package nl.harmjanwestra.playground.cis;
 
 import com.itextpdf.text.DocumentException;
-import nl.harmjanwestra.utilities.graphics.Grid;
-import nl.harmjanwestra.utilities.graphics.themes.DefaultTheme;
-import nl.harmjanwestra.utilities.graphics.themes.Theme;
+import umcg.genetica.graphics.Grid;
+import umcg.genetica.graphics.panels.DonutGraphPanel;
+import umcg.genetica.graphics.themes.DefaultTheme;
+import umcg.genetica.graphics.themes.Theme;
 import umcg.genetica.io.text.TextFile;
 import umcg.genetica.text.Strings;
 

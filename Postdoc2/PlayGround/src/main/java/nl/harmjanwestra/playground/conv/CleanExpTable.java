@@ -1,8 +1,8 @@
 package nl.harmjanwestra.playground.conv;
 
-import nl.harmjanwestra.utilities.legacy.genetica.text.Strings;
 import umcg.genetica.io.text.TextFile;
 import umcg.genetica.math.matrix2.DoubleMatrixDataset;
+import umcg.genetica.text.Strings;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -124,7 +124,7 @@ public class CleanExpTable {
     }
 
 
-    public static void runFeatureCounts(String in, String out) throws IOException {
+    public static void runFeatureCounts(String in, String out) throws Exception {
 
         String[] datasets = in.split(",");
 

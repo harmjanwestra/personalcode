@@ -1,14 +1,14 @@
 package nl.harmjanwestra.playground.cis;
 
 import com.itextpdf.text.DocumentException;
-import nl.harmjanwestra.utilities.annotation.gtf.GTFAnnotation;
-import nl.harmjanwestra.utilities.features.Feature;
-import nl.harmjanwestra.utilities.features.Gene;
-import nl.harmjanwestra.utilities.graphics.Grid;
-import nl.harmjanwestra.utilities.graphics.panels.AssociationPanel;
-import nl.harmjanwestra.utilities.graphics.panels.GenePanel;
-import nl.harmjanwestra.utilities.legacy.genetica.containers.Pair;
+import nl.harmjanwestra.playground.legacy.GTFAnnotation;
+import umcg.genetica.containers.Pair;
 import umcg.genetica.containers.Triple;
+import umcg.genetica.features.Feature;
+import umcg.genetica.features.Gene;
+import umcg.genetica.graphics.Grid;
+import umcg.genetica.graphics.panels.AssociationPanel;
+import umcg.genetica.graphics.panels.GenePanel;
 import umcg.genetica.io.text.TextFile;
 
 import java.io.IOException;

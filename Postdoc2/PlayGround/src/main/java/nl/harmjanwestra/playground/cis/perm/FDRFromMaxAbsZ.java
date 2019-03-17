@@ -4,12 +4,11 @@ package nl.harmjanwestra.playground.cis.perm;
 import JSci.maths.ArrayMath;
 import JSci.maths.statistics.BetaDistribution;
 import cern.colt.matrix.tdouble.DoubleMatrix1D;
-import com.facebook.presto.hive.$internal.jodd.io.StreamGobbler;
-import nl.harmjanwestra.utilities.annotation.gtf.GTFAnnotation;
-import nl.harmjanwestra.utilities.enums.Chromosome;
-import nl.harmjanwestra.utilities.enums.Strand;
-import nl.harmjanwestra.utilities.features.Gene;
+import nl.harmjanwestra.playground.legacy.GTFAnnotation;
 import org.w3c.dom.Text;
+import umcg.genetica.enums.Chromosome;
+import umcg.genetica.enums.Strand;
+import umcg.genetica.features.Gene;
 import umcg.genetica.io.text.TextFile;
 import umcg.genetica.math.matrix2.DoubleMatrixDataset;
 import umcg.genetica.math.stats.Binning;
@@ -56,6 +55,8 @@ public class FDRFromMaxAbsZ {
 
         } catch (IOException e) {
             e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
     }
@@ -97,7 +98,7 @@ public class FDRFromMaxAbsZ {
         of.close();
     }
 
-    public void mergeBetaPVals(String real, String perm, String betapvalloc, String out) throws IOException {
+    public void mergeBetaPVals(String real, String perm, String betapvalloc, String out) throws Exception {
 
         DoubleMatrixDataset<String, String> dsPerm = DoubleMatrixDataset.loadDoubleData(perm);
 
@@ -169,7 +170,7 @@ public class FDRFromMaxAbsZ {
 
     }
 
-    public void betaDist(String real, String perm, String maxZPerPermFile, String out) throws IOException {
+    public void betaDist(String real, String perm, String maxZPerPermFile, String out) throws Exception {
 
         DoubleMatrixDataset<String, String> dsPerm = DoubleMatrixDataset.loadDoubleData(perm);
         DoubleMatrixDataset<String, String> dsMaxPerm = DoubleMatrixDataset.loadDoubleData(maxZPerPermFile);
@@ -251,7 +252,7 @@ public class FDRFromMaxAbsZ {
 
     }
 
-    public void run(String real, String perm, String maxZPerPermFile, String scriptloc, String out) throws IOException {
+    public void run(String real, String perm, String maxZPerPermFile, String scriptloc, String out) throws Exception {
 
 
         DoubleMatrixDataset<String, String> dsPerm = DoubleMatrixDataset.loadDoubleData(perm);

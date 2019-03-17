@@ -1,19 +1,19 @@
 package nl.harmjanwestra.playground.cis.gtex;
 
 import com.itextpdf.text.DocumentException;
-import nl.harmjanwestra.utilities.enums.Chromosome;
-import nl.harmjanwestra.utilities.graphics.Grid;
-import nl.harmjanwestra.utilities.graphics.Range;
-import nl.harmjanwestra.utilities.graphics.panels.HistogramPanel;
-import nl.harmjanwestra.utilities.legacy.genetica.containers.Pair;
-import nl.harmjanwestra.utilities.legacy.genetica.io.text.TextFile;
-import nl.harmjanwestra.utilities.features.*;
-import nl.harmjanwestra.utilities.legacy.genetica.text.Strings;
-import nl.harmjanwestra.utilities.math.DetermineLD;
-import nl.harmjanwestra.utilities.vcf.VCFTabix;
-import nl.harmjanwestra.utilities.vcf.VCFVariant;
+import nl.harmjanwestra.playground.legacy.vcf.DetermineLD;
+import nl.harmjanwestra.playground.legacy.vcf.VCFTabix;
+import nl.harmjanwestra.playground.legacy.vcf.VCFVariant;
+import umcg.genetica.containers.Pair;
+import umcg.genetica.enums.Chromosome;
+import umcg.genetica.features.SNPFeature;
+import umcg.genetica.graphics.Grid;
+import umcg.genetica.graphics.Range;
 import umcg.genetica.graphics.ViolinBoxPlot;
+import umcg.genetica.graphics.panels.HistogramPanel;
+import umcg.genetica.io.text.TextFile;
 import umcg.genetica.io.trityper.EQTL;
+import umcg.genetica.text.Strings;
 import umcg.genetica.util.Primitives;
 
 import java.io.IOException;
