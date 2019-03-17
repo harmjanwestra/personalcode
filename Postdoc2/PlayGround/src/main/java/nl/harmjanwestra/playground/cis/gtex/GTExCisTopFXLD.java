@@ -1,4 +1,4 @@
-package nl.harmjanwestra.playground.cis;
+package nl.harmjanwestra.playground.cis.gtex;
 
 import com.itextpdf.text.DocumentException;
 import nl.harmjanwestra.utilities.enums.Chromosome;
@@ -12,8 +12,6 @@ import nl.harmjanwestra.utilities.legacy.genetica.text.Strings;
 import nl.harmjanwestra.utilities.math.DetermineLD;
 import nl.harmjanwestra.utilities.vcf.VCFTabix;
 import nl.harmjanwestra.utilities.vcf.VCFVariant;
-import org.apache.commons.io.comparator.NameFileComparator;
-import org.jfree.util.ArrayUtils;
 import umcg.genetica.graphics.ViolinBoxPlot;
 import umcg.genetica.io.trityper.EQTL;
 import umcg.genetica.util.Primitives;

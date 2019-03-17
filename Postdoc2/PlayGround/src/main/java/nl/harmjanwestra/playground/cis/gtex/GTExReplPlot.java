@@ -1,4 +1,4 @@
-package nl.harmjanwestra.playground.cis;
+package nl.harmjanwestra.playground.cis.gtex;
 
 import nl.harmjanwestra.utilities.graphics.DefaultGraphics;
 import nl.harmjanwestra.utilities.graphics.Range;

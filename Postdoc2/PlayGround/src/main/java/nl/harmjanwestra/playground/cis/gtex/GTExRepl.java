@@ -1,4 +1,4 @@
-package nl.harmjanwestra.playground.cis;
+package nl.harmjanwestra.playground.cis.gtex;
 
 import nl.harmjanwestra.utilities.annotation.gtf.GTFAnnotation;
 import nl.harmjanwestra.utilities.enums.Chromosome;

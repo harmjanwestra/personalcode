@@ -1,4 +1,4 @@
-package nl.harmjanwestra.playground.cis;
+package nl.harmjanwestra.playground.cis.ld;
 
 
 import nl.harmjanwestra.utilities.legacy.genetica.io.BinaryFile;

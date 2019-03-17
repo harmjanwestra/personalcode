@@ -1,4 +1,4 @@
-package nl.harmjanwestra.playground.biogen;
+package nl.harmjanwestra.playground.biogen.datasets;
 
 import umcg.genetica.io.text.TextFile;
 import umcg.genetica.text.Strings;

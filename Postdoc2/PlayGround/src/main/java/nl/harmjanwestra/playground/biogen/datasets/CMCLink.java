@@ -1,4 +1,4 @@
-package nl.harmjanwestra.playground.biogen;
+package nl.harmjanwestra.playground.biogen.datasets;
 
 import nl.harmjanwestra.utilities.legacy.genetica.containers.Pair;
 import nl.harmjanwestra.utilities.legacy.genetica.io.text.TextFile;
