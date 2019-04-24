@@ -186,7 +186,7 @@ public class MakeTranscriptome {
 		tf2.readLine();
 		String[] tf2elems = tf2.readLineElems(TextFile.tab);
 		while (tf2elems != null) {
-			String genename = tf2elems[3];
+			String genename = tf2elems[4];
 			genes.add(genename);
 			tf2elems = tf2.readLineElems(TextFile.tab);
 		}
@@ -213,8 +213,8 @@ public class MakeTranscriptome {
 		while (elems != null) {
 			Chromosome chr = Chromosome.parseChr(elems[1]);
 			Integer snppos = Integer.parseInt(elems[2]);
-			String snpname = elems[0];
-			String genename = elems[3];
+			String snpname = elems[1];
+			String genename = elems[4];
 			
 			// get the alignment
 			String alignment = indir + "/alignments/" + snpname + "_" + genename + ".sam";

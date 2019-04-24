@@ -20,6 +20,8 @@ public class ConvertVCFToTT {
     public static void main(String[] args) {
 
 
+
+
         ConvertVCFToTT v = new ConvertVCFToTT();
         String[] allowedVQSROrFilter = new String[]{
                 "PASS", "GENOTYPED",
@@ -46,16 +48,17 @@ public class ConvertVCFToTT {
         boolean useAD = true;
 
         if (args.length < 2) {
-            System.out.println("Usage: inputvcf outputfolder [maf:0.001] [missingness:0.05] [minAD:10] [ablower:0.2] [abupper:0.8] [gq:20] [impqual:0.3] [inbreedingcoeff:-0.3]");
+            System.out.println("Usage: inputvcf outputfolder [maf:0.001] [missingness:0.05] [minAD:10] [ablower:0.2]" +
+                    " [abupper:0.8] [gq:20] [impqual:0.3] [inbreedingcoeff:-0.3]");
         } else {
 
-            try {
-                v.ConvertWithoutFilter(args[0], args[1], 0.01, 0.5, allowedFilter);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            System.exit(-1);
+//            try {
+//                v.ConvertWithoutFilter(args[0], args[1], 0.01, 0.5, allowedFilter);
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//
+//            System.exit(-1);
             try {
                 double maf = 0.001;
                 if (args.length > 2) {
@@ -131,6 +134,7 @@ public class ConvertVCFToTT {
         System.out.println("ImpQual: " + impqualthreshold);
 
         String folder = output;
+        Gpio.createDir(folder);
         File genotypeDataFile1 = new File(folder, "GenotypeMatrix.dat");
         File imputedDosageDataFile1 = new File(folder, "ImputedDosageMatrix.dat");
         File genotypeDataFile2 = new File(folder, "GenotypeMatrixV2.dat");
@@ -284,6 +288,7 @@ public class ConvertVCFToTT {
                             }
                             failfilter++;
                         } else if (passfilter) {
+
                             String inbreeding = var.getInfo().get("InbreedingCoeff");
                             Double varInbreedingCoeff = -1d;
                             if (inbreeding != null) {
@@ -318,7 +323,12 @@ public class ConvertVCFToTT {
                                     short[][] ad = var.getAllelicDepth();
 
                                     DoubleMatrix2D genotypes = var.getGenotypeAllelesAsMatrix2D();
-                                    DoubleMatrix2D dosages = var.getDosagesAsMatrix2D();
+                                    DoubleMatrix2D dosages;
+                                    if (var.hasPosteriorProbabilities()) {
+                                        dosages = var.calculateDosageFromProbabilities(var.getPosteriorProbabilities());
+                                    } else {
+                                        dosages = var.getDosagesAsMatrix2D();
+                                    }
 //							String id = var.getId();
 //							if (id.length() == 1) {
                                     String id = var.getChr() + ":" + var.getPos() + ":" + ref + "_" + alt;
@@ -329,7 +339,7 @@ public class ConvertVCFToTT {
 
                                     byte[] dos = new byte[samples.size()];
 
-                                    if (var.hasImputationDosages()) {
+                                    if (var.hasImputationDosages() || var.hasPosteriorProbabilities()) {
                                         nrvarswithdosage++;
                                     }
 
@@ -420,8 +430,10 @@ public class ConvertVCFToTT {
                                                 }
                                             }
 
-                                            if (var.hasImputationDosages()) {
+
+                                            if (var.hasImputationDosages() || var.hasPosteriorProbabilities()) {
                                                 dos[i] = (byte) dosages.getQuick(i, 0);
+                                                System.out.println(var.getChr() + ":" + var.getPos() + "\t" + a1 + "/" + a2 + "\t" + dos[i]);
                                             }
                                         }
                                     }

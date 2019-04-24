@@ -7,17 +7,24 @@
     <groupId>PlayGround</groupId>
     <artifactId>PlayGround</artifactId>
     <version>1.0-SNAPSHOT</version>
+    <repositories>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+    </repositories>
+
     <dependencies>
         <dependency>
             <groupId>nl.systemsgenetics</groupId>
             <artifactId>genetica-libraries</artifactId>
-            <version>1.0.9-SNAPSHOT</version>
+            <version>1.0.10-SNAPSHOT</version>
             <!--<version>1.0.5</version>-->
         </dependency>
         <dependency>
             <groupId>nl.systemsgenetics</groupId>
             <artifactId>eqtl-mapping-pipeline</artifactId>
-            <version>1.4.3-SNAPSHOT</version>
+            <version>1.4.4-SNAPSHOT</version>
         </dependency>
 
         <dependency>
@@ -35,6 +42,17 @@
             <artifactId>commons-compress</artifactId>
             <version>1.4.1</version>
         </dependency>
+        <dependency>
+            <groupId>com.itextpdf</groupId>
+            <artifactId>itextpdf</artifactId>
+            <version>5.5.6</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.lejon</groupId>
+            <artifactId>T-SNE-Java</artifactId>
+            <version>2.5.0</version>
+        </dependency>
 
     </dependencies>
 
@@ -48,7 +66,7 @@
                     </descriptorRefs>
                     <archive>
                         <manifest>
-                            <mainClass>nl.harmjanwestra.playground.cis.perm.FDRFromMaxAbsZ</mainClass>
+                            <mainClass>nl.harmjanwestra.playground.methylation.Merge450KData</mainClass>
                             <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
                             <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
                         </manifest>

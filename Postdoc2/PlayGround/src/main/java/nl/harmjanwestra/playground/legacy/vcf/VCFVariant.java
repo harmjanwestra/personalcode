@@ -106,6 +106,7 @@ public class VCFVariant {
     private double callrateCases;
     private double diffMissingnessP;
     private Double impq;
+    private DenseDoubleMatrix2D genotypePosteriorProbabilities;
 
     public VCFVariant(String ln) {
         constructor = 1;
@@ -227,8 +228,9 @@ public class VCFVariant {
         int plCol = -1; // Normalized, Phred-scaled likelihoods for genotypes
         int pidCol = -1; // ?
         int pgtCol = -1; // ?
-        int dsCol = -1;
-        int gpCol = -1;
+        int dsCol = -1; // dosage
+        int gpCol = -1; // genotype probs
+        int ppCol = -1; // posterior probabilities
 
         // parse line header
         String ref = "";
@@ -247,97 +249,69 @@ public class VCFVariant {
 //			String[] tokenArr = Strings.tab.split(lnheader);
             String[] tokenArr = Strings.subsplit(ln, Strings.tab, 0, 10);
 
-            for (int t = 0; t < 9; t++) {
-                if (t < tokenArr.length) {
-                    String token = tokenArr[t];
-                    if (token != null) {
-                        switch (t) {
-                            case 0:
-                                this.chr = token.intern();
-                                break;
-                            case 1:
-                                pos = Integer.parseInt(token);
-                                break;
-                            case 2:
-                                id = token;
-                                break;
-                            case 3:
-                                ref = token;
-                                break;
-                            case 4:
-                                String alt = token;
-                                String[] alternateAlleles = alt.split(",");
-                                alleles = new String[1 + alternateAlleles.length];
-                                alleles[0] = ref.intern();
-                                for (int i = 0; i < alternateAlleles.length; i++) {
-                                    alleles[1 + i] = alternateAlleles[i].intern();
-                                }
-//							System.out.println(id + "\t" + Strings.concat(alleles, Strings.comma));
-                                nrAllelesObserved = new int[alternateAlleles.length + 1];
-                                break;
-                            case 5:
-                                String qualStr = token;
-                                try {
-                                    qual = Integer.parseInt(qualStr);
-                                } catch (NumberFormatException e) {
+            this.chr = tokenArr[0];
+            this.pos = Integer.parseInt(tokenArr[1]);
+            this.id = tokenArr[2];
+            ref = tokenArr[3];
+            String alt = tokenArr[4];
+            String[] alternateAlleles = alt.split(",");
+            alleles = new String[1 + alternateAlleles.length];
+            alleles[0] = ref.intern();
+            for (int i = 0; i < alternateAlleles.length; i++) {
+                alleles[1 + i] = alternateAlleles[i].intern();
+            }
+            nrAllelesObserved = new int[alternateAlleles.length + 1];
+            String qualStr = tokenArr[5];
+            try {
+                qual = Integer.parseInt(qualStr);
+            } catch (NumberFormatException e) {
 
-                                }
-                                break;
-                            case 6:
-                                filter = token.intern();
-                                break;
-                            case 7:
-                                String infoStr = token;
-                                parseInfoString(infoStr);
-                                break;
-                            case 8:
-                                String[] format = Strings.colon.split(token);
+            }
+            filter = tokenArr[6];
+            parseInfoString(tokenArr[7]);
 
-                                for (int c = 0; c < format.length; c++) {
-                                    if (format[c].equals("GT")) {
-                                        // genotype
-                                        gtCol = c;
-                                    } else if (format[c].equals("AD")) {
-                                        // allelic read depth
+            String[] format = Strings.colon.split(tokenArr[8]);
+
+            for (int c = 0; c < format.length; c++) {
+                if (format[c].equals("GT")) {
+                    // genotype
+                    gtCol = c;
+                } else if (format[c].equals("AD")) {
+                    // allelic read depth
 //									System.out.println("ADCol=" + c);
-                                        adCol = c;
-                                    } else if (format[c].equals("AB")) {
-                                        abCol = c;
-                                    } else if (format[c].equals("DP")) {
-                                        // nominal read depth
-                                        dpCol = c;
-                                    } else if (format[c].equals("GQ")) {
-                                        // genotype qual
-                                        gqCol = c;
-                                    } else if (format[c].equals("PL")) {
-                                        plCol = c;
-                                    } else if (format[c].equals("PGT")) {
-                                        pgtCol = c;
-                                    } else if (format[c].equals("PID")) {
-                                        pidCol = c;
-                                    } else if (format[c].equals("DS")) {
-                                        // dosage
-                                        dsCol = c;
-                                    } else if (format[c].equals("GP")) {
-                                        // genotype probs
-                                        gpCol = c;
-                                    }
-                                    // GT:AD:DP:GQ:PGT:PID:PL
-                                }
-
-                                if (gtCol == -1) {
-                                    System.err.println("No GT COL: " + token);
-                                    System.err.println("Id: " + this.toString());
-                                    System.out.println(token);
-
-                                    System.exit(-1);
-                                }
-                                break;
-                        }
-                    }
-
+                    adCol = c;
+                } else if (format[c].equals("AB")) {
+                    abCol = c;
+                } else if (format[c].equals("DP")) {
+                    // nominal read depth
+                    dpCol = c;
+                } else if (format[c].equals("GQ")) {
+                    // genotype qual
+                    gqCol = c;
+                } else if (format[c].equals("PL")) {
+                    plCol = c;
+                } else if (format[c].equals("PGT")) {
+                    pgtCol = c;
+                } else if (format[c].equals("PID")) {
+                    pidCol = c;
+                } else if (format[c].equals("DS")) {
+                    // dosage
+                    dsCol = c;
+                } else if (format[c].equals("GP")) {
+                    // genotype probs
+                    gpCol = c;
+                } else if (format[c].equals("PP")) {
+                    ppCol = c;
                 }
+                // GT:AD:DP:GQ:PGT:PID:PL
+            }
 
+            if (gtCol == -1) {
+                System.err.println("No GT COL: " + tokenArr[8]);
+                System.err.println("Id: " + this.toString());
+                System.out.println(tokenArr[8]);
+
+                System.exit(-1);
             }
         }
 
@@ -481,28 +455,52 @@ public class VCFVariant {
 
                                         }
                                     }
-                                } else if (s == gpCol) {
+                                } else if (s == gpCol || s == ppCol) {
                                     // genotype probs
                                     if (p.equals(PARSE.ALL)) {
+                                        boolean posteriors = false;
+                                        if (s == ppCol) {
+                                            posteriors = true;
+                                        }
                                         String[] gpElems = Strings.comma.split(sampleToken);
                                         int nrAlleles = alleles.length;
                                         int nrPossibleGenotypes = (nrAlleles * (nrAlleles + 1)) / 2;
                                         try {
-                                            if (genotypeProbabilies == null) {
+                                            if (posteriors) {
 
+                                                if (genotypePosteriorProbabilities == null) {
+                                                    genotypePosteriorProbabilities = new DenseDoubleMatrix2D(nrSamples, nrPossibleGenotypes);
+                                                }
+                                            } else if (genotypeProbabilies == null) {
                                                 genotypeProbabilies = new DenseDoubleMatrix2D(nrSamples, nrPossibleGenotypes);
                                             }
                                             if (gpElems[0].equals(".")) {
-                                                for (int a = 0; a < nrPossibleGenotypes; a++) {
-                                                    genotypeProbabilies.setQuick(includedSampleCtr, a, -1);
+                                                if (posteriors) {
+                                                    for (int a = 0; a < nrPossibleGenotypes; a++) {
+                                                        genotypePosteriorProbabilities.setQuick(includedSampleCtr, a, -1);
+                                                    }
+                                                } else {
+                                                    for (int a = 0; a < nrPossibleGenotypes; a++) {
+                                                        genotypeProbabilies.setQuick(includedSampleCtr, a, -1);
+                                                    }
                                                 }
                                             } else {
 
                                                 int g2 = 0;
                                                 try {
-                                                    for (int g = 0; g < gpElems.length; g++) {
-                                                        genotypeProbabilies.setQuick(includedSampleCtr, g, Double.parseDouble(gpElems[g]));
-                                                        g2 = g;
+                                                    if (posteriors) {
+                                                        for (int g = 0; g < gpElems.length; g++) {
+                                                            double pp = Double.parseDouble(gpElems[g]);
+                                                            pp = Math.pow(10, -pp / 10);
+                                                            genotypePosteriorProbabilities.setQuick(includedSampleCtr, g, pp);
+
+                                                            g2 = g;
+                                                        }
+                                                    } else {
+                                                        for (int g = 0; g < gpElems.length; g++) {
+                                                            genotypeProbabilies.setQuick(includedSampleCtr, g, Double.parseDouble(gpElems[g]));
+                                                            g2 = g;
+                                                        }
                                                     }
                                                 } catch (ArrayIndexOutOfBoundsException e2) {
                                                     e2.printStackTrace();
@@ -605,23 +603,7 @@ public class VCFVariant {
                     }
 
                     if (genotypeProbabilies != null && dosages == null) {
-                        int nrAlleles = alleles.length;
-                        dosages = new DenseDoubleMatrix2D(genotypeProbabilies.rows(), nrAlleles - 1);
-                        for (int i = 0; i < genotypeProbabilies.rows(); i++) {
-                            int alctr = 0;
-                            for (int a1 = 0; a1 < nrAlleles; a1++) {
-                                for (int a2 = a1; a2 < nrAlleles; a2++) {
-                                    double dosageval = genotypeProbabilies.getQuick(i, alctr);
-                                    if (a1 > 0) {
-                                        dosages.setQuick(i, a1 - 1, dosages.getQuick(i, a1 - 1) + dosageval);
-                                    }
-                                    if (a2 > 0) {
-                                        dosages.setQuick(i, a2 - 1, dosages.getQuick(i, a2 - 1) + dosageval);
-                                    }
-                                    alctr++;
-                                }
-                            }
-                        }
+                        dosages = calculateDosageFromProbabilities(genotypeProbabilies);
                     }
 
                     if (filters != null) {
@@ -1746,6 +1728,40 @@ public class VCFVariant {
         }
 
     }
+
+    public boolean hasPosteriorProbabilities() {
+        return (genotypePosteriorProbabilities != null);
+    }
+
+    public DoubleMatrix2D calculateDosageFromProbabilities(DoubleMatrix2D probs) {
+
+        int nrAlleles = alleles.length;
+        DoubleMatrix2D tmpdosages = new DenseDoubleMatrix2D(probs.rows(), nrAlleles - 1);
+        for (int i = 0; i < probs.rows(); i++) {
+            int alctr = 0;
+            for (int a1 = 0; a1 < nrAlleles; a1++) {
+                for (int a2 = a1; a2 < nrAlleles; a2++) {
+                    double dosageval = probs.getQuick(i, alctr);
+                    if (a1 > 0) {
+                        tmpdosages.setQuick(i, a1 - 1, tmpdosages.getQuick(i, a1 - 1) + dosageval);
+                    }
+                    if (a2 > 0) {
+                        tmpdosages.setQuick(i, a2 - 1, tmpdosages.getQuick(i, a2 - 1) + dosageval);
+                    }
+                    alctr++;
+                }
+            }
+        }
+
+        return tmpdosages;
+
+    }
+
+    public DoubleMatrix2D getPosteriorProbabilities() {
+        return genotypePosteriorProbabilities;
+
+    }
+
 
     public enum PARSE {
         HEADER,

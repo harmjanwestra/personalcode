@@ -46,7 +46,7 @@ public class FDRFromMaxAbsZ {
 
             String annot = "D:\\Sync\\SyncThing\\Data\\Ref\\Ensembl\\Homo_sapiens.GRCh37.71.gtf.gz";
             String outtss = "D:\\Sync\\SyncThing\\Postdoc2\\2019-eQTLMeta\\data\\2019-03-13-FDRFromMaxAbsPermutedZ\\2019-03-12-MaxAbsZScoresRealDataWithTSS.txt";
-//            p.calcTSS(real, annot, outtss);
+            p.calcTSS(real, annot, outtss);
 
             String outbetap = "D:\\Sync\\SyncThing\\Postdoc2\\2019-eQTLMeta\\data\\2019-03-13-FDRFromMaxAbsPermutedZ\\2019-03-12-MaxAbsZScoresRealDataWithTSS-betaP.txt";
             String betapvalloc = "D:\\Sync\\SyncThing\\Postdoc2\\2019-eQTLMeta\\data\\2019-03-13-FDRFromMaxAbsPermutedZ\\beta\\";
@@ -132,7 +132,7 @@ public class FDRFromMaxAbsZ {
                 bonusheader += "\tPBetaDist-perm" + p;
             }
         }
-        String header = tf.readLine()+ "\tPzGivenPerm\tNZBiggerInPermutations\tNPermutedZTotal" + bonusheader;
+        String header = tf.readLine()+ "\tPzGivenPerm\tNZBiggerInPermutations\tNPermutedZTotal\tP(meta)" + bonusheader;
         tfout.writeln(header);
 
         String[] elems = tf.readLineElems(TextFile.tab);
@@ -161,7 +161,9 @@ public class FDRFromMaxAbsZ {
 
             double realp = ZScores.zToP(Double.parseDouble(elems[4]));
 
-            tfout.writeln(Strings.concat(elems, Strings.tab) + "\t" + pderived + "\t" + n + "\t" + vals.length + "\t" + realp + "\t" + Strings.concat(pvalsBeta, Strings.tab));
+            tfout.writeln(
+                    Strings.concat(elems, Strings.tab)
+                            + "\t" + pderived + "\t" + n + "\t" + vals.length + "\t" + realp + "\t" + Strings.concat(pvalsBeta, Strings.tab));
             elems = tf.readLineElems(TextFile.tab);
         }
 

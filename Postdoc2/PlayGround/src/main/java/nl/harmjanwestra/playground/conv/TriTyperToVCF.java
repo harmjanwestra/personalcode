@@ -149,6 +149,7 @@ public class TriTyperToVCF {
         tf2.close();
         bf.close();
         log.close();
+        vcfout.close();
 
         System.out.println();
         System.out.print(ctr + " lines parsed total. " + written + " snps written");
