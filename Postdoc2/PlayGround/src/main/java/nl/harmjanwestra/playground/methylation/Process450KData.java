@@ -3,6 +3,7 @@ package nl.harmjanwestra.playground.methylation;
 import umcg.genetica.console.ProgressBar;
 import umcg.genetica.containers.Pair;
 import umcg.genetica.io.text.TextFile;
+import umcg.genetica.math.matrix2.DoubleMatrixConverter;
 import umcg.genetica.math.matrix2.DoubleMatrixDataset;
 import umcg.genetica.math.matrix2.DoubleMatrixDatasetAppendableWriter;
 import umcg.genetica.text.Strings;
@@ -13,12 +14,11 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.IntStream;
 
-public class Merge450KData {
+public class Process450KData {
 	public static void main(String[] args) {
-		Merge450KData m = new Merge450KData();
+		Process450KData m = new Process450KData();
 //
 //		String[] exclusion = new String[]{
 //				"Z:\\projects\\2018-methylation\\code\\450K_DataProcessing\\ADDITIONAL_INFO\\ProbeFiltering\\freq5percent\\probeToFilter_450K_1000G_omni2.5.hg19.EUR_alleleFreq5percent_50bp_wInterroSite.txt",
@@ -35,7 +35,7 @@ public class Merge450KData {
 
 		try {
 			if (args.length == 0) {
-				System.out.println("Usage: makeprobelist mergetables calcmvals");
+				printUsage();
 			} else if (args[0].equals("makeprobelist")) {
 				if (args.length < 4) {
 					System.out.println("Usage: makeprobelistfile infolder probeoutdir exclusionlist");
@@ -49,32 +49,114 @@ public class Merge450KData {
 				} else {
 					m.runappendIndependentMatrices(args[1], args[2], args[3], args[4]);
 				}
+			} else if (args[0].equals("qqnorm")) {
+				if (args.length < 3) {
+					System.out.println("Usage: qqnorm input output");
+				} else {
+					QuantileNormalizeDiskBased450K q = new QuantileNormalizeDiskBased450K();
+					q.run(args[1], args[2]);
+				}
+			} else if (args[0].equals("countnans")) {
+				if (args.length < 3) {
+					System.out.println("Usage: countnans input output");
+				} else {
+					DetermineNAs450K d = new DetermineNAs450K();
+					d.run(args[1], args[2]);
+				}
+			} else if (args[0].equals("calcmvals")) {
+
+				if (args.length < 4) {
+					System.out.println("Usage: calcmvals inU inM out");
+				} else {
+					CalculateMValuesDiskBased450K d = new CalculateMValuesDiskBased450K();
+					d.run(args[1], args[2], args[3]);
+				}
+			} else if (args[0].equals("mergebinarymatrices")) {
+				Merge450KDiskBased d = new Merge450KDiskBased();
+				if (args.length < 4) {
+					System.out.println("Usage: inT1 inT2 out [probelist]");
+				} else {
+					String pblist = null;
+					if (args.length >= 5) {
+						pblist = args[4];
+					}
+					d.run(pblist, args[1], args[2], args[3]);
+				}
+			} else if (args[0].equals("correl")) {
+				CorrelateDiskBased450K d = new CorrelateDiskBased450K();
+				if (args.length < 4) {
+					System.out.println("Usage: correl in out nrrowsperblock");
+				} else {
+					d.runblocks(args[1], args[2], Integer.parseInt(args[3]));
+				}
+			} else if (args[0].equals("detriangle")) {
+				if (args.length < 3) {
+					System.out.println("Usage: input output");
+				} else {
+					DeTriangularize d = new DeTriangularize();
+					d.run(args[1], args[2]);
+				}
+			} else if (args[0].equals("pca")) {
+				if (args.length < 3) {
+					System.out.println("Usage: in nrpcs");
+				} else {
+					PCA p = new PCA();
+					p.run(args[1], Integer.parseInt(args[2]));
+				}
+			} else if (args[0].equals("filter")) {
+				if (args.length < 7) {
+					System.out.println("Usage: input output (rowset|null) (include|exclude) (colset|null) (include|exclude)");
+				} else {
+					DatasetFilter filter = new DatasetFilter();
+					filter.run(args[1], args[2], args[3], args[4], args[5], args[6]);
+				}
+			} else if (args[0].equals("centerscale")) {
+				CenterScale450K c = new CenterScale450K();
+				if (args.length < 3) {
+					System.out.println("Usage; input output");
+				} else {
+					c.run(args[1], args[2]);
+				}
+			} else if (args[0].equals("txttobin")) {
+				if (args.length < 3) {
+					System.out.println("Usage: input output");
+				} else {
+					DoubleMatrixConverter.TextToBinary(args[1], args[2]);
+				}
+			} else if (args[0].equals("bintotxt")) {
+				if (args.length < 3) {
+					System.out.println("Usage: input output");
+				} else {
+					DoubleMatrixConverter.BinaryToText(args[1], args[2]);
+				}
+			} else {
+				printUsage();
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 
+	}
 
-//		if (args.length < 3) {
-//			System.out.println("Usage: probelist infolder outfile");
-//		} else {
-//			String probelistfile = args[0]; //"S:\\projects\\2018-methylation\\GPL13534_450k_probelist.txt";
-////		try {
-////			m.makeprobelist(infolder, probelistfile, exclusion);
-////		} catch (IOException e) {
-////			e.printStackTrace();
-////		}
-//
-////		String probelistfile = "";
-//			String infolder = args[1]; //"S:\\projects\\2018-methylation\\GPL13534_450k_OUT\\";
-//			String outfile = args[2]; // "S:\\projects\\2018-methylation\\GPL13534_450k_OUT_Merged\\FromIdat.txt.gz";
-//
-//			try {
-//				m.run(probelistfile, infolder, outfile);
-//			} catch (IOException e) {
-//				e.printStackTrace();
-//			}
-//		}
+	private static void printUsage() {
+		System.out.println("Usage:\n" +
+				"txttobin\tConvert text to binary matrix\n" +
+				"bintotxt\tConvert binary to text matrix\n\n" +
+				"makeprobelist\tlist probes in output (probes expected on rows, samples on cols)\n" +
+				"mergetables\tmerge 450K pipeline folder output\n" +
+				"calcmvals\tcalculate m-values\n" +
+				"qqnorm\tquantile normalize (expect samples on rows)\n" +
+				"logtransform\tlog2transform (expect samples on rows)\n" +
+				"correl\tcorrelations (expect samples on rows); outputs upper triangle correlation matrix over rows\n" +
+				"countnans\tcount the number of nans in a matrix\n" +
+				"mergebinarymatrices\tmerge binary matrices\n" +
+				"detriangle\tfill in the lower triangle of the matrix\n" +
+				"pca\tcalculate eigenvectors\n" +
+				"centerscale\tcenter and scale data (expect samples on rows)\n" +
+				"filter\tfilter rows or columns");
+
 	}
 
 	private void makeprobelist(String infolder, String probelistfile, String[] exclusion) throws IOException {
@@ -136,7 +218,8 @@ public class Merge450KData {
 		System.out.println(v.getName() + " done. \t" + probes.size() + " probes sofar");
 	}
 
-	public void runappendIndependentMatrices(String probelistfileT1, String probelistfileT2, String inFolder, String outfolder) throws IOException {
+	public void runappendIndependentMatrices(String probelistfileT1, String probelistfileT2, String
+			inFolder, String outfolder) throws IOException {
 
 		Pair<HashMap<String, Integer>, ArrayList<String>> probeT1 = loadAndIndexProbelist(probelistfileT1);
 		Pair<HashMap<String, Integer>, ArrayList<String>> probeT2 = loadAndIndexProbelist(probelistfileT2);
@@ -171,7 +254,8 @@ public class Merge450KData {
 		outT2U.close();
 	}
 
-	private Pair<HashMap<String, Integer>, ArrayList<String>> loadAndIndexProbelist(String probelistfileT1) throws IOException {
+	private Pair<HashMap<String, Integer>, ArrayList<String>> loadAndIndexProbelist(String probelistfileT1) throws
+			IOException {
 		TextFile lf = new TextFile(probelistfileT1, TextFile.R);
 		ArrayList<String> probelist = lf.readAsArrayList();
 		Collections.sort(probelist);
@@ -660,7 +744,8 @@ public class Merge450KData {
 		}
 	}
 
-	private void mergeandWriteT2(DoubleMatrixDataset<String, String> m2, int[] t2mIndex, String mergedsample, Integer vm2, int size, DoubleMatrixDatasetAppendableWriter t2Mout) throws IOException {
+	private void mergeandWriteT2(DoubleMatrixDataset<String, String> m2, int[] t2mIndex, String
+			mergedsample, Integer vm2, int size, DoubleMatrixDatasetAppendableWriter t2Mout) throws IOException {
 
 		double[] output = new double[size];
 		Arrays.fill(output, Double.NaN);

@@ -206,7 +206,23 @@ public class PCAPlot {
 //            String covariatefile = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-03-06-ENA\\2019-03-27-brain.phenotype_QC_covariates-qualityscores-filter.txt";
 			String covariatefile = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-11-Freeze2.TMM.Covariates-Numeric-Top10Covariates.txt";
 			String outplot = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\rnaqc\\2019-04-11\\covcorrelation\\";
-			p.plotContinuousVariable(inputxyfile, covariatefile, outplot, 0.5);
+//			p.plotContinuousVariable(inputxyfile, covariatefile, outplot, 0.5);
+
+//			p.plotColVsCol("D:\\Sync\\SyncThing\\Postdoc2\\2019-methylation\\pc1-10.txt", "D:\\Sync\\SyncThing\\Postdoc2\\2019-methylation\\pc1-10.png");
+
+
+//			knownClasses = "D:\\Sync\\SyncThing\\Postdoc2\\2019-methylation\\outliers.txt";
+//			superclasses = "D:\\Sync\\SyncThing\\Postdoc2\\2019-methylation\\GSEGroups.txt";
+//			String output = "D:\\Sync\\SyncThing\\Postdoc2\\2019-methylation\\2019-05-09-PreCenterScale\\2019-05-09-32kPublicMethylationData-PreCenterScale-pc1-2-outliergroups.png";
+//			inputxyfile = "D:\\Sync\\SyncThing\\Postdoc2\\2019-methylation\\2019-05-09-PreCenterScale\\pc1-10.txt";
+//			p.plot(inputxyfile, knownClasses, superclasses, 1, 2, "outlier GSE", "other GSE", 7, output);
+			knownClasses = "D:\\Sync\\SyncThing\\Postdoc2\\2019-methylation\\outliers.txt";
+			superclasses = "D:\\Sync\\SyncThing\\Postdoc2\\2019-methylation\\GSEGroups.txt";
+			String output = "D:\\TMP\\methpc\\pcs1-10-evs.png";
+			String outputall = "D:\\TMP\\methpc\\pcs1-10-evs-allvsall.png";
+			inputxyfile = "D:\\TMP\\methpc\\pcs1-10.txt";
+			p.plotColVsCol(inputxyfile, outputall);
+			p.plot(inputxyfile, knownClasses, superclasses, 1, 2, "outlier GSE", "other GSE", 7, output);
 
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -218,7 +234,73 @@ public class PCAPlot {
 
 	}
 
-	private void plotContinuousVariable(String inputxyfile, String covariatefile, String outplot, double corthreshold) throws Exception {
+
+	private void plotColVsCol(String inputxyfile, String output) throws Exception {
+
+		DefaultTheme def = new DefaultTheme();
+
+		Color[] colors = new Color[]{
+
+				Color.decode("#0099ff".toUpperCase()),
+				Color.decode("#aaaaaa".toUpperCase()),
+				Color.decode("#ffeb3b".toUpperCase()),
+				Color.decode("#e91e63".toUpperCase()),
+				Color.decode("#009688".toUpperCase()),
+				Color.decode("#8bc34a".toUpperCase()),
+				Color.decode("#ff5722".toUpperCase()),
+
+				Color.decode("#3f51b5".toUpperCase()),
+				Color.decode("#00bcd4".toUpperCase()),
+				Color.decode("#9c27b0".toUpperCase()),
+				Color.decode("#673ab7".toUpperCase()),
+
+				Color.decode("#03a9f4".toUpperCase()),
+				Color.decode("#607d8b".toUpperCase()),
+				Color.decode("#4caf50".toUpperCase()),
+				Color.decode("#cddc39".toUpperCase()),
+				Color.decode("#ffc107".toUpperCase()),
+				Color.decode("#ff9800".toUpperCase()),
+				Color.decode("#795548".toUpperCase()),
+
+		};
+
+		int alpha = 250;
+		for (int c = 0; c < colors.length; c++) {
+			colors[c] = new Color(colors[c].getRed(), colors[c].getGreen(), colors[c].getBlue(), alpha);
+		}
+
+		def.setColors(colors);
+
+		Color lg = def.getLightGrey();
+		def.setLightgrey(new Color(lg.getRed(), lg.getGreen(), lg.getBlue(), alpha));
+
+		DoubleMatrixDataset<String, String> ds = DoubleMatrixDataset.loadDoubleData(inputxyfile); // samples on rows
+
+
+		Grid grid = new Grid(500, 500, ds.columns() + 1, ds.columns() + 1, 100, 100);
+
+
+		for (int c = 0; c < ds.columns(); c++) {
+			double[] colA = ds.getCol(c).toArray();
+			for (int d = c + 1; d < ds.columns(); d++) {
+				double[] colB = ds.getCol(d).toArray();
+				ScatterplotPanel p = new ScatterplotPanel(1, 1);
+				p.setData(colA, colB);
+				p.setLabels(ds.getColObjects().get(c), ds.getColObjects().get(d));
+				p.setAlpha(0.1f);
+				p.setTheme(def);
+				grid.addPanel(p, c, d);
+
+
+			}
+		}
+		grid.draw(output, DefaultGraphics.Output.PNG);
+
+
+	}
+
+	private void plotContinuousVariable(String inputxyfile, String covariatefile, String outplot,
+										double corthreshold) throws Exception {
 
 
 		DefaultTheme def = new DefaultTheme();
@@ -361,7 +443,8 @@ public class PCAPlot {
 		return pruneAndCorrelate(x, y, 1.1, null, null, null, true);
 	}
 
-	double pruneAndCorrelate(double[] x, double[] y, double corthreshold, String outputplot, String xlabel, String ylabel, boolean spearman) throws IOException, DocumentException {
+	double pruneAndCorrelate(double[] x, double[] y, double corthreshold, String outputplot, String xlabel, String
+			ylabel, boolean spearman) throws IOException, DocumentException {
 
 		ArrayList<Double> xtmp = new ArrayList<>(x.length);
 		ArrayList<Double> ytmp = new ArrayList<>(x.length);
@@ -403,7 +486,8 @@ public class PCAPlot {
 	}
 
 
-	public void plot(String pcafile, String knownclasses, String superclasses, int col1, int col2, String referencename, String datasetname,
+	public void plot(String pcafile, String knownclasses, String superclasses, int col1, int col2, String
+			referencename, String datasetname,
 					 int startk, String output) throws IOException, DocumentException {
 
 		// load super populations
@@ -665,7 +749,9 @@ public class PCAPlot {
 		return punlab;
 	}
 
-	private HashMap<String, String> assignPopulation(ArrayList<Triple<String, Double, Double>> data, HashMap<String, String> sampleToPop, String nullpop, int startk) {
+	private HashMap<String, String> assignPopulation
+			(ArrayList<Triple<String, Double, Double>> data, HashMap<String, String> sampleToPop, String nullpop,
+			 int startk) {
 		int samplesWithoutPop = 0;
 		HashMap<String, String> sampleToPopTmp = new HashMap<>();
 

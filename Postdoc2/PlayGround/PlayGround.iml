@@ -146,5 +146,9 @@
     <orderEntry type="library" name="Maven: com.github.lejon:T-SNE-Java:2.5.0" level="project" />
     <orderEntry type="library" name="Maven: com.github.lejon.T-SNE-Java:tsne:2.5.0" level="project" />
     <orderEntry type="library" name="Maven: com.github.lejon.T-SNE-Java:tsne-demos:2.5.0" level="project" />
+    <orderEntry type="library" name="Maven: com.aparapi:aparapi:1.10.0" level="project" />
+    <orderEntry type="library" name="Maven: com.aparapi:aparapi-jni:1.4.1" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.bcel:bcel:6.2" level="project" />
+    <orderEntry type="library" name="Maven: org.scala-lang:scala-library:2.12.6" level="project" />
   </component>
 </module>

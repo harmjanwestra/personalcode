@@ -53,7 +53,11 @@
             <artifactId>T-SNE-Java</artifactId>
             <version>2.5.0</version>
         </dependency>
-
+        <dependency>
+            <groupId>com.aparapi</groupId>
+            <artifactId>aparapi</artifactId>
+            <version>1.10.0</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -66,7 +70,8 @@
                     </descriptorRefs>
                     <archive>
                         <manifest>
-                            <mainClass>nl.harmjanwestra.playground.methylation.Merge450KData</mainClass>
+                            <mainClass>nl.harmjanwestra.playground.conv.ConvertVCFToTT</mainClass>
+<!--                            <mainClass>nl.harmjanwestra.playground.conv.ConvertVCFToTT</mainClass>-->
                             <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
                             <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
                         </manifest>
