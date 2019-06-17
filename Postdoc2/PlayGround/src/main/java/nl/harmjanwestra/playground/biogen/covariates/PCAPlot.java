@@ -202,10 +202,10 @@ public class PCAPlot {
 //			p.plot(inputxyfile, knownClasses, superclasses, 3, 4, "Annotated Samples", "Unannotated samples", 7, output);
 //
 
-			String inputxyfile = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\rnaqc\\2019-04-11\\5-centerscalerun2\\5-pc1to4.txt";
+//			String inputxyfile = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\rnaqc\\2019-04-11\\5-centerscalerun2\\5-pc1to4.txt";
 //            String covariatefile = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-03-06-ENA\\2019-03-27-brain.phenotype_QC_covariates-qualityscores-filter.txt";
-			String covariatefile = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-11-Freeze2.TMM.Covariates-Numeric-Top10Covariates.txt";
-			String outplot = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\rnaqc\\2019-04-11\\covcorrelation\\";
+//			String covariatefile = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-11-Freeze2.TMM.Covariates-Numeric-Top10Covariates.txt";
+//			String outplot = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\rnaqc\\2019-04-11\\covcorrelation\\";
 //			p.plotContinuousVariable(inputxyfile, covariatefile, outplot, 0.5);
 
 //			p.plotColVsCol("D:\\Sync\\SyncThing\\Postdoc2\\2019-methylation\\pc1-10.txt", "D:\\Sync\\SyncThing\\Postdoc2\\2019-methylation\\pc1-10.png");
@@ -216,13 +216,27 @@ public class PCAPlot {
 //			String output = "D:\\Sync\\SyncThing\\Postdoc2\\2019-methylation\\2019-05-09-PreCenterScale\\2019-05-09-32kPublicMethylationData-PreCenterScale-pc1-2-outliergroups.png";
 //			inputxyfile = "D:\\Sync\\SyncThing\\Postdoc2\\2019-methylation\\2019-05-09-PreCenterScale\\pc1-10.txt";
 //			p.plot(inputxyfile, knownClasses, superclasses, 1, 2, "outlier GSE", "other GSE", 7, output);
-			knownClasses = "D:\\Sync\\SyncThing\\Postdoc2\\2019-methylation\\outliers.txt";
-			superclasses = "D:\\Sync\\SyncThing\\Postdoc2\\2019-methylation\\GSEGroups.txt";
-			String output = "D:\\TMP\\methpc\\pcs1-10-evs.png";
-			String outputall = "D:\\TMP\\methpc\\pcs1-10-evs-allvsall.png";
-			inputxyfile = "D:\\TMP\\methpc\\pcs1-10.txt";
-			p.plotColVsCol(inputxyfile, outputall);
-			p.plot(inputxyfile, knownClasses, superclasses, 1, 2, "outlier GSE", "other GSE", 7, output);
+//			knownClasses = "D:\\Sync\\SyncThing\\Postdoc2\\2019-methylation\\outliers.txt";
+//			superclasses = "D:\\Sync\\SyncThing\\Postdoc2\\2019-methylation\\GSEGroups.txt";
+//			String output = "D:\\TMP\\methpc\\pcs1-10-evs.png";
+//			String outputall = "D:\\TMP\\methpc\\pcs1-10-evs-allvsall.png";
+//			inputxyfile = "D:\\TMP\\methpc\\pcs1-10.txt";
+//			p.plotColVsCol(inputxyfile, outputall);
+//			p.plot(inputxyfile, knownClasses, superclasses, 1, 2, "outlier GSE", "other GSE", 7, output);
+
+			knownClasses = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-12-brain.phenotypes.datasets.txt";
+			superclasses = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-12-brain.phenotypes.datasets-groups.txt";
+			String inputxyfile = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-05-31-ExonQuantPCA\\eigenvectors-pc1-10-rewrite.txt";
+			String outputallpcs = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-05-31-ExonQuantPCA\\eigenvectors-pc1-10.png";
+
+//			p.plotColVsCol(inputxyfile, outputallpcs);
+			for (int i = 1; i < 11; i++) {
+				for (int j = i + 1; j < 11; j++) {
+					String output = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-05-31-ExonQuantPCA\\eigenvectors-pc" + i + "vs" + j + ".png";
+					p.plot(inputxyfile, knownClasses, superclasses, i, j, "outlier GSE", "other GSE", 7, output);
+				}
+			}
+
 
 		} catch (IOException e) {
 			e.printStackTrace();

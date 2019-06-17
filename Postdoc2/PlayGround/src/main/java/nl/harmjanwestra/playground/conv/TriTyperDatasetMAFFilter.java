@@ -18,13 +18,15 @@ public class TriTyperDatasetMAFFilter {
 //                "D:\\Work\\ampad\\dl\\TriTyper-merged\\filter\\"
 //        };
 		if (args.length < 2) {
-			System.out.println("Usage: indir outdir [maf] [cr] [hwep]");
+			System.out.println("Usage: indir outdir [maf] [cr] [hwep] [snploc] [snpmaploc]");
 		} else {
 			try {
 
 				double maf = 0.01;
 				double hwep = 0.0001;
 				double cr = 0.95;
+				String snploc = null;
+				String snpmaploc = null;
 
 				if (args.length > 2) {
 					maf = Double.parseDouble(args[2]);
@@ -36,14 +38,21 @@ public class TriTyperDatasetMAFFilter {
 					hwep = Double.parseDouble(args[4]);
 				}
 
-				d.run(args[0], args[1], maf, cr, hwep);
+				if (args.length > 5) {
+					snploc = args[5];
+				}
+				if (args.length > 6) {
+					snpmaploc = args[6];
+				}
+
+				d.run(args[0], args[1], maf, cr, hwep, snploc, snpmaploc);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
 	}
 
-	public void run(String loc, String out, double maf, double cr, double hwep) throws IOException {
+	public void run(String loc, String out, double maf, double cr, double hwep, String snploc, String snpmaploc) throws IOException {
 		System.out.println("TriTyper MAF filter");
 		System.out.println("In: " + loc);
 		System.out.println("Out: " + out);
@@ -80,7 +89,16 @@ public class TriTyperDatasetMAFFilter {
 		}
 
 
-		umcg.genetica.io.text.TextFile tf2 = new umcg.genetica.io.text.TextFile(loc + "SNPs.txt.gz", umcg.genetica.io.text.TextFile.R);
+		umcg.genetica.io.text.TextFile tf2;
+		if (snploc != null) {
+			tf2 = new umcg.genetica.io.text.TextFile(snploc, umcg.genetica.io.text.TextFile.R);
+		} else {
+			tf2 = new umcg.genetica.io.text.TextFile(loc + "SNPs.txt.gz", umcg.genetica.io.text.TextFile.R);
+		}
+
+		System.out.println("Using: " + tf2.getFileName());
+
+
 		umcg.genetica.io.text.TextFile tfsnpout = new umcg.genetica.io.text.TextFile(out + "SNPs.txt.gz", umcg.genetica.io.text.TextFile.W);
 		HashSet<String> writtenSNPs = new HashSet<String>();
 		String ln = tf2.readLine();
@@ -124,7 +142,13 @@ public class TriTyperDatasetMAFFilter {
 
 		Gpio.copyFile(loc + "Individuals.txt", out + "Individuals.txt");
 		Gpio.copyFile(loc + "PhenotypeInformation.txt", out + "PhenotypeInformation.txt");
-		TextFile tfs = new TextFile(loc + "SNPMappings.txt.gz", TextFile.R);
+		TextFile tfs;
+		if (snpmaploc != null) {
+			tfs = new TextFile(snpmaploc, TextFile.R);
+		} else {
+			tfs = new TextFile(loc + "SNPMappings.txt.gz", TextFile.R);
+		}
+		System.out.println("Using: " + tfs.getFileName());
 		TextFile tfso = new TextFile(out + "SNPMappings.txt.gz", TextFile.W);
 
 		String[] smelems = tfs.readLineElems(TextFile.tab);

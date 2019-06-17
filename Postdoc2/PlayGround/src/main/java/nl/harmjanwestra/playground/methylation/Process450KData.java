@@ -56,6 +56,14 @@ public class Process450KData {
 					QuantileNormalizeDiskBased450K q = new QuantileNormalizeDiskBased450K();
 					q.run(args[1], args[2]);
 				}
+			} else if (args[0].equals("logtransform")) {
+				if (args.length < 3) {
+					System.out.println("Usage: logtransform input output");
+				} else {
+					Log2TransformDiskBased450K q = new Log2TransformDiskBased450K();
+					q.run(args[1], args[2]);
+
+				}
 			} else if (args[0].equals("countnans")) {
 				if (args.length < 3) {
 					System.out.println("Usage: countnans input output");

@@ -70,7 +70,7 @@
                     </descriptorRefs>
                     <archive>
                         <manifest>
-                            <mainClass>nl.harmjanwestra.playground.conv.ConvertVCFToTT</mainClass>
+                            <mainClass>nl.harmjanwestra.playground.conv.TriTyperSNPFilter</mainClass>
 <!--                            <mainClass>nl.harmjanwestra.playground.conv.ConvertVCFToTT</mainClass>-->
                             <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
                             <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>

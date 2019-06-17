@@ -173,9 +173,38 @@ public class FDRCheck {
 //					"D:\\eQTLTest\\psychencode-DER-08a_hg19_eQTL.significant-withalleles.txt",
 //			};
 
-			fdr.tssdistancePerFDRBin(files2, eqtlgenannot, metabrainannot, "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\psychencodeTssDist\\significanteqtls-replineqtlgen-GTEXv7-tssdist-brainForPsychencode-perFDRBin-v2.pdf");
+//			fdr.tssdistancePerFDRBin(files2, eqtlgenannot, metabrainannot,
+//					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\psychencodeTssDist\\significanteqtls-replineqtlgen-GTEXv7-tssdist-brainForPsychencode-perFDRBin-v2.pdf");
 //			fdr.compareTSSDistance(files, annotation, out);
 
+			files2 = new String[]{
+					"D:\\Sync\\SyncThing\\Postdoc2\\2019-eQTLMeta\\data\\2018-05-22-assoc\\cis\\2018-01-31-cis-eQTLProbesFDR0.05-ProbeLevel-CohortInfoRemoved.txt.gz",
+					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-15-results\\cis\\eQTLProbesFDR0.05-ProbeLevel.txt.gz",
+					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-06-04-results\\cis\\eQTLProbesFDR0.05-ProbeLevel.txt.gz",
+					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-06-04-results\\cis-proteincoding\\eQTLProbesFDR0.05-ProbeLevel.txt.gz",
+//					"D:\\Sync\\Syncthing\\Temp\\biogen\\metabrainfx\\cis\\eQTLProbesFDR0.05-ProbeLevel.txt.gz",
+					"D:\\Freeze2\\Cortex_MetaAnalysis_ROSMAP_CMC_HBCC_Mayo_cis_eQTL_release.FDR05-topfx-sort.tsv",
+					"D:\\Sync\\Syncthing\\Temp\\Psychencode\\psychencode-DER-08a_hg19_eQTL.significant-withalleles.txt",
+//					"D:\\Sync\\Syncthing\\Temp\\Psychencode\\psychencode-DER-08b_hg19_eQTL.bonferroni-withalleles.txt",
+//					"D:\\eQTLTest\\GTEx_Analysis_v7_eQTL\\Brain_Amygdala.v7.egenes.txt.gz",
+//					"D:\\eQTLTest\\GTEx_Analysis_v7_eQTL\\Brain_Anterior_cingulate_cortex_BA24.v7.egenes.txt.gz",
+//					"D:\\eQTLTest\\GTEx_Analysis_v7_eQTL\\Brain_Caudate_basal_ganglia.v7.egenes.txt.gz",
+			};
+
+			fdr.tssdistance(
+					files2,
+					eqtlgenannot,
+					metabrainannot,
+					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-06-04-results\\2019-06-12-TSSDistPlot.pdf"
+			);
+
+//			files2 = new String[]{
+//					"D:\\Sync\\SyncThing\\Postdoc2\\2018-05-eQTLMeta\\data\\2018-05-22-assoc\\cis\\2018-01-31-cis-eQTLProbesFDR0.05-ProbeLevel-CohortInfoRemoved.txt.gz",
+//					"D:\\eQTLTest\\psychencode-DER-08a_hg19_eQTL.significant-withalleles.txt",
+//			};
+
+//			fdr.tssdistancePerFDRBin(files2, eqtlgenannot, metabrainannot,
+//					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-06-04-results\\2019-06-06-TSSDistPerBin.pdf");
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -577,9 +606,14 @@ public class FDRCheck {
 			int poscol = 0;
 			int topsnpcol = 0;
 			int tssdistcol = 0;
+			int genestartcol = 0;
+			int geneendcol = 0;
+			int strandcol = 0;
+
 			// chr
 			// pos
 			boolean psychencode = false;
+			boolean sieberts = false;
 			boolean emp = false;
 			HashMap<String, Gene> strToGene = null;
 			String filename = new File(files[f]).getName();
@@ -641,6 +675,34 @@ public class FDRCheck {
 						chrcol = i;
 					} else if (v.equals("SNPChrPos")) {
 						poscol = i;
+					}
+				}
+			} else if (filename.endsWith("Cortex_MetaAnalysis_ROSMAP_CMC_HBCC_Mayo_cis_eQTL_release.FDR05-topfx.tsv.gz")) {
+				sieberts = true;
+				for (int i = 0; i < header.length; i++) {
+					String v = header[i];
+					if (v.equals("gene")) {
+						genecol = i;
+					} else if (v.equals("pvalue")) {
+						pvalcol = i;
+					} else if (v.equals("FDR")) {
+						fdrcol = i;
+					} else if (v.equals("A1")) {
+						refcol = i;
+					} else if (v.equals("A2")) {
+						altcol = i;
+					} else if (v.equals("beta")) {
+						slopecol = i;
+					} else if (v.equals("chromosome")) {
+						chrcol = i;
+					} else if (v.equals("snpLocation")) {
+						poscol = i;
+					} else if (v.equals("geneStartPosition")) {
+						genestartcol = i;
+					} else if (v.equals("geneStartPosition")) {
+						geneendcol = i;
+					} else if (v.equals("strand")) {
+						strandcol = i;
 					}
 				}
 			} else {
@@ -728,6 +790,22 @@ public class FDRCheck {
 								d.distance = dist;
 								d.z = z;
 								dists.add(d);
+							}
+						} else if (sieberts) {
+							TSSDistance d = new TSSDistance();
+
+							try {
+								Integer start = Integer.parseInt(elems[genestartcol]);
+								if (Integer.parseInt(elems[strandcol]) < 0) {
+									start = Integer.parseInt(elems[geneendcol]);
+								}
+								Integer snpstart = Integer.parseInt(elems[poscol]);
+
+								d.distance = snpstart - start;
+								d.z = z;
+								dists.add(d);
+							} catch (NumberFormatException e) {
+
 							}
 
 						} else {
