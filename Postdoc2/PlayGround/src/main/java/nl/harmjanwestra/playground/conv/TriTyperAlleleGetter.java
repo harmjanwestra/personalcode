@@ -1,4 +1,4 @@
-package nl.harmjanwestra.playground.trityper;
+package nl.harmjanwestra.playground.conv;
 
 import umcg.genetica.console.ProgressBar;
 import umcg.genetica.io.text.TextFile;

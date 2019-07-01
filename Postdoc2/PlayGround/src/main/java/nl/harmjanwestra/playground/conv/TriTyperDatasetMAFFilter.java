@@ -13,10 +13,10 @@ public class TriTyperDatasetMAFFilter {
 
 	public static void main(String[] args) {
 		TriTyperDatasetMAFFilter d = new TriTyperDatasetMAFFilter();
-//        args = new String[]{
-//                "D:\\Work\\ampad\\dl\\TriTyper-merged\\",
-//                "D:\\Work\\ampad\\dl\\TriTyper-merged\\filter\\"
-//        };
+        args = new String[]{
+                "E:\\data\\gtex\\",
+                "E:\\data\\gtexfilter\\"
+        };
 		if (args.length < 2) {
 			System.out.println("Usage: indir outdir [maf] [cr] [hwep] [snploc] [snpmaploc]");
 		} else {

@@ -49,7 +49,7 @@ public class GTExFilter {
             InputStream fi = new FileInputStream(gtextar);
             InputStream bi = null;
             if (gtextar.endsWith(".gz")) {
-                bi = new GZIPInputStream(new BufferedInputStream(fi));
+                bi = new BufferedInputStream(fi);
             } else {
                 bi = new BufferedInputStream(fi);
             }

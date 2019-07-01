@@ -16,13 +16,13 @@ public class LinkRNAToDNA {
 	public static void main(String[] args) {
 		LinkRNAToDNA l = new LinkRNAToDNA();
 
-		String origlink = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\linksIntegrativeFirst\\2019-04-13-RNASeqIdToGenotypeID.txt";
-		String individualfile = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\genotypeqc\\genotypeIndividuals\\individualfilesIntegrative.txt";
+		String origlink = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-14-linksIntegrativeFirst\\2019-04-13-RNASeqIdToGenotypeID.txt";
+		String individualfile = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-13-genotypeqc\\genotypeIndividuals\\2019-06-18-individualfiles.txt";
 
-		String freeze1links = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\linksIntegrativeFirst\\Freeze1Links.txt";
+		String freeze1links = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-14-linksIntegrativeFirst\\Freeze1Links.txt";
 
-		String psychencodelinks = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\linksIntegrativeFirst\\PsychEncodeIndividualToGT.txt";
-		String output = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\linksIntegrativeFirst\\links-";
+		String psychencodelinks = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-14-linksIntegrativeFirst\\PsychEncodeIndividualToGT.txt";
+		String output = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-14-linksNoIntegrative\\links-";
 
 		try {
 			l.run(individualfile, origlink, freeze1links, psychencodelinks, output);
@@ -30,39 +30,39 @@ public class LinkRNAToDNA {
 			e.printStackTrace();
 		}
 
-		String file = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\linksIntegrativeFirst\\links-FoundInds.txt";
-		String defupfileout = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\linksIntegrativeFirst\\links-FoundInds-dedup.txt";
+		String file = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-14-linksIntegrativeFirst\\links-FoundInds.txt";
+		String defupfileout = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-14-linksIntegrativeFirst\\links-FoundInds-dedup.txt";
 		try {
 			l.dedupRNA(file, defupfileout);
 
 
-			String tissuemapfile = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\rnaqc\\2019-04-11\\2019-04-14-FullSampleAssignment.txt";
-			String splittissuefolder = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\linksIntegrativeFirst\\splitpertissue\\";
+			String tissuemapfile = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-12-rnaqc\\2019-04-11\\2019-04-14-FullSampleAssignment.txt";
+			String splittissuefolder = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-14-linksIntegrativeFirst\\splitpertissue\\";
 			l.splitBasedOnTissueType(defupfileout, tissuemapfile, splittissuefolder);
 
 			String[] files = new String[]{
-					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\linksIntegrativeFirst\\splitpertissue\\Cerebellum.txt",
-					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\linksIntegrativeFirst\\splitpertissue\\Cortex.txt",
-					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\linksIntegrativeFirst\\splitpertissue\\Spinal cord.txt",
+					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-14-linksIntegrativeFirst\\splitpertissue\\Cerebellum.txt",
+					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-14-linksIntegrativeFirst\\splitpertissue\\Cortex.txt",
+					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-14-linksIntegrativeFirst\\splitpertissue\\Spinal cord.txt",
 			};
 			for (String linkfile : files) {
 				l.dedupDNA(linkfile);
 			}
 			files = new String[]{
-					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\linksIntegrativeFirst\\splitpertissue\\Cerebellum.txt-dedup-gte.txt",
-					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\linksIntegrativeFirst\\splitpertissue\\Cortex.txt-dedup-gte.txt",
-					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\linksIntegrativeFirst\\splitpertissue\\Spinal cord.txt-dedup-gte.txt",
+					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-14-linksIntegrativeFirst\\splitpertissue\\Cerebellum.txt-dedup-gte.txt",
+					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-14-linksIntegrativeFirst\\splitpertissue\\Cortex.txt-dedup-gte.txt",
+					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-14-linksIntegrativeFirst\\splitpertissue\\Spinal cord.txt-dedup-gte.txt",
 			};
-			String popfile = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\genotypeqc\\populationassignment\\allGTSamplesPopulationAssignment.txt";
+			String popfile = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-13-genotypeqc\\populationassignment\\allGTSamplesPopulationAssignment.txt";
 			for (String linkfile : files) {
 				l.splitPerPopulation(linkfile, popfile);
 			}
 
 
-			String pathstrippeddedupfile = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\linksIntegrativeFirst\\links-FoundInds-dedup-pathstripped.txt";
+			String pathstrippeddedupfile = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-14-linksIntegrativeFirst\\links-FoundInds-dedup-pathstripped.txt";
 			files = new String[]{
-					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\linksIntegrativeFirst\\splitpertissue\\Cortex.txt-dedup-gte.txt-EUR.txt",
-					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\linksIntegrativeFirst\\splitpertissue\\Cortex.txt-dedup-gte.txt-AFR.txt"
+					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-14-linksIntegrativeFirst\\splitpertissue\\Cortex.txt-dedup-gte.txt-EUR.txt",
+					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-14-linksIntegrativeFirst\\splitpertissue\\Cortex.txt-dedup-gte.txt-AFR.txt"
 			};
 
 			for (String linkfile : files) {
@@ -347,6 +347,19 @@ public class LinkRNAToDNA {
 				// NABEC
 				if (!found) {
 					f1 = "0_" + dna;
+					if (inds.contains(f1)) {
+						foundinds.add(f1);
+						foundinds.add(dna);
+						foundindOut.writeln(rna + "\t" + f1 + "\t" + q.ds + "\t" + q.meta + "\t" + ln);
+						found = true;
+					}
+				}
+
+				if (!found) {
+					if (dna.contains("UMARY")) {
+//						System.out.println("Try this!");
+					}
+					f1 = "0_" + dna.replaceAll("-", "_");
 					if (inds.contains(f1)) {
 						foundinds.add(f1);
 						foundinds.add(dna);
