@@ -1,8 +1,10 @@
 package nl.harmjanwestra.playground.biogen.links;
 
 
+import it.unimi.dsi.fastutil.Hash;
 import org.apache.poi.ss.formula.functions.T;
 import umcg.genetica.containers.Triple;
+import umcg.genetica.io.Gpio;
 import umcg.genetica.io.text.TextFile;
 import umcg.genetica.text.Strings;
 
@@ -17,57 +19,68 @@ public class LinkRNAToDNA {
 		LinkRNAToDNA l = new LinkRNAToDNA();
 
 		String origlink = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-14-linksIntegrativeFirst\\2019-04-13-RNASeqIdToGenotypeID.txt";
-		String individualfile = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-13-genotypeqc\\genotypeIndividuals\\2019-06-18-individualfiles.txt";
+		String individualfile = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-13-genotypeqc\\2019-07-01-individualfiles.txt";
 
 		String freeze1links = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-14-linksIntegrativeFirst\\Freeze1Links.txt";
 
 		String psychencodelinks = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-14-linksIntegrativeFirst\\PsychEncodeIndividualToGT.txt";
-		String output = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-14-linksNoIntegrative\\links-";
+		String outdir = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-07-01-linksNoIntegrative\\";
+		String output = outdir + "links-";
+
+		String rnaseqoutliers = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-12-rnaqc\\2019-04-11\\2019-04-11-AllRNASeqOutliers.txt";
 
 		try {
-			l.run(individualfile, origlink, freeze1links, psychencodelinks, output);
+			l.run(individualfile, origlink, freeze1links, psychencodelinks, rnaseqoutliers, output);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+//		System.exit(0);
 
-		String file = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-14-linksIntegrativeFirst\\links-FoundInds.txt";
-		String defupfileout = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-14-linksIntegrativeFirst\\links-FoundInds-dedup.txt";
+		boolean preferresequencedsamples = true;
+		String file = outdir + "links-FoundInds.txt";
+		String defupfileout = outdir + "links-FoundInds-dedup.txt";
 		try {
+			// remove duplicate genotype samples
 			l.dedupRNA(file, defupfileout);
+			String pathstrippeddedupfile = outdir + "links-FoundInds-dedup-pathstripped.txt";
+			l.stripPaths(defupfileout, pathstrippeddedupfile);
 
+//			System.exit(-1);
 
 			String tissuemapfile = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-12-rnaqc\\2019-04-11\\2019-04-14-FullSampleAssignment.txt";
-			String splittissuefolder = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-14-linksIntegrativeFirst\\splitpertissue\\";
-			l.splitBasedOnTissueType(defupfileout, tissuemapfile, splittissuefolder);
+			String splittissuefolder = outdir + "splitpertissue\\";
+			l.splitBasedOnTissueType(pathstrippeddedupfile, tissuemapfile, splittissuefolder);
 
 			String[] files = new String[]{
-					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-14-linksIntegrativeFirst\\splitpertissue\\Cerebellum.txt",
-					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-14-linksIntegrativeFirst\\splitpertissue\\Cortex.txt",
-					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-14-linksIntegrativeFirst\\splitpertissue\\Spinal cord.txt",
+					outdir + "splitpertissue\\Cerebellum.txt",
+					outdir + "splitpertissue\\Cortex.txt",
+					outdir + "splitpertissue\\Spinal cord.txt",
 			};
+
 			for (String linkfile : files) {
-				l.dedupDNA(linkfile);
+				l.dedupDNA(linkfile, preferresequencedsamples);
 			}
+
 			files = new String[]{
-					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-14-linksIntegrativeFirst\\splitpertissue\\Cerebellum.txt-dedup-gte.txt",
-					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-14-linksIntegrativeFirst\\splitpertissue\\Cortex.txt-dedup-gte.txt",
-					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-14-linksIntegrativeFirst\\splitpertissue\\Spinal cord.txt-dedup-gte.txt",
+					outdir + "splitpertissue\\Cerebellum.txt-dedup-gte.txt",
+					outdir + "splitpertissue\\Cortex.txt-dedup-gte.txt",
+					outdir + "splitpertissue\\Spinal cord.txt-dedup-gte.txt",
 			};
+
 			String popfile = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-13-genotypeqc\\populationassignment\\allGTSamplesPopulationAssignment.txt";
 			for (String linkfile : files) {
 				l.splitPerPopulation(linkfile, popfile);
 			}
 
-
-			String pathstrippeddedupfile = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-14-linksIntegrativeFirst\\links-FoundInds-dedup-pathstripped.txt";
 			files = new String[]{
-					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-14-linksIntegrativeFirst\\splitpertissue\\Cortex.txt-dedup-gte.txt-EUR.txt",
-					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-14-linksIntegrativeFirst\\splitpertissue\\Cortex.txt-dedup-gte.txt-AFR.txt"
+					outdir + "splitpertissue\\Cortex.txt-dedup-gte.txt-EUR.txt",
+					outdir + "splitpertissue\\Cortex.txt-dedup-gte.txt-AFR.txt"
 			};
 
 			for (String linkfile : files) {
 				l.splitPerDataset(linkfile, pathstrippeddedupfile);
 			}
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -80,6 +93,50 @@ public class LinkRNAToDNA {
 //		} catch (IOException e) {
 //			e.printStackTrace();
 //		}
+	}
+
+	private void removeDuplicateAndRelatedDNA(String defupfileout, String duplicateDNAIds, String pathstrippeddedupfilewithoutrelated) throws IOException {
+		HashSet<String> idsToExclude = new HashSet<>();
+		TextFile tf = new TextFile(duplicateDNAIds, TextFile.R);
+		idsToExclude.addAll(tf.readAsArrayList());
+		tf.close();
+		TextFile tf2 = new TextFile(defupfileout, TextFile.R);
+		TextFile outf = new TextFile(pathstrippeddedupfilewithoutrelated, TextFile.W);
+
+		String[] elems = tf2.readLineElems(TextFile.tab);
+		while (elems != null) {
+
+			String dna = elems[1];
+			if (!idsToExclude.contains(dna)) {
+				outf.writeln(Strings.concat(elems, Strings.tab));
+			}
+			elems = tf2.readLineElems(TextFile.tab);
+		}
+
+		outf.close();
+		tf2.close();
+
+	}
+
+	private void stripPaths(String defupfileout, String pathstrippeddedupfile) throws IOException {
+
+		TextFile in = new TextFile(defupfileout, TextFile.R);
+		TextFile out = new TextFile(pathstrippeddedupfile, TextFile.W);
+
+		String[] elems = in.readLineElems(TextFile.tab);
+		while (elems != null) {
+
+			String path = elems[4];
+			String[] pathelems = path.split("\\\\");
+			String name = pathelems[pathelems.length - 1];
+			name = name.replace("-Individuals.txt", "");
+			elems[4] = name;
+
+			out.writeln(Strings.concat(elems, Strings.tab));
+			elems = in.readLineElems(TextFile.tab);
+		}
+		in.close();
+		out.close();
 	}
 
 	private void splitPerDataset(String linkfile, String defupfileout) throws IOException {
@@ -97,7 +154,6 @@ public class LinkRNAToDNA {
 			TextFile tfo = dsout.get(dataset);
 			if (tfo == null) {
 				dsout.put(dataset, new TextFile(linkfile + "-" + dataset + ".txt", TextFile.W));
-
 			}
 			samplePerDataset.put(sample, dataset);
 
@@ -108,10 +164,12 @@ public class LinkRNAToDNA {
 		TextFile tf2 = new TextFile(linkfile, TextFile.R);
 
 		elems = tf2.readLineElems(TextFile.tab);
+		TextFile sampleToDs = new TextFile(linkfile + "-SampleToDataset.txt", TextFile.W);
 		while (elems != null) {
 
 			String sample = elems[1];
 			String ds = samplePerDataset.get(sample);
+			sampleToDs.writeln(sample + "\t" + ds);
 			if (ds == null) {
 				System.out.println("Could not find ds for " + sample);
 
@@ -121,6 +179,7 @@ public class LinkRNAToDNA {
 
 			elems = tf2.readLineElems(TextFile.tab);
 		}
+		sampleToDs.close();
 		tf2.close();
 		for (String key : dsout.keySet()) {
 			dsout.get(key).close();
@@ -169,28 +228,71 @@ public class LinkRNAToDNA {
 		}
 	}
 
-	private void dedupDNA(String file) throws IOException {
+	private void dedupDNA(String file, boolean preferreseqenced) throws IOException {
 
-		HashSet<String> visitedInd = new HashSet<>();
-		TextFile tf = new TextFile(file, TextFile.R);
-		TextFile tfo = new TextFile(file + "-dedup-gte.txt", TextFile.W);
-		String[] elems = tf.readLineElems(TextFile.tab);
-		while (elems != null) {
-			if (!visitedInd.contains(elems[1])) {
-				tfo.writeln(elems[1] + "\t" + elems[0]);
-				visitedInd.add(elems[1]);
+		if (preferreseqenced) {
+
+
+			HashMap<String, HashSet<String>> links = new HashMap<>();
+			TextFile tf = new TextFile(file, TextFile.R);
+			String[] elems = tf.readLineElems(TextFile.tab);
+			while (elems != null) {
+				HashSet<String> rnas = links.get(elems[1]);
+				if (rnas == null) {
+					rnas = new HashSet<>();
+				}
+				rnas.add(elems[0]);
+				links.put(elems[1], rnas);
+
+				elems = tf.readLineElems(TextFile.tab);
 			}
-			elems = tf.readLineElems(TextFile.tab);
+			tf.close();
+
+			TextFile tfo = new TextFile(file + "-dedup-gte.txt", TextFile.W);
+			for (String key : links.keySet()) {
+				HashSet<String> rnas = links.get(key);
+				String reseqsample = null;
+				String othersample = null;
+				for (String s : rnas) {
+					if (s.contains("reseq")) {
+						reseqsample = s;
+					} else {
+						othersample = s;
+					}
+				}
+
+				if (reseqsample == null) {
+					// pick a random sample
+					tfo.writeln(key + "\t" + othersample);
+				} else {
+					tfo.writeln(key + "\t" + reseqsample);
+				}
+
+			}
+			tfo.close();
+
+		} else {
+			HashSet<String> visitedInd = new HashSet<>();
+			TextFile tf = new TextFile(file, TextFile.R);
+			TextFile tfo = new TextFile(file + "-dedup-gte.txt", TextFile.W);
+			String[] elems = tf.readLineElems(TextFile.tab);
+			while (elems != null) {
+				if (!visitedInd.contains(elems[1])) {
+					tfo.writeln(elems[1] + "\t" + elems[0]);
+					visitedInd.add(elems[1]);
+				}
+				elems = tf.readLineElems(TextFile.tab);
+			}
+			tf.close();
+			tfo.close();
 		}
-		tf.close();
-		tfo.close();
 
 
 	}
 
 
 	private void splitBasedOnTissueType(String defupfileout, String tissuemapfile, String splittissuefolder) throws IOException {
-
+		Gpio.createDir(splittissuefolder);
 		HashMap<String, String> tissuemap = new HashMap<>();
 		HashMap<String, TextFile> tissueout = new HashMap<>();
 		TextFile tf = new TextFile(tissuemapfile, TextFile.R);
@@ -266,7 +368,15 @@ public class LinkRNAToDNA {
 		return map;
 	}
 
-	public void run(String indfile, String origlink, String freeze1links, String psychencodelinks, String output) throws IOException {
+	public void run(String indfile, String origlink, String freeze1links, String psychencodelinks, String rnseqoutlierfile, String output) throws IOException {
+
+		HashSet<String> rnaseqoutliers = null;
+		if (rnseqoutlierfile != null) {
+			rnaseqoutliers = new HashSet<>();
+			TextFile tf = new TextFile(rnseqoutlierfile, TextFile.R);
+			rnaseqoutliers.addAll(tf.readAsArrayList());
+			tf.close();
+		}
 
 		ArrayList<Quad> data = new ArrayList<>();
 
@@ -279,7 +389,9 @@ public class LinkRNAToDNA {
 			q.rna = elems1[0];
 			q.meta = elems1[2];
 			q.ds = elems1[3];
-			data.add(q);
+			if (rnaseqoutliers == null || !rnaseqoutliers.contains(q.rna)) {
+				data.add(q);
+			}
 
 			elems1 = tf1.readLineElems(TextFile.tab);
 		}
@@ -290,24 +402,48 @@ public class LinkRNAToDNA {
 
 		TextFile tf = new TextFile(indfile, TextFile.R);
 
-		String ln = tf.readLine();
+		String[] lnelems = tf.readLineElems(TextFile.tab);
 		HashSet<String> foundinds = new HashSet<>();
 		TextFile allindOut = new TextFile(output + "AllInds.txt", TextFile.W);
 		TextFile foundindOut = new TextFile(output + "FoundInds.txt", TextFile.W);
-		while (ln != null) {
 
-			System.out.println(ln);
+		while (lnelems != null) {
+
+			System.out.println(lnelems[0]);
+			HashSet<String> excludeInds = new HashSet<String>();
+			if (lnelems.length > 1) {
+				System.out.println(lnelems[1]);
+				TextFile tf2 = new TextFile(lnelems[1], TextFile.R);
+				String[] dupelems = tf2.readLineElems(TextFile.tab);
+				while (dupelems != null) {
+					excludeInds.add(dupelems[3]);
+					dupelems = tf2.readLineElems(TextFile.tab);
+				}
+				tf2.close();
+			}
+
+
 			//
 			HashSet<String> inds = new HashSet<>();
-			TextFile tf3 = new TextFile(ln, TextFile.R);
+			String individualFile = lnelems[0];
+			TextFile tf3 = new TextFile(individualFile, TextFile.R);
 			String ln2 = tf3.readLine();
+			int included = 0;
+			int excluded = 0;
 			while (ln2 != null) {
-				inds.add(ln2);
-				allindOut.writeln(ln2 + "\t" + ln);
+				if (excludeInds.contains(ln2)) {
+					excluded++;
+				} else {
+					inds.add(ln2);
+					included++;
+					allindOut.writeln(ln2 + "\t" + lnelems[0]);
+				}
+
 				ln2 = tf3.readLine();
 			}
 			tf3.close();
 
+			System.out.println("File has: " + included + " included, " + excluded + " excluded.");
 
 			boolean found = false;
 			for (Quad q : data) {
@@ -319,7 +455,7 @@ public class LinkRNAToDNA {
 				if (inds.contains(dna)) {
 					foundinds.add(f1);
 					foundinds.add(dna);
-					foundindOut.writeln(rna + "\t" + dna + "\t" + q.ds + "\t" + q.meta + "\t" + ln);
+					foundindOut.writeln(rna + "\t" + dna + "\t" + q.ds + "\t" + q.meta + "\t" + individualFile);
 					found = true;
 				}
 				if (!found && f1 != null) {
@@ -328,7 +464,7 @@ public class LinkRNAToDNA {
 					if (inds.contains(f1)) {
 						foundinds.add(f1);
 						foundinds.add(dna);
-						foundindOut.writeln(rna + "\t" + f1 + "\t" + q.ds + "\t" + q.meta + "\t" + ln);
+						foundindOut.writeln(rna + "\t" + f1 + "\t" + q.ds + "\t" + q.meta + "\t" + individualFile);
 						found = true;
 					}
 				}
@@ -339,7 +475,7 @@ public class LinkRNAToDNA {
 					if (inds.contains(f1)) {
 						foundinds.add(f1);
 						foundinds.add(dna);
-						foundindOut.writeln(rna + "\t" + f1 + "\t" + q.ds + "\t" + q.meta + "\t" + ln);
+						foundindOut.writeln(rna + "\t" + f1 + "\t" + q.ds + "\t" + q.meta + "\t" + individualFile);
 						found = true;
 					}
 				}
@@ -350,7 +486,7 @@ public class LinkRNAToDNA {
 					if (inds.contains(f1)) {
 						foundinds.add(f1);
 						foundinds.add(dna);
-						foundindOut.writeln(rna + "\t" + f1 + "\t" + q.ds + "\t" + q.meta + "\t" + ln);
+						foundindOut.writeln(rna + "\t" + f1 + "\t" + q.ds + "\t" + q.meta + "\t" + individualFile);
 						found = true;
 					}
 				}
@@ -363,7 +499,7 @@ public class LinkRNAToDNA {
 					if (inds.contains(f1)) {
 						foundinds.add(f1);
 						foundinds.add(dna);
-						foundindOut.writeln(rna + "\t" + f1 + "\t" + q.ds + "\t" + q.meta + "\t" + ln);
+						foundindOut.writeln(rna + "\t" + f1 + "\t" + q.ds + "\t" + q.meta + "\t" + individualFile);
 						found = true;
 					}
 				}
@@ -379,7 +515,7 @@ public class LinkRNAToDNA {
 
 								foundinds.add(f1);
 								foundinds.add(dna);
-								foundindOut.writeln(rna + "\t" + ind + "\t" + q.ds + "\t" + q.meta + "\t" + ln);
+								foundindOut.writeln(rna + "\t" + ind + "\t" + q.ds + "\t" + q.meta + "\t" + individualFile);
 								found = true;
 								break;
 							}
@@ -391,7 +527,7 @@ public class LinkRNAToDNA {
 					f1 = "0_" + dna + "_1";
 					if (inds.contains(f1)) {
 						foundinds.add(dna);
-						foundindOut.writeln(rna + "\t" + f1 + "\t" + q.ds + "\t" + q.meta + "\t" + ln);
+						foundindOut.writeln(rna + "\t" + f1 + "\t" + q.ds + "\t" + q.meta + "\t" + individualFile);
 						found = true;
 					}
 				}
@@ -402,13 +538,13 @@ public class LinkRNAToDNA {
 					f1 = "0_" + dna + "_" + dna;
 					if (inds.contains(f1)) {
 						foundinds.add(dna);
-						foundindOut.writeln(rna + "\t" + f1 + "\t" + q.ds + "\t" + q.meta + "\t" + ln);
+						foundindOut.writeln(rna + "\t" + f1 + "\t" + q.ds + "\t" + q.meta + "\t" + individualFile);
 						found = true;
 					}
 				}
 
 				if (!found) {
-					if (rna.equals("Br1157_R2836") && ln.contains("CMC_HBCC_set1")) {
+					if (rna.equals("Br1157_R2836") && individualFile.contains("CMC_HBCC_set1")) {
 						System.out.println("Found it");
 					}
 					String psychencodeind = psychmap.get(dna);
@@ -420,7 +556,7 @@ public class LinkRNAToDNA {
 								if (actual.equals(psychencodeind)) {
 									foundinds.add(psychencodeind);
 									foundinds.add(dna);
-									foundindOut.writeln(rna + "\t" + ind + "\t" + q.ds + "\t" + q.meta + "\t" + ln);
+									foundindOut.writeln(rna + "\t" + ind + "\t" + q.ds + "\t" + q.meta + "\t" + individualFile);
 									found = true;
 									break;
 								}
@@ -433,7 +569,7 @@ public class LinkRNAToDNA {
 			}
 
 			System.out.println(foundinds.size() + " ids found sofar..");
-			ln = tf.readLine();
+			lnelems = tf.readLineElems(TextFile.tab);
 		}
 		tf.close();
 		allindOut.close();

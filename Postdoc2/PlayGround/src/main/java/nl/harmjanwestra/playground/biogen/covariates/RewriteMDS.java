@@ -15,64 +15,128 @@ public class RewriteMDS {
 
 	public static void main(String[] args) {
 
-		String[] linksfiles = new String[]{
-				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\links\\splitpertissue\\Cortex.txt-dedup-gte.txt-EUR.txt-AMPAD-MAYO-V2.txt",
-				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\links\\splitpertissue\\Cortex.txt-dedup-gte.txt-EUR.txt-AMPAD-MSBB-V2.txt",
-				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\links\\splitpertissue\\Cortex.txt-dedup-gte.txt-EUR.txt-AMPAD-ROSMAP-V2.txt",
-				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\links\\splitpertissue\\Cortex.txt-dedup-gte.txt-EUR.txt-Braineac.txt",
-				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\links\\splitpertissue\\Cortex.txt-dedup-gte.txt-EUR.txt-BrainGVEX.txt",
-				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\links\\splitpertissue\\Cortex.txt-dedup-gte.txt-EUR.txt-CMC.txt",
-				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\links\\splitpertissue\\Cortex.txt-dedup-gte.txt-EUR.txt-CMC_HBCC_set2.txt",
-				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\links\\splitpertissue\\Cortex.txt-dedup-gte.txt-EUR.txt-ENA.txt",
-				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\links\\splitpertissue\\Cortex.txt-dedup-gte.txt-EUR.txt-GTEx.txt",
-				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\links\\splitpertissue\\Cortex.txt-dedup-gte.txt-EUR.txt-GVEX.txt",
-				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\links\\splitpertissue\\Cortex.txt-dedup-gte.txt-EUR.txt-LIBD_1M.txt",
-				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\links\\splitpertissue\\Cortex.txt-dedup-gte.txt-EUR.txt-NABEC-H610.txt",
-				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\links\\splitpertissue\\Cortex.txt-dedup-gte.txt-EUR.txt-NABEC-WES.txt",
-				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\links\\splitpertissue\\Cortex.txt-dedup-gte.txt-EUR.txt-TargetALS.txt"
-		};
-		String[] mdsfiles = new String[]{
-				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\genotypeqc\\qcfiles\\AMPAD-MAYO-V2\\AMPAD-MAYO-V2-mds-ibd.mds.gz",
-				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\genotypeqc\\qcfiles\\AMPAD-MSBB-V2\\AMPAD-MSBB-V2-mds-ibd.mds.gz",
-				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\genotypeqc\\qcfiles\\AMPAD-ROSMAP-V2\\AMPAD-ROSMAP-V2-mds-ibd.mds.gz",
-				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\genotypeqc\\qcfiles\\Braineac\\Braineac-mds-ibd.mds.gz",
-				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\genotypeqc\\qcfiles\\BrainGVEX\\BrainGVEX-mds-ibd.mds.gz",
-				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\genotypeqc\\qcfiles\\CMC\\CMC-mds-ibd.mds.gz",
-				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\genotypeqc\\qcfiles\\CMC_HBCC_set2\\CMC_HBCC_set2-mds-ibd.mds.gz",
-				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\genotypeqc\\qcfiles\\ENA\\ENA-postqc-mds-ibd.mds.txt",
-				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\genotypeqc\\qcfiles\\GTEx\\GTEx-mds-ibd.mds.gz",
-				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\genotypeqc\\qcfiles\\GVEX\\GVEX-mds-ibd.mds.gz",
-				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\genotypeqc\\qcfiles\\LIBD_1M\\LIBD_1M-mds-ibd.mds.gz",
-				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\genotypeqc\\qcfiles\\NABEC-H610\\NABEC-H610-mds-ibd.mds.gz",
-				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\genotypeqc\\qcfiles\\NABEC-WES\\NABEC-WES-mds.txt",
-				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\genotypeqc\\qcfiles\\TargetALS\\TargetALS-mds-ibd.mds.gz"
+//		String[] linksfiles = new String[]{
+//				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\links\\splitpertissue\\Cortex.txt-dedup-gte.txt-EUR.txt-AMPAD-MAYO-V2.txt",
+//				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\links\\splitpertissue\\Cortex.txt-dedup-gte.txt-EUR.txt-AMPAD-MSBB-V2.txt",
+//				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\links\\splitpertissue\\Cortex.txt-dedup-gte.txt-EUR.txt-AMPAD-ROSMAP-V2.txt",
+//				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\links\\splitpertissue\\Cortex.txt-dedup-gte.txt-EUR.txt-Braineac.txt",
+//				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\links\\splitpertissue\\Cortex.txt-dedup-gte.txt-EUR.txt-BrainGVEX.txt",
+//				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\links\\splitpertissue\\Cortex.txt-dedup-gte.txt-EUR.txt-CMC.txt",
+//				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\links\\splitpertissue\\Cortex.txt-dedup-gte.txt-EUR.txt-CMC_HBCC_set2.txt",
+//				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\links\\splitpertissue\\Cortex.txt-dedup-gte.txt-EUR.txt-ENA.txt",
+//				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\links\\splitpertissue\\Cortex.txt-dedup-gte.txt-EUR.txt-GTEx.txt",
+//				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\links\\splitpertissue\\Cortex.txt-dedup-gte.txt-EUR.txt-GVEX.txt",
+//				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\links\\splitpertissue\\Cortex.txt-dedup-gte.txt-EUR.txt-LIBD_1M.txt",
+//				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\links\\splitpertissue\\Cortex.txt-dedup-gte.txt-EUR.txt-NABEC-H610.txt",
+//				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\links\\splitpertissue\\Cortex.txt-dedup-gte.txt-EUR.txt-NABEC-WES.txt",
+//				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\links\\splitpertissue\\Cortex.txt-dedup-gte.txt-EUR.txt-TargetALS.txt"
+//		};
+
+		String[] linksFilesEurCortex = new String[]{
+				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-07-01-linksNoIntegrative\\splitpertissue\\Cortex.txt-dedup-gte.txt-EUR.txt-AMPAD-MAYO-V2.txt",
+				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-07-01-linksNoIntegrative\\splitpertissue\\Cortex.txt-dedup-gte.txt-EUR.txt-AMPAD-MSBB-V2.txt",
+				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-07-01-linksNoIntegrative\\splitpertissue\\Cortex.txt-dedup-gte.txt-EUR.txt-AMPAD-ROSMAP-V2.txt",
+				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-07-01-linksNoIntegrative\\splitpertissue\\Cortex.txt-dedup-gte.txt-EUR.txt-Bipseq_1M.txt",
+				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-07-01-linksNoIntegrative\\splitpertissue\\Cortex.txt-dedup-gte.txt-EUR.txt-Braineac.txt",
+				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-07-01-linksNoIntegrative\\splitpertissue\\Cortex.txt-dedup-gte.txt-EUR.txt-BrainGVEX-V2.txt",
+				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-07-01-linksNoIntegrative\\splitpertissue\\Cortex.txt-dedup-gte.txt-EUR.txt-CMC.txt",
+				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-07-01-linksNoIntegrative\\splitpertissue\\Cortex.txt-dedup-gte.txt-EUR.txt-CMC_HBCC_set2.txt",
+				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-07-01-linksNoIntegrative\\splitpertissue\\Cortex.txt-dedup-gte.txt-EUR.txt-ENA.txt",
+				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-07-01-linksNoIntegrative\\splitpertissue\\Cortex.txt-dedup-gte.txt-EUR.txt-GTEx.txt",
+				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-07-01-linksNoIntegrative\\splitpertissue\\Cortex.txt-dedup-gte.txt-EUR.txt-GVEX.txt",
+//				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-07-01-linksNoIntegrative\\splitpertissue\\Cortex.txt-dedup-gte.txt-EUR.txt-Integrative-RemainingSamplesMergedIn.txt",
+				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-07-01-linksNoIntegrative\\splitpertissue\\Cortex.txt-dedup-gte.txt-EUR.txt-LIBD_1M.txt",
+				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-07-01-linksNoIntegrative\\splitpertissue\\Cortex.txt-dedup-gte.txt-EUR.txt-NABEC-H550.txt",
+				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-07-01-linksNoIntegrative\\splitpertissue\\Cortex.txt-dedup-gte.txt-EUR.txt-NABEC-H610.txt",
+				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-07-01-linksNoIntegrative\\splitpertissue\\Cortex.txt-dedup-gte.txt-EUR.txt-TargetALS.txt",
+				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-07-01-linksNoIntegrative\\splitpertissue\\Cortex.txt-dedup-gte.txt-EUR.txt-UCLA_ASD.txt"
 		};
 
-		String[] names = new String[]{
+		String[] mdsfilesEurCortex = new String[]{
+				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-13-genotypeqc\\qcfiles\\AMPAD-MAYO-V2\\AMPAD-MAYO-V2-mds-ibd.mds.gz",
+				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-13-genotypeqc\\qcfiles\\AMPAD-MSBB-V2\\AMPAD-MSBB-V2-mds-ibd.mds.gz",
+				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-13-genotypeqc\\qcfiles\\AMPAD-ROSMAP-V2\\AMPAD-ROSMAP-V2-mds-ibd.mds.gz",
+				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-13-genotypeqc\\qcfiles\\Bipseq_1M\\Bipseq_1M-mds-ibd.mds.gz",
+				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-13-genotypeqc\\qcfiles\\Braineac\\Braineac-mds-ibd.mds.gz",
+				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-13-genotypeqc\\qcfiles\\BrainGVEX-V2\\BrainGVEXv2-mds.mds.gz",
+				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-13-genotypeqc\\qcfiles\\CMC\\CMC-mds-ibd.mds.gz",
+				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-13-genotypeqc\\qcfiles\\CMC_HBCC_set2\\CMC_HBCC_set2-mds-ibd.mds.gz",
+				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-13-genotypeqc\\qcfiles\\ENA\\ENA-postqc-mds-ibd.mds.txt",
+				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-13-genotypeqc\\qcfiles\\GTEx\\GTEx-mds-ibd.mds.gz",
+				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-13-genotypeqc\\qcfiles\\GVEX\\GVEX-mds-ibd.mds.gz",
+//				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-13-genotypeqc\\qcfiles\\Integrative\\Integrative-mds-ibd.mds.gz",
+				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-13-genotypeqc\\qcfiles\\LIBD_1M\\LIBD_1M-mds-ibd.mds.gz",
+				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-13-genotypeqc\\qcfiles\\NABEC-H550\\NABEC-H550-mds-ibd.mds.gz",
+				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-13-genotypeqc\\qcfiles\\NABEC-H610\\NABEC-H610-mds-ibd.mds.gz",
+				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-13-genotypeqc\\qcfiles\\TargetALS\\TargetALS-mds-ibd.mds.gz",
+				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-13-genotypeqc\\qcfiles\\UCLA_ASD\\UCLA_ASD-mds-ibd.mds.gz"
+		};
+
+		String[] namesEurCortex = new String[]{
 				"AMPAD-MAYO",
 				"AMPAD-MSBB",
 				"AMPAD-ROSMAP",
+				"BipSeq-1M",
 				"Braineac",
-				"BrainGVEX",
+				"BrainGVEX-V2",
 				"CMC",
 				"CMC_HBCC_set2",
 				"ENA",
 				"GTEx",
 				"GVEX",
+//				"PsychEncode",
 				"LIBD_1M",
+				"NABEC-H550",
 				"NABEC-H610",
-				"NABEC-WES",
-				"TargetALS"
+				"TargetALS",
+				"UCLA-ASD"
 		};
 
-		String outfile = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\genotypeqc\\qcfiles\\2019-06-01-CovarsAndMDS-Cortex.txt";
+		String[] linksFilesAFRCortex = new String[]{
+				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-07-01-linksNoIntegrative\\splitpertissue\\Cortex.txt-dedup-gte.txt-AFR.txt-AMPAD-MSBB-V2.txt",
+				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-07-01-linksNoIntegrative\\splitpertissue\\Cortex.txt-dedup-gte.txt-AFR.txt-CMC.txt",
+				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-07-01-linksNoIntegrative\\splitpertissue\\Cortex.txt-dedup-gte.txt-AFR.txt-CMC_HBCC_set1.txt",
+				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-07-01-linksNoIntegrative\\splitpertissue\\Cortex.txt-dedup-gte.txt-AFR.txt-CMC_HBCC_set2.txt",
+				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-07-01-linksNoIntegrative\\splitpertissue\\Cortex.txt-dedup-gte.txt-AFR.txt-CMC_HBCC_set3.txt",
+				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-07-01-linksNoIntegrative\\splitpertissue\\Cortex.txt-dedup-gte.txt-AFR.txt-GTEx.txt",
+				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-07-01-linksNoIntegrative\\splitpertissue\\Cortex.txt-dedup-gte.txt-AFR.txt-LIBD_1M.txt",
+				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-07-01-linksNoIntegrative\\splitpertissue\\Cortex.txt-dedup-gte.txt-AFR.txt-LIBD_h650.txt"
+		};
+
+
+		String[] mdsfilesAFRCortex = new String[]{
+				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-13-genotypeqc\\qcfiles\\AMPAD-MSBB-V2\\AMPAD-MSBB-V2-mds-ibd.mds.gz",
+				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-13-genotypeqc\\qcfiles\\CMC\\CMC-mds-ibd.mds.gz",
+				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-13-genotypeqc\\qcfiles\\CMC_HBCC_set1\\CMC_HBCC_set1-mds-ibd.mds.gz",
+				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-13-genotypeqc\\qcfiles\\CMC_HBCC_set2\\CMC_HBCC_set2-mds-ibd.mds.gz",
+				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-13-genotypeqc\\qcfiles\\CMC_HBCC_set3\\CMC_HBCC_set3-mds-ibd.mds.gz",
+				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-13-genotypeqc\\qcfiles\\GTEx\\GTEx-mds-ibd.mds.gz",
+				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-13-genotypeqc\\qcfiles\\LIBD_1M\\LIBD_1M-mds-ibd.mds.gz",
+				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-13-genotypeqc\\qcfiles\\LIBD_h650\\LIBD_h650-mds-ibd.mds.gz",
+		};
+
+		String[] namesAFRCortes = new String[]{
+				"AMPAD-MSBB",
+				"CMC",
+				"CMC_HBCC_set1",
+				"CMC_HBCC_set2",
+				"CMC_HBCC_set3",
+				"GTEx",
+				"LIBD_1M",
+				"LIBD_h650"
+		};
+
+		String outfileEurCortex = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-07-03-CovarsAndMDS\\2019-07-08-CovarsAndMDS-Cortex-EUR.txt";
+		String outfileAFRCortex = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-07-03-CovarsAndMDS\\2019-07-01-CovarsAndMDS-Cortex-AFR.txt";
+
 
 		String covars = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-11-Freeze2RNAQc\\2019-04-11-Freeze2.TMM.Covariates-Numeric-Top10Covariates.txt";
 
 		RewriteMDS m = new RewriteMDS();
 
 		try {
-			m.run(linksfiles, names, mdsfiles, covars, outfile);
+			m.run(linksFilesEurCortex, namesEurCortex, mdsfilesEurCortex, covars, outfileEurCortex);
+			m.run(linksFilesAFRCortex, namesAFRCortes, mdsfilesAFRCortex, covars, outfileAFRCortex);
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (Exception e) {
@@ -83,30 +147,57 @@ public class RewriteMDS {
 
 	public void run(String[] linkfiles, String[] datasetnames, String[] mdsfiles, String covarfile, String output) throws Exception {
 
+		if (linkfiles.length != datasetnames.length) {
+			System.out.println("Not equal lengths!");
+			System.exit(-1);
+		}
+
 		DoubleMatrixDataset<String, String> covars = null;
 		if (covarfile != null) {
 			covars = DoubleMatrixDataset.loadDoubleData(covarfile);
 		}
 
+		int reference = 0;
+		int nrlinks = 0;
+		for (int i = 0; i < linkfiles.length; i++) {
+			TextFile tf = new TextFile(linkfiles[i], TextFile.R);
+			int size = tf.readAsArrayList().size();
+			tf.close();
+			if (size > nrlinks) {
+				reference = i;
+				nrlinks = size;
+
+			}
+		}
+		System.out.println("Reference dataset is " + datasetnames[reference] + " with " + nrlinks + " links.");
+
 		int[] datasets = new int[linkfiles.length - 1];
 		TextFile tfout = new TextFile(output, TextFile.W);
 
-		String header = "Sample\tMDS1\tMDS2\tMDS3\tMDS4";
+		String header = "";
 		if (covars != null) {
 			String covarString = Strings.concat(covars.getColObjects(), Strings.tab);
 			header = "Sample\t" + covarString + "\tMDS1\tMDS2\tMDS3\tMDS4";
 		}
-		for (int d = 0; d < datasets.length; d++) {
-			header += "\t" + datasetnames[d];
+
+
+		for (int d = 0; d < datasetnames.length; d++) {
+			if (d != reference) {
+				header += "\t" + datasetnames[d];
+			}
 		}
+
 		tfout.writeln(header);
+
 		int total = 0;
 		int totalcovars = 0;
+		int dsctr = 0;
 		for (int i = 0; i < linkfiles.length; i++) {
 			datasets = new int[linkfiles.length - 1];
 			HashMap<String, HashSet<String>> dnaToRNA = loadLinkFile(linkfiles[i]);
-			if (i != linkfiles.length - 1) {
-				datasets[i] = 1;
+			if (i != reference) {
+				datasets[dsctr] = 1;
+				dsctr++;
 			}
 
 			int matched = 0;
@@ -146,7 +237,7 @@ public class RewriteMDS {
 							Integer covarId = covars.getHashRows().get(id);
 							double[] covarvals = new double[covars.getColObjects().size()];
 							if (covarId != null) {
-								covarvals = covars.getRow(covarId).toArray();
+								covars.getRow(covarId).toArray(covarvals);
 								idhascovars = true;
 							}
 							String outln = id + "\t" + Strings.concat(covarvals, Strings.tab) + "\t" + Strings.concat(elems, Strings.tab, 3, 7) + "\t" + Strings.concat(datasets, Strings.tab);

@@ -48,7 +48,7 @@ public class TriTyperSNPFilter {
 			snploc = input + "SNPs.txt.gz";
 		}
 		if (snpmaploc == null) {
-			snpmaploc = input + "SNPMappingss.txt.gz";
+			snpmaploc = input + "SNPMappings.txt.gz";
 		}
 
 		HashSet<String> querylist = new HashSet<String>();

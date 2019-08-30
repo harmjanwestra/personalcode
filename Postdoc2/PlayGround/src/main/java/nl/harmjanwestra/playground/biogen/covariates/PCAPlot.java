@@ -137,7 +137,11 @@ public class PCAPlot {
 //					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\genotypeqc\\qcfiles\\UCLA_ASD\\UCLA_ASD-pca.eigenvec.gz",
 //					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\genotypeqc\\qcfiles\\ENA\\ENA-vcf-pca.eigenvec",
 //					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\genotypeqc\\qcfiles\\TargetALS\\TargetALS-pca.eigenvec",
-					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\genotypeqc\\qcfiles\\NABEC-WES\\NABEC-WES-pca.eigenvec.gz"
+//					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\genotypeqc\\qcfiles\\NABEC-WES\\NABEC-WES-pca.eigenvec.gz",
+					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-13-genotypeqc\\qcfiles\\GTEX-WES\\GTEXWES-pca.eigenvec.gz",
+					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-13-genotypeqc\\qcfiles\\NABEC-NeuroChip\\neurochip-pca.eigenvec.gz",
+					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-13-genotypeqc\\qcfiles\\BrainGVEX-V2\\BrainGVEXv2-pca.eigenvec.gz"
+
 			};
 			String[] outputs = new String[]{
 //					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\genotypeqc\\populationassignment\\AMPAD-MAYO-V2-",
@@ -165,19 +169,24 @@ public class PCAPlot {
 //					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\genotypeqc\\populationassignment\\UCLA_ASD-",
 //					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\genotypeqc\\populationassignment\\ENA-vcf-",
 //					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\genotypeqc\\populationassignment\\TargetALS-",
-					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\genotypeqc\\populationassignment\\NABEC-WES-",
+//					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\genotypeqc\\populationassignment\\NABEC-WES-",
+					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-13-genotypeqc\\populationassignment\\GTEX-WES-",
+					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-13-genotypeqc\\populationassignment\\NABEC-NeuroChip-",
+					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-13-genotypeqc\\populationassignment\\BrainGVEX-V2",
+
+
 
 			};
 
-//			for (int i = 0; i < eigenvecfiles.length; i++) {
-//				String s = eigenvecfiles[i];
-//				String output = outputs[i];
-//				File path = new File(output);
-//				String name = path.getName();
-//				name = name.substring(0, name.length() - 1);
-//				p.plot(s, knownClasses, superclasses, 2, 3, "1000 genomes", name, 7, output);
-//			}
-//			System.exit(0);
+			for (int i = 0; i < eigenvecfiles.length; i++) {
+				String s = eigenvecfiles[i];
+				String output = outputs[i];
+				File path = new File(output);
+				String name = path.getName();
+				name = name.substring(0, name.length() - 1);
+				p.plot(s, knownClasses, superclasses, 2, 3, "1000 genomes", name, 7, output);
+			}
+			System.exit(0);
 //
 //			String inputxyfile = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\rnaqc\\2019-04-11\\6-covcorrection\\pc1to4.txt";
 //			knownClasses = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-12-brain.phenotypes.rna.txt";

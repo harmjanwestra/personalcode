@@ -1,4 +1,4 @@
-package nl.harmjanwestra.playground.biogen;
+package nl.harmjanwestra.playground.biogen.links;
 
 import umcg.genetica.io.text.TextFile;
 import umcg.genetica.text.Strings;

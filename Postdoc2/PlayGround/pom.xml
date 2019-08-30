@@ -12,6 +12,16 @@
             <id>jitpack.io</id>
             <url>https://jitpack.io</url>
         </repository>
+        <repository>
+            <id>TUDelft</id>
+            <name>TUDelft</name>
+            <url>https://simulation.tudelft.nl/maven/</url>
+        </repository>
+        <repository>
+            <id>Maven Central</id>
+            <name>Maven Central</name>
+            <url>https://repo1.maven.org/maven2/</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -24,7 +34,7 @@
         <dependency>
             <groupId>nl.systemsgenetics</groupId>
             <artifactId>eqtl-mapping-pipeline</artifactId>
-            <version>1.4.4-SNAPSHOT</version>
+            <version>1.4.6-SNAPSHOT</version>
         </dependency>
 
         <dependency>
@@ -64,13 +74,14 @@
         <plugins>
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
+                <version>3.1.1</version>
                 <configuration>
                     <descriptorRefs>
                         <descriptorRef>jar-with-dependencies</descriptorRef>
                     </descriptorRefs>
                     <archive>
                         <manifest>
-                            <mainClass>nl.harmjanwestra.playground.conv.TriTyperMerge</mainClass>
+                            <mainClass>nl.harmjanwestra.playground.cis.SimplifyQTLFile</mainClass>
                             <!--                            <mainClass>nl.harmjanwestra.playground.conv.ConvertVCFToTT</mainClass>-->
                             <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
                             <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
@@ -89,6 +100,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
                 <configuration>
                     <source>1.8</source>
                     <target>1.8</target>

@@ -22,12 +22,16 @@ public class MakeSNPAndProbeAnnotationFiles {
 
 		MakeSNPAndProbeAnnotationFiles p = new MakeSNPAndProbeAnnotationFiles();
 		try {
-			p.gtfToProbeAnnotationFile(gtfin, platformstr, out);
+//			p.gtfToProbeAnnotationFile(gtfin, platformstr, out);
 
 			out = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\GeneAnnotationFile-Gencodev24-Ensembl83-b38-transcripts.txt.gz";
-			p.gtfToProbeAnnotationTranscriptFile(gtfin, platformstr, out);
+//			p.gtfToProbeAnnotationTranscriptFile(gtfin, platformstr, out);
 			out = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\GeneAnnotationFile-Gencodev24-Ensembl83-b38-exons.txt.gz";
-			p.gtfToProbeAnnotationExonFile(gtfin, platformstr, out);
+//			p.gtfToProbeAnnotationExonFile(gtfin, platformstr, out);
+
+			p.gtfToProbeAnnotationFile("D:\\Sync\\SyncThing\\Data\\Ref\\GTEX\\gencode.v19.genes.v7.patched_contigs.gtf.gz",
+					"gencode.v19.genes.v7",
+					"D:\\Sync\\SyncThing\\Data\\Ref\\GTEX\\GTEx-gencode.v19.genes.v7.patched_contigs.ProbeAnnotation.txt.gz");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

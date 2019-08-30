@@ -20,7 +20,46 @@ public class MatchFreeze2SNPIds {
 
 		MatchFreeze2SNPIds s = new MatchFreeze2SNPIds();
 
-		s.snplist(filelistfile, in, out);
+//		s.snplist(filelistfile, in, out);
+
+
+		String snpTrait = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\annotation\\gwas_catalog_v1.0.2-associations_e93_r2018-10-29_SNP_TRAIT.txt.gz";
+		String freeze2efile = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-07-10-Results\\Trans\\eQTLsFDR0.05.txt.gz";
+		String freeze2Efileout = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-07-10-Results\\Trans\\eQTLsFDR0.05-traits.txt.gz";
+		try {
+			s.annotateEQTLFile(snpTrait, freeze2efile, freeze2Efileout);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private void annotateEQTLFile(String snpTrait, String freeze2efile, String freeze2Efileout) throws IOException {
+		HashMap<String, String> snptotrait = new HashMap<>();
+		TextFile tf = new TextFile(snpTrait, TextFile.R);
+		String[] elems = tf.readLineElems(TextFile.tab);
+		while (elems != null) {
+			if (elems.length > 1) {
+				snptotrait.put(elems[0], elems[1]);
+			}
+			elems = tf.readLineElems(TextFile.tab);
+		}
+		tf.close();
+
+		TextFile tfout = new TextFile(freeze2Efileout, TextFile.W);
+		TextFile tfin = new TextFile(freeze2efile, TextFile.R);
+
+
+		tfout.writeln(tfin.readLine() + "\tTrait");
+		String[] elems2 = tfin.readLineElems(TextFile.tab);
+		while (elems2 != null) {
+
+			String snp = elems2[1];
+			String snprs = snp.split(":")[2];
+			tfout.writeln(Strings.concat(elems2, Strings.tab) + "\t" + snptotrait.get(snprs));
+			elems2 = tfin.readLineElems(TextFile.tab);
+		}
+		tfout.close();
+		tfin.close();
 
 	}
 
