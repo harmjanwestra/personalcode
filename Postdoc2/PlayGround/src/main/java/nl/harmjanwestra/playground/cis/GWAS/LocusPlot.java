@@ -36,7 +36,7 @@ public class LocusPlot {
 		} catch (DocumentException e) {
 			e.printStackTrace();
 		}
-		RunTimer
+
 	}
 
 
