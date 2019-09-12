@@ -49,17 +49,40 @@ public class MatchFreeze2SNPIds {
 		TextFile tfin = new TextFile(freeze2efile, TextFile.R);
 
 
+		HashMap<String, Integer> snpToCt = new HashMap<>();
+
 		tfout.writeln(tfin.readLine() + "\tTrait");
 		String[] elems2 = tfin.readLineElems(TextFile.tab);
 		while (elems2 != null) {
 
 			String snp = elems2[1];
 			String snprs = snp.split(":")[2];
+			String traits = snptotrait.get(snprs);
+			if (traits != null) {
+				String[] telems = traits.split(",");
+				for (String t : telems) {
+					while (t.startsWith(" ")) {
+						t = t.substring(1);
+					}
+
+					Integer ct = snpToCt.get(t);
+					if (ct == null) {
+						ct = 0;
+					}
+					ct++;
+					snpToCt.put(t, ct);
+				}
+			}
 			tfout.writeln(Strings.concat(elems2, Strings.tab) + "\t" + snptotrait.get(snprs));
+
 			elems2 = tfin.readLineElems(TextFile.tab);
 		}
 		tfout.close();
 		tfin.close();
+
+		for (String key : snpToCt.keySet()) {
+			System.out.println(key + "\t" + snpToCt.get(key));
+		}
 
 	}
 

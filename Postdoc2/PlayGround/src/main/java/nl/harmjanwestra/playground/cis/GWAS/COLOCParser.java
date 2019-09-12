@@ -10,12 +10,12 @@ public class COLOCParser {
 
 	public static void main(String[] aregs) {
 
-		String dir = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-07-29-GWAS\\b38\\eqtlmerge\\MS\\";
-		String output = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-07-29-GWAS\\b38\\eqtlmerge\\ms-genes.txt";
-		String output2 = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-07-29-GWAS\\b38\\eqtlmerge\\ms-genesWithColocSNPs.txt";
+		String dir = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-07-29-GWAS\\b38\\eqtlmerge\\ALZ\\";
+		String output = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-07-29-GWAS\\b38\\eqtlmerge\\ALZ-genes.txt";
+		String output2 = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-07-29-GWAS\\b38\\eqtlmerge\\ALZ-genesWithColocSNPs.txt";
 		COLOCParser p = new COLOCParser();
 		try {
-//			p.parseSummariesInDir(dir, output);
+			p.parseSummariesInDir(dir, output);
 			p.identifyLociWithColocalizingSNPs(dir, output2, 0.2);
 		} catch (IOException e) {
 			e.printStackTrace();
