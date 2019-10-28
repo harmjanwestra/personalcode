@@ -76,16 +76,20 @@ public class TriTyperMerge {
 
 		TriTyperMerge m = new TriTyperMerge();
 		if (args.length < 2) {
-			System.out.println("Usage: inputfile.txt outdir [fraction of datasets snps must be present in]");
+			System.out.println("Usage: inputfile.txt outdir [fraction of datasets snps must be present in] [listofsnps]");
 			System.out.println("Input file format (tab-sep):\n" +
 					"Location\tDatasetName\t[SNPs.txt.gz loc]\t[SNPMappings.txt.gz loc]\t[list of samples to exclude]");
 		} else {
 			try {
 				double fractionpresent = 1d;
+				String snplist = null;
 				if (args.length >= 3) {
 					fractionpresent = Double.parseDouble(args[2]);
 				}
-				m.runFromList(args[0], args[1], fractionpresent);
+				if (args.length >= 4) {
+					snplist = args[3];
+				}
+				m.runFromList(args[0], args[1], fractionpresent, snplist);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -93,12 +97,13 @@ public class TriTyperMerge {
 
 	}
 
-	private void runFromList(String arg, String outdir, double fractionpresent) throws IOException {
+	private void runFromList(String arg, String outdir, double fractionpresent, String snplist) throws IOException {
 
 		System.out.println("TriTyper Merger. ");
 		System.out.println("Input: " + arg);
 		System.out.println("Output: " + outdir);
 		System.out.println("% datasets in which SNPs must be present: " + fractionpresent);
+		System.out.println("SNPlist: " + snplist);
 		ArrayList<Dataset> datasets = new ArrayList<>();
 
 		TextFile tf = new TextFile(arg, TextFile.R);
@@ -169,7 +174,7 @@ public class TriTyperMerge {
 			System.exit(-1);
 		}
 
-		run(datasets, outdir, fractionpresent);
+		run(datasets, outdir, fractionpresent, snplist);
 	}
 
 	public class Dataset {
@@ -193,11 +198,11 @@ public class TriTyperMerge {
 		}
 	}
 
-	public void run(ArrayList<Dataset> datasets, String outdir, double fractionpresent) throws IOException {
+	public void run(ArrayList<Dataset> datasets, String outdir, double fractionpresent, String snplist) throws IOException {
 		// read SNPs
 
 
-		SNP[] snps = readAndFilterSNPs(datasets, fractionpresent);
+		SNP[] snps = readAndFilterSNPs(datasets, fractionpresent, snplist);
 
 		// read individuals
 		ArrayList<String> individuals = new ArrayList<>();
@@ -450,7 +455,21 @@ public class TriTyperMerge {
 		return output;
 	}
 
-	private SNP[] readAndFilterSNPs(ArrayList<Dataset> folders, double fractionpresent) {
+	private SNP[] readAndFilterSNPs(ArrayList<Dataset> folders, double fractionpresent, String snplist) throws IOException {
+
+		HashSet<String> allowedSNPs = null;
+		if (snplist != null) {
+			TextFile tf = new TextFile(snplist, TextFile.R);
+
+			String ln = tf.readLine();
+			while (ln != null) {
+				allowedSNPs.add(ln);
+				ln = tf.readLine();
+			}
+			tf.close();
+		}
+
+
 		SNP[] snps = null;
 		{
 			ArrayList<SNP> allsnpTMP = new ArrayList<>();
@@ -473,9 +492,11 @@ public class TriTyperMerge {
 			// index snps
 			HashMap<String, SNP> snpmap = new HashMap<String, SNP>();
 			for (String s : allsnpstr) {
-				SNP obj = new SNP(0, 0, s);
-				allsnpTMP.add(obj);
-				snpmap.put(s, obj);
+				if (allowedSNPs == null || allowedSNPs.contains(s)) {
+					SNP obj = new SNP(0, 0, s);
+					allsnpTMP.add(obj);
+					snpmap.put(s, obj);
+				}
 			}
 
 			// read annotation

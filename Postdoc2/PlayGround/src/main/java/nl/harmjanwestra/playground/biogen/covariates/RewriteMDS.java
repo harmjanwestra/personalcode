@@ -134,9 +134,93 @@ public class RewriteMDS {
 
 		RewriteMDS m = new RewriteMDS();
 
+		String[] mdsfilesAll = new String[]{
+				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-13-genotypeqc\\qcfiles\\AMPAD-MAYO-V2\\AMPAD-MAYO-V2-mds-ibd.mds.gz",
+				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-13-genotypeqc\\qcfiles\\AMPAD-MSBB-V2\\AMPAD-MSBB-V2-mds-ibd.mds.gz",
+				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-13-genotypeqc\\qcfiles\\AMPAD-ROSMAP-V2\\AMPAD-ROSMAP-V2-mds-ibd.mds.gz",
+				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-13-genotypeqc\\qcfiles\\Bipseq_1M\\Bipseq_1M-mds-ibd.mds.gz",
+				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-13-genotypeqc\\qcfiles\\Bipseq_h650\\Bipseq_h650-mds-ibd.mds.gz",
+				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-13-genotypeqc\\qcfiles\\Braineac\\Braineac-mds-ibd.mds.gz",
+				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-13-genotypeqc\\qcfiles\\BrainGVEX-V2\\BrainGVEXv2-mds.mds.gz",
+				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-13-genotypeqc\\qcfiles\\CMC\\CMC-mds-ibd.mds.gz",
+				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-13-genotypeqc\\qcfiles\\CMC_HBCC_set1\\CMC_HBCC_set1-mds-ibd.mds.gz",
+				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-13-genotypeqc\\qcfiles\\CMC_HBCC_set2\\CMC_HBCC_set2-mds-ibd.mds.gz",
+				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-13-genotypeqc\\qcfiles\\CMC_HBCC_set3\\CMC_HBCC_set3-mds-ibd.mds.gz",
+				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-13-genotypeqc\\qcfiles\\ENA\\ENA-postqc-mds-ibd.mds.txt",
+				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-13-genotypeqc\\qcfiles\\GTEx\\GTEx-mds-ibd.mds.gz",
+				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-13-genotypeqc\\qcfiles\\GTEX-WES\\GTEXWES-mds.mds.gz",
+				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-13-genotypeqc\\qcfiles\\GVEX\\GVEX-mds-ibd.mds.gz",
+//				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-13-genotypeqc\\qcfiles\\Integrative\\Integrative-mds-ibd.mds.gz",
+				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-13-genotypeqc\\qcfiles\\LIBD_1M\\LIBD_1M-mds-ibd.mds.gz",
+				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-13-genotypeqc\\qcfiles\\LIBD_h650\\LIBD_h650-mds-ibd.mds.gz",
+				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-13-genotypeqc\\qcfiles\\NABEC-H550\\NABEC-H550-mds-ibd.mds.gz",
+				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-13-genotypeqc\\qcfiles\\NABEC-H610\\NABEC-H610-mds-ibd.mds.gz",
+				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-13-genotypeqc\\qcfiles\\NABEC-NeuroChip\\neurochip-mds.mds.gz",
+				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-13-genotypeqc\\qcfiles\\NABEC-WES\\nabec-mds-ibd.mds.gz",
+				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-13-genotypeqc\\qcfiles\\TargetALS\\TargetALS-mds-ibd.mds.gz",
+				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-13-genotypeqc\\qcfiles\\UCLA_ASD\\UCLA_ASD-mds-ibd.mds.gz"
+		};
+
+		String[] namesAll = new String[]{
+				"AMPAD-MAYO-V2",
+				"AMPAD-MSBB-V2",
+				"AMPAD-ROSMAP-V2",
+				"Bipseq_1M",
+				"Bipseq_h650",
+				"Braineac",
+				"BrainGVEX-V2",
+				"CMC",
+				"CMC_HBCC_set1",
+				"CMC_HBCC_set2",
+				"CMC_HBCC_set3",
+				"ENA",
+				"GTEx",
+				"GTEx-WES",
+				"GVEX",
+				"LIBD_1M",
+
+				"LIBD_h650",
+				"NABEC-H550",
+				"NABEC-H610",
+				"NABEC-NeuroChip",
+				"NABEC-WES",
+				"TargetALS",
+				"UCLA_ASD"
+		};
+
+		String[] linkFilesAll = new String[]{
+				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-07-01-linksNoIntegrative\\allSplitPerDataset\\AMPAD-MAYO-V2.txt",
+				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-07-01-linksNoIntegrative\\allSplitPerDataset\\AMPAD-MSBB-V2.txt",
+				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-07-01-linksNoIntegrative\\allSplitPerDataset\\AMPAD-ROSMAP-V2.txt",
+				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-07-01-linksNoIntegrative\\allSplitPerDataset\\Bipseq_1M.txt",
+				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-07-01-linksNoIntegrative\\allSplitPerDataset\\Bipseq_h650.txt",
+				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-07-01-linksNoIntegrative\\allSplitPerDataset\\Braineac.txt",
+				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-07-01-linksNoIntegrative\\allSplitPerDataset\\BrainGVEX-V2.txt",
+				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-07-01-linksNoIntegrative\\allSplitPerDataset\\CMC.txt",
+				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-07-01-linksNoIntegrative\\allSplitPerDataset\\CMC_HBCC_set1.txt",
+				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-07-01-linksNoIntegrative\\allSplitPerDataset\\CMC_HBCC_set2.txt",
+				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-07-01-linksNoIntegrative\\allSplitPerDataset\\CMC_HBCC_set3.txt",
+				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-07-01-linksNoIntegrative\\allSplitPerDataset\\ENA.txt",
+				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-07-01-linksNoIntegrative\\allSplitPerDataset\\GTEx.txt",
+				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-07-01-linksNoIntegrative\\allSplitPerDataset\\GTEx-WES.txt",
+				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-07-01-linksNoIntegrative\\allSplitPerDataset\\GVEX.txt",
+				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-07-01-linksNoIntegrative\\allSplitPerDataset\\LIBD_1M.txt",
+
+				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-07-01-linksNoIntegrative\\allSplitPerDataset\\LIBD_h650.txt",
+				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-07-01-linksNoIntegrative\\allSplitPerDataset\\NABEC-H550.txt",
+				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-07-01-linksNoIntegrative\\allSplitPerDataset\\NABEC-H610.txt",
+				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-07-01-linksNoIntegrative\\allSplitPerDataset\\NABEC-NeuroChip.txt.txt",
+				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-07-01-linksNoIntegrative\\allSplitPerDataset\\NABEC-WES.txt",
+				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-07-01-linksNoIntegrative\\allSplitPerDataset\\TargetALS.txt",
+				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-07-01-linksNoIntegrative\\allSplitPerDataset\\UCLA_ASD.txt"
+		};
+
+		String outfileall = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-07-03-CovarsAndMDS\\2019-07-01-CovarsAndMDS-All-All.txt";
+
 		try {
-			m.run(linksFilesEurCortex, namesEurCortex, mdsfilesEurCortex, covars, outfileEurCortex);
-			m.run(linksFilesAFRCortex, namesAFRCortes, mdsfilesAFRCortex, covars, outfileAFRCortex);
+//			m.run(linksFilesEurCortex, namesEurCortex, mdsfilesEurCortex, covars, outfileEurCortex);
+//			m.run(linksFilesAFRCortex, namesAFRCortes, mdsfilesAFRCortex, covars, outfileAFRCortex);
+			m.run(linkFilesAll, namesAll, mdsfilesAll, covars, outfileall);
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (Exception e) {
@@ -206,6 +290,7 @@ public class RewriteMDS {
 			TextFile tf = new TextFile(mdsfiles[i], TextFile.R);
 			tf.readLine(); // skip header
 
+			System.out.println("Parsing: " + mdsfiles[i]);
 			String line = tf.readLine();
 			HashSet<String> foundActualDNAs = new HashSet<>();
 			while (line != null) {
@@ -240,8 +325,19 @@ public class RewriteMDS {
 								covars.getRow(covarId).toArray(covarvals);
 								idhascovars = true;
 							}
-							String outln = id + "\t" + Strings.concat(covarvals, Strings.tab) + "\t" + Strings.concat(elems, Strings.tab, 3, 7) + "\t" + Strings.concat(datasets, Strings.tab);
-							tfout.writeln(outln);
+							try {
+								String outln = id + "\t" +
+										Strings.concat(covarvals, Strings.tab) + "\t" +
+										Strings.concat(elems, Strings.tab, 3, 7) + "\t" +
+										Strings.concat(datasets, Strings.tab);
+								tfout.writeln(outln);
+							} catch (ArrayIndexOutOfBoundsException e) {
+								System.out.println("Error: we don't appear to have all data for sample: " + id);
+								System.out.println("covars: " + covarvals.length);
+								System.out.println("elems: " + elems.length);
+								System.out.println("datasets: " + datasets.length);
+								System.exit(-1);
+							}
 						} else {
 							String outln = id + "\t" + Strings.concat(elems, Strings.tab, 3, 7) + "\t" + Strings.concat(datasets, Strings.tab);
 							tfout.writeln(outln);

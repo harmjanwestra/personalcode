@@ -81,8 +81,8 @@
                     </descriptorRefs>
                     <archive>
                         <manifest>
-                            <mainClass>nl.harmjanwestra.playground.cis.SimplifyQTLFile</mainClass>
-                            <!--                            <mainClass>nl.harmjanwestra.playground.conv.ConvertVCFToTT</mainClass>-->
+                            <!--                            <mainClass>nl.harmjanwestra.playground.cis.SimplifyQTLFile</mainClass>-->
+                            <mainClass>nl.harmjanwestra.playground.conv.TriTyperToVCF</mainClass>
                             <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
                             <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
                         </manifest>

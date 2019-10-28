@@ -1,12 +1,15 @@
 package nl.harmjanwestra.playground.biogen;
 
 import nl.harmjanwestra.playground.transeqtl.MakeTranscriptome;
+import umcg.genetica.io.gwascatalog.GWASCatalog;
+import umcg.genetica.io.gwascatalog.GWASSNP;
 import umcg.genetica.io.text.TextFile;
 import umcg.genetica.text.Strings;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 
 public class MatchFreeze2SNPIds {
 
@@ -18,19 +21,36 @@ public class MatchFreeze2SNPIds {
 		String in = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\annotation\\gwas_catalog_v1.0.2-associations_e96_r2019-05-03.SNPs.tsv";
 		String out = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\annotation\\gwas_catalog_v1.0.2-associations_e96_r2019-05-03.SNPs-MetaBrainFreeze2Ids.tsv";
 
-		MatchFreeze2SNPIds s = new MatchFreeze2SNPIds();
+		in = "D:\\Sync\\SyncThing\\Data\\Ref\\gwascatalog\\gwas_catalog_v1.0-associations_e96_r2019-10-14.tsv.gz";
+		String snpsout = "D:\\Sync\\SyncThing\\Data\\Ref\\gwascatalog\\gwas_catalog_v1.0-associations_e96_r2019-10-14-snps.txt.gz";
+		out = "D:\\Sync\\SyncThing\\Data\\Ref\\gwascatalog\\gwas_catalog_v1.0-associations_e96_r2019-10-14-snps-MetaBrainFreeze2Ids.txt.gz";
 
-//		s.snplist(filelistfile, in, out);
-
-
-		String snpTrait = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\annotation\\gwas_catalog_v1.0.2-associations_e93_r2018-10-29_SNP_TRAIT.txt.gz";
-		String freeze2efile = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-07-10-Results\\Trans\\eQTLsFDR0.05.txt.gz";
-		String freeze2Efileout = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-07-10-Results\\Trans\\eQTLsFDR0.05-traits.txt.gz";
 		try {
-			s.annotateEQTLFile(snpTrait, freeze2efile, freeze2Efileout);
+			GWASCatalog c = new GWASCatalog(in);
+			HashSet<GWASSNP> snps = c.getSnps();
+			TextFile snpsoutf = new TextFile(snpsout, TextFile.W);
+			for (GWASSNP snp : snps) {
+				snpsoutf.writeln(snp.getName());
+			}
+			snpsoutf.close();
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+
+		MatchFreeze2SNPIds s = new MatchFreeze2SNPIds();
+
+		s.snplist(filelistfile, snpsout, out);
+
+
+//		String snpTrait = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\annotation\\gwas_catalog_v1.0.2-associations_e93_r2018-10-29_SNP_TRAIT.txt.gz";
+//		String freeze2efile = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-07-10-Results\\Trans\\eQTLsFDR0.05.txt.gz";
+//		String freeze2Efileout = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-07-10-Results\\Trans\\eQTLsFDR0.05-traits.txt.gz";
+//		try {
+//			s.annotateEQTLFile(snpTrait, freeze2efile, freeze2Efileout);
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
 	}
 
 	private void annotateEQTLFile(String snpTrait, String freeze2efile, String freeze2Efileout) throws IOException {
