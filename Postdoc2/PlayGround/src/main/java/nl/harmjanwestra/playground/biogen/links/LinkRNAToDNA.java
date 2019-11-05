@@ -73,8 +73,10 @@ public class LinkRNAToDNA {
 			}
 
 			files = new String[]{
-					outdir + "splitpertissue\\Cortex.txt-dedup-gte.txt-EUR.txt",
-					outdir + "splitpertissue\\Cortex.txt-dedup-gte.txt-AFR.txt"
+//					outdir + "splitpertissue\\Cortex.txt-dedup-gte.txt-EUR.txt",
+//					outdir + "splitpertissue\\Cortex.txt-dedup-gte.txt-AFR.txt"
+					outdir + "splitpertissue\\Cerebellum.txt-dedup-gte.txt-EUR.txt",
+					outdir + "splitpertissue\\Cerebellum.txt-dedup-gte.txt-AFR.txt"
 			};
 
 			for (String linkfile : files) {

@@ -217,10 +217,35 @@ public class RewriteMDS {
 
 		String outfileall = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-07-03-CovarsAndMDS\\2019-07-01-CovarsAndMDS-All-All.txt";
 
+		String[] linksFilesEURCerebellum = new String[]{
+				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-07-01-linksNoIntegrative\\splitpertissue\\Cerebellum.txt-dedup-gte.txt-EUR.txt-AMPAD-MAYO-V2.txt",
+				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-07-01-linksNoIntegrative\\splitpertissue\\Cerebellum.txt-dedup-gte.txt-EUR.txt-ENA.txt",
+				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-07-01-linksNoIntegrative\\splitpertissue\\Cerebellum.txt-dedup-gte.txt-EUR.txt-GTEx.txt",
+				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-07-01-linksNoIntegrative\\splitpertissue\\Cerebellum.txt-dedup-gte.txt-EUR.txt-TargetALS.txt",
+				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-07-01-linksNoIntegrative\\splitpertissue\\Cerebellum.txt-dedup-gte.txt-EUR.txt-UCLA_ASD.txt"
+		};
+		String[] namesEURCerebellum = new String[]{
+				"AMPAD-MAYO",
+				"ENA",
+				"GTEx",
+				"TargetALS",
+				"UCLA-ASD"
+		};
+		String[] mdsFilesEURCerebellum = new String[]{
+				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-13-genotypeqc\\qcfiles\\AMPAD-MAYO-V2\\AMPAD-MAYO-V2-mds-ibd.mds.gz",
+				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-13-genotypeqc\\qcfiles\\ENA\\ENA-postqc-mds-ibd.mds.txt",
+				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-13-genotypeqc\\qcfiles\\GTEx\\GTEx-mds-ibd.mds.gz",
+				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-13-genotypeqc\\qcfiles\\TargetALS\\TargetALS-mds-ibd.mds.gz",
+				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-13-genotypeqc\\qcfiles\\UCLA_ASD\\UCLA_ASD-mds-ibd.mds.gz"
+		};
+		String outfileEurCerebellum = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-07-03-CovarsAndMDS\\2019-10-28-CovarsAndMDS-EUR-Cerebellum.txt";
+
+
 		try {
 //			m.run(linksFilesEurCortex, namesEurCortex, mdsfilesEurCortex, covars, outfileEurCortex);
 //			m.run(linksFilesAFRCortex, namesAFRCortes, mdsfilesAFRCortex, covars, outfileAFRCortex);
-			m.run(linkFilesAll, namesAll, mdsfilesAll, covars, outfileall);
+//			m.run(linkFilesAll, namesAll, mdsfilesAll, covars, outfileall);
+			m.run(linksFilesEURCerebellum, namesEURCerebellum, mdsFilesEURCerebellum, covars, outfileEurCerebellum);
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (Exception e) {
