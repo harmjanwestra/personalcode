@@ -21,3 +21,7 @@ nbactions*.xml
 
 nb-configuration.xml
 
+Postdoc2/UtilityScripts/liftover/liftOver
+Postdoc2/UtilityScripts/liftover/hg18ToHg19.over.chain.gz
+Postdoc2/UtilityScripts/liftover/hg38ToHg19.over.chain.gz
+Postdoc2/UtilityScripts/liftover/hg19ToHg38.over.chain.gz
