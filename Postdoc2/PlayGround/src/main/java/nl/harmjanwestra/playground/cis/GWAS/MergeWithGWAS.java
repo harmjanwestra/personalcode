@@ -6,7 +6,7 @@ import umcg.genetica.io.trityper.util.BaseAnnot;
 import umcg.genetica.text.Strings;
 
 import java.io.IOException;
-import java.nio.file.WatchService;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -17,6 +17,7 @@ public class MergeWithGWAS {
 		String efile = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-07-29-GWAS\\eQTLDump-sort-FDR-stripped.txt.gz";
 		String efile2 = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-07-29-GWAS\\eQTLDump-sort-FDR-stripped-significantgenes.txt.gz";
 
+		String snpstats = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-07-29-GWAS\\b38\\2019-07-08-Cortex-Cis-SNPQCLog-MAF-sort.txt.gz";
 
 		String outfile = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-07-29-GWAS\\b38\\eqtlmerge\\";
 		String[] gwas = new String[]{
@@ -25,7 +26,7 @@ public class MergeWithGWAS {
 				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-07-29-GWAS\\b38\\al2-hg38.fullgwas.gz",
 				"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-07-29-GWAS\\b38\\pkd-hg38.fullgwas.gz"
 		};
-		String snpstats = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-07-29-GWAS\\b38\\2019-07-08-Cortex-Cis-SNPQCLog-MAF-sort.txt.gz";
+
 		String[] gwasnames = new String[]{
 				"MS",
 				"ALS",
@@ -97,6 +98,10 @@ public class MergeWithGWAS {
 		double p2;
 		boolean beta1sig;
 		boolean beta2sig;
+	}
+
+	public void merge(String eqtl, String gwasfiles, String gwasnames, String snpstats, String output) throws IOException {
+		merge(eqtl, new String[]{gwasfiles}, new String[]{gwasnames}, snpstats, output);
 	}
 
 	public void merge(String eqtl, String[] gwasfiles, String[] gwasnames, String snpstats, String output) throws IOException {
@@ -201,6 +206,10 @@ public class MergeWithGWAS {
 			efile.close();
 
 			String dirout = output + gwasname + "/";
+			if (gwasname != null) {
+				dirout = output + gwasname + "/";
+			}
+
 			Gpio.createDir(dirout);
 			for (String gene : data.keySet()) {
 				ArrayList<BetaPair> sets = data.get(gene);

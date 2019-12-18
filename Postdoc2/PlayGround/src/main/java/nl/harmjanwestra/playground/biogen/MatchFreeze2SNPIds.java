@@ -25,21 +25,30 @@ public class MatchFreeze2SNPIds {
 		String snpsout = "D:\\Sync\\SyncThing\\Data\\Ref\\gwascatalog\\gwas_catalog_v1.0-associations_e96_r2019-10-14-snps.txt.gz";
 		out = "D:\\Sync\\SyncThing\\Data\\Ref\\gwascatalog\\gwas_catalog_v1.0-associations_e96_r2019-10-14-snps-MetaBrainFreeze2Ids.txt.gz";
 
-		try {
-			GWASCatalog c = new GWASCatalog(in);
-			HashSet<GWASSNP> snps = c.getSnps();
-			TextFile snpsoutf = new TextFile(snpsout, TextFile.W);
-			for (GWASSNP snp : snps) {
-				snpsoutf.writeln(snp.getName());
-			}
-			snpsoutf.close();
-
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+//		try {
+//			GWASCatalog c = new GWASCatalog(in);
+//			HashSet<GWASSNP> snps = c.getSnps();
+//			TextFile snpsoutf = new TextFile(snpsout, TextFile.W);
+//			for (GWASSNP snp : snps) {
+//				snpsoutf.writeln(snp.getName());
+//			}
+//			snpsoutf.close();
+//
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
 
 		MatchFreeze2SNPIds s = new MatchFreeze2SNPIds();
 
+		snpsout = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-11-20-LPGAT\\PD_SNPS_2019_Nov.txt";
+		out = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-11-20-LPGAT\\PD_SNPS_2019_Nov-metabrainfreeze2ids.txt";
+//		s.snplist(filelistfile, snpsout, out);
+
+		snpsout = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-12-18-BenteSNPs\\Alzheimer.txt";
+		out = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-12-18-BenteSNPs\\Alzheimer-metabrainfreeze2ids.txt";
+		s.snplist(filelistfile, snpsout, out);
+		snpsout = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-12-18-BenteSNPs\\Depression.txt";
+		out = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-12-18-BenteSNPs\\Depression-metabrainfreeze2ids.txt";
 		s.snplist(filelistfile, snpsout, out);
 
 

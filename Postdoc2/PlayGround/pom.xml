@@ -68,6 +68,26 @@
             <artifactId>aparapi</artifactId>
             <version>1.10.0</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi</artifactId>
+            <version>3.17</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.xmlbeans</groupId>
+            <artifactId>xmlbeans</artifactId>
+            <version>2.3.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+            <version>3.17</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml-schemas</artifactId>
+            <version>3.17</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -82,7 +102,7 @@
                     <archive>
                         <manifest>
                             <!--                            <mainClass>nl.harmjanwestra.playground.cis.SimplifyQTLFile</mainClass>-->
-                            <mainClass>nl.harmjanwestra.playground.conv.TriTyperToVCF</mainClass>
+                            <mainClass>nl.harmjanwestra.playground.cis.GWAS.COLOCTools</mainClass>
                             <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
                             <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
                         </manifest>

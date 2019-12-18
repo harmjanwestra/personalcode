@@ -22,7 +22,7 @@ public class COLOCParser {
 		}
 	}
 
-	private void identifyLociWithColocalizingSNPs(String indir, String output, double threshold) throws IOException {
+	public void identifyLociWithColocalizingSNPs(String indir, String output, double threshold) throws IOException {
 		String[] filelist = Gpio.getListOfFiles(indir);
 		TextFile outf = new TextFile(output, TextFile.W);
 		outf.writeln("Gene\tSNP\tPPH4");
