@@ -176,7 +176,6 @@ public class ConvertVCFToTT {
 		TextFile snpFileWriter2 = new TextFile(snpFile2, TextFile.W);
 		TextFile snpMapFileWriter = new TextFile(snpMapFile, TextFile.W);
 
-		TextFile logout = new TextFile(logfile, TextFile.W);
 
 		String[] files;
 		ArrayList<String> filestmp = new ArrayList<>();
@@ -210,6 +209,7 @@ public class ConvertVCFToTT {
 		int failinbreeding = 0;
 		int nrlowimpqual = 0;
 		ArrayList<String> samples = null;
+
 
 		// check sample order
 		for (int f = 0; f < files.length; f++) {
@@ -250,6 +250,15 @@ public class ConvertVCFToTT {
 			}
 		}
 
+		/*
+
+		 */
+
+
+		TextFile logout = new TextFile(logfile, TextFile.W);
+		String header = "var\talleles\tisIndel\tisMultiAllelic\tMAF\tPassFilter\tPassInbreeding\tHashHighMissignness\tHasLowMaf\tMissingness\tnrMissing\tAvgDepth\tVarIncluded";
+		logout.writeln(header);
+
 		int totallines = 0;
 		for (int f = 0; f < files.length; f++) {
 
@@ -260,8 +269,7 @@ public class ConvertVCFToTT {
 			String ln = tf.readLine();
 			int ctr = 0;
 
-			String header = "var\talleles\tisIndel\tisMultiAllelic\tMAF\tMissingness\tnrMissing\tAvgDepth\tVarIncluded";
-			logout.writeln(header);
+
 			HashSet<String> warningsgiven = new HashSet<>();
 			while (ln != null) {
 				if (!ln.startsWith("#")) {
@@ -275,11 +283,16 @@ public class ConvertVCFToTT {
 					boolean varincluded = false;
 					double sumdepth = 0;
 
+					boolean passfilter = true;
+					boolean passinbreeding = true;
+					boolean passimpqual = true;
+					boolean hashighmissingness = false;
+					boolean haslowmaf = false;
+
 					if (var.getAlleles().length > 2) {
 						nrmultiallelic++;
 					} else {
 						String filter = var.getFilter();
-						boolean passfilter = true;
 						if (allowedVQSROrINFO != null) {
 							if (filter.contains(";")) {
 								String[] filterelems = filter.split(";");
@@ -311,7 +324,11 @@ public class ConvertVCFToTT {
 								}
 							}
 
-							boolean passinbreeding = (inbreeding == null || varInbreedingCoeff > inbreedingCoeff);
+
+							if (var.isIndel()) {
+								passinbreeding = (inbreeding == null || varInbreedingCoeff > inbreedingCoeff);
+							}
+
 
 							if (!passinbreeding) {
 								failinbreeding++;
@@ -321,6 +338,7 @@ public class ConvertVCFToTT {
 								Double rsq = var.getImputationQualityScore();
 								if (rsq != null && rsq < impqualthreshold) {
 									nrlowimpqual++;
+									passimpqual = false;
 								} else {
 									byte allele1v1 = BaseAnnot.toByte(var.getAlleles()[0]);
 									byte allele2v1 = BaseAnnot.toByte(var.getAlleles()[1]);
@@ -458,6 +476,7 @@ public class ConvertVCFToTT {
 									missingness = (double) missing / samples.size();
 									if (missingness > missingnessthreshold) {
 										variantswithmissingness++;
+										hashighmissingness = true;
 									} else {
 
 										// calculate MAF
@@ -467,6 +486,7 @@ public class ConvertVCFToTT {
 										}
 										if (maf < mafthreshold) {
 											lowmaf++;
+											haslowmaf = true;
 										} else {
 
 											if (!isindel) {
@@ -509,11 +529,21 @@ public class ConvertVCFToTT {
 
 					String incvar = "NotWritten";
 					if (varincluded) {
-
 						incvar = "Written";
-
 					}
-					String log = var.toString() + "\t" + Strings.concat(var.getAlleles(), Strings.semicolon) + "\t" + var.isIndel() + "\t" + var.isMultiallelic() + "\t" + var.getMAF() + "\t" + missingness + "\t" + missing + "\t" + sumdepth + "\t" + incvar;
+					String log = var.toString()
+							+ "\t" + Strings.concat(var.getAlleles(), Strings.semicolon)
+							+ "\t" + var.isIndel()
+							+ "\t" + var.isMultiallelic()
+							+ "\t" + var.getMAF()
+							+ "\t" + passfilter
+							+ "\t" + passinbreeding
+							+ "\t" + hashighmissingness
+							+ "\t" + haslowmaf
+							+ "\t" + missingness
+							+ "\t" + missing
+							+ "\t" + sumdepth
+							+ "\t" + incvar;
 					logout.writeln(log);
 				}
 				if (ctr % 10000 == 0) {

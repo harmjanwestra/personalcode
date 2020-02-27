@@ -3,10 +3,7 @@ package nl.harmjanwestra.playground.biogen.covariates;
 import com.itextpdf.text.DocumentException;
 import umcg.genetica.console.ProgressBar;
 import umcg.genetica.graphics.Grid;
-import umcg.genetica.graphics.Range;
-import umcg.genetica.graphics.panels.HeatmapPanel;
 import umcg.genetica.graphics.panels.HistogramPanel;
-import umcg.genetica.graphics.panels.ScatterplotPanel;
 import umcg.genetica.graphics.themes.DefaultTheme;
 import umcg.genetica.io.text.TextFile;
 import umcg.genetica.math.matrix2.DoubleMatrixDataset;
@@ -39,8 +36,22 @@ public class CovariatePlotter {
 			String individualplotprefix = "D:\\Work\\Freeze2\\run2\\plots\\2019-04-11-r1-";
 
 			boolean spearman = false;
-			cv.correlateCovariatesWithExp(ds, cov, output, individualplotprefix, spearman, 1.1);
+//			cv.correlateCovariatesWithExp(ds, cov, output, individualplotprefix, spearman, 1.1);
 
+
+			if (args.length < 4) {
+				System.out.println("Usage: expmatrix.txt.gz covariatmatrix.txt.gz outputfile.txt plotprefix");
+			} else {
+//				ds = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-05-CovariateCorrelation\\MetaBrain.allCohorts.2020-01-31.TMM.freeze2dot1.SampleSelection.ProbesWithZeroVarianceRemoved.QuantileNormalized.Log2Transformed.ProbesCentered.SamplesZTransformed.txt.gz";
+//				cov = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-05-CovariateCorrelation\\2020-02-05-freeze2dot1.TMM.Covariates.withBrainRegion-noncategorical-variable.txt.gz";
+//				output = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-05-CovariateCorrelation\\correlationWithExpression\\";
+//				individualplotprefix = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-05-CovariateCorrelation\\correlationWithExpression\\2020-02-05-r1-";
+				ds = args[0];
+				cov = args[1];
+				output = args[2];
+				individualplotprefix = args[3];
+				cv.correlateCovariatesWithExp(ds, cov, output, individualplotprefix, spearman, 1.1);
+			}
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -93,7 +104,7 @@ public class CovariatePlotter {
 		double[][] heatmap = new double[dscovariate.columns()][dscovariate.columns()];
 		for (int d = 0; d < dscovariate.columns(); d++) {
 			double[] x = dscovariate.getMatrix().viewColumn(d).toArray();
-			PCAPlot p = new PCAPlot();
+			PCAPlotAndTissueAssignment p = new PCAPlotAndTissueAssignment();
 			for (int d2 = 0; d2 < dscovariate.columns(); d2++) {
 				double[] y = dscovariate.getMatrix().viewColumn(d).toArray();
 				heatmap[d][d2] = p.pruneAndCorrelate(x, y);
@@ -177,7 +188,7 @@ public class CovariatePlotter {
 			if (nonmissingvalues != finalNrsharedsamples) {
 				System.out.println("Excluding covar " + cov + " because n=" + nonmissingvalues);
 			} else if (nonmissingvalues == finalNrsharedsamples) {
-				PCAPlot p = new PCAPlot();
+				PCAPlotAndTissueAssignment p = new PCAPlotAndTissueAssignment();
 
 				double maxcor = 0;
 				String maxgene = null;

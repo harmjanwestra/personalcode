@@ -22,7 +22,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 
-public class PCAPlot {
+public class PCAPlotAndTissueAssignment {
 
 	public static void main(String[] args) {
 //        String knownClasses = "D:\\Sync\\SyncThing\\Data\\Ref\\1kg-p3v5a-sampleinfo.txt";
@@ -41,7 +41,7 @@ public class PCAPlot {
 //        String output = "D:\\Sync\\SyncThing\\Postdoc2\\2018-04-BioGen\\data\\2018-10-19-Braineac\\dnapca\\Braineac-";
 
 
-		PCAPlot p = new PCAPlot();
+		PCAPlotAndTissueAssignment p = new PCAPlotAndTissueAssignment();
 
 		try {
 //            String pcafile = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-02-26-NABEC\\hap550qc\\lng_4tissue_brain_qtl_fix-pca - Copy.eigenvec.txt";
@@ -138,10 +138,10 @@ public class PCAPlot {
 //					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\genotypeqc\\qcfiles\\ENA\\ENA-vcf-pca.eigenvec",
 //					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\genotypeqc\\qcfiles\\TargetALS\\TargetALS-pca.eigenvec",
 //					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\genotypeqc\\qcfiles\\NABEC-WES\\NABEC-WES-pca.eigenvec.gz",
-					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-13-genotypeqc\\qcfiles\\GTEX-WES\\GTEXWES-pca.eigenvec.gz",
-					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-13-genotypeqc\\qcfiles\\NABEC-NeuroChip\\neurochip-pca.eigenvec.gz",
-					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-13-genotypeqc\\qcfiles\\BrainGVEX-V2\\BrainGVEXv2-pca.eigenvec.gz"
-
+//					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-13-genotypeqc\\qcfiles\\GTEX-WES\\GTEXWES-pca.eigenvec.gz",
+//					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-13-genotypeqc\\qcfiles\\NABEC-NeuroChip\\neurochip-pca.eigenvec.gz",
+//					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-13-genotypeqc\\qcfiles\\BrainGVEX-V2\\BrainGVEXv2-pca.eigenvec.gz"
+					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-01-12-ENAGenotypes\\7-plinkMAF0001\\ENA-pca.eigenvec"
 			};
 			String[] outputs = new String[]{
 //					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\genotypeqc\\populationassignment\\AMPAD-MAYO-V2-",
@@ -170,10 +170,10 @@ public class PCAPlot {
 //					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\genotypeqc\\populationassignment\\ENA-vcf-",
 //					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\genotypeqc\\populationassignment\\TargetALS-",
 //					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\genotypeqc\\populationassignment\\NABEC-WES-",
-					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-13-genotypeqc\\populationassignment\\GTEX-WES-",
-					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-13-genotypeqc\\populationassignment\\NABEC-NeuroChip-",
-					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-13-genotypeqc\\populationassignment\\BrainGVEX-V2",
-
+//					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-13-genotypeqc\\populationassignment\\GTEX-WES-",
+//					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-13-genotypeqc\\populationassignment\\NABEC-NeuroChip-",
+//					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-13-genotypeqc\\populationassignment\\BrainGVEX-V2",
+					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-01-12-ENAGenotypes\\7-plinkMAF0001\\ENA-populationassignment"
 
 
 			};
@@ -184,9 +184,9 @@ public class PCAPlot {
 				File path = new File(output);
 				String name = path.getName();
 				name = name.substring(0, name.length() - 1);
-				p.plot(s, knownClasses, superclasses, 2, 3, "1000 genomes", name, 7, output);
+//                p.plot(s, knownClasses, superclasses, 2, 3, "1000 genomes", name, 7, output);
 			}
-			System.exit(0);
+//            System.exit(0);
 //
 //			String inputxyfile = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\rnaqc\\2019-04-11\\6-covcorrection\\pc1to4.txt";
 //			knownClasses = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-12-brain.phenotypes.rna.txt";
@@ -239,14 +239,123 @@ public class PCAPlot {
 			String outputallpcs = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-05-31-ExonQuantPCA\\eigenvectors-pc1-10.png";
 
 //			p.plotColVsCol(inputxyfile, outputallpcs);
-			for (int i = 1; i < 11; i++) {
-				for (int j = i + 1; j < 11; j++) {
-					String output = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-05-31-ExonQuantPCA\\eigenvectors-pc" + i + "vs" + j + ".png";
-					p.plot(inputxyfile, knownClasses, superclasses, i, j, "outlier GSE", "other GSE", 7, output);
-				}
-			}
+//			for (int i = 1; i < 11; i++) {
+//				for (int j = i + 1; j < 11; j++) {
+//					String output = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-05-31-ExonQuantPCA\\eigenvectors-pc" + i + "vs" + j + ".png";
+//					p.plot(inputxyfile, knownClasses, superclasses, i, j, "outlier GSE", "other GSE", 7, output);
+//				}
+//			}
 
 
+			// 2020-02-05 Freeze 2.1
+
+			knownClasses = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-06-Tissues\\2020-02-05-brain.phenotypes.datasets.txt";
+			superclasses = null;
+			inputxyfile = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-06-Tissues\\pc1_10.txt";
+			outputallpcs = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-06-Tissues\\plots\\eigenvectors-dataset.png";
+//            p.plotColVsCol(inputxyfile, outputallpcs, knownClasses, superclasses);
+			knownClasses = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-06-Tissues\\2020-02-05-brain.phenotypes.tissues.txt";
+			outputallpcs = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-06-Tissues\\plots\\eigenvectors-tissue.png";
+//            p.plotColVsCol(inputxyfile, outputallpcs, knownClasses, superclasses);
+			knownClasses = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-06-Tissues\\2020-02-05-brain.phenotypes.tissues.txt";
+			superclasses = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-06-Tissues\\2019-04-12-brain.phenotypes.rna-groupsbiogen.txt";
+			outputallpcs = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-06-Tissues\\plots\\eigenvectors-tissuegroup.png";
+			inputxyfile = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-06-Tissues\\pc1_10.txt";
+//            p.plotColVsCol(inputxyfile, outputallpcs, knownClasses, superclasses, null, null);
+			outputallpcs = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-06-Tissues\\plots\\eigenvectors-tissuegroup-pc1_2.png";
+			inputxyfile = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-06-Tissues\\pc1_2.txt";
+//            p.plotColVsCol(inputxyfile, outputallpcs, knownClasses, superclasses, null, null);
+			outputallpcs = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-06-Tissues\\plots\\eigenvectors-tissueClassification";
+//            p.plot(inputxyfile, knownClasses, superclasses, 1, 2, "Samples with known tissues", "Unclassified samples", 5, outputallpcs);
+
+
+			knownClasses = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-06-Tissues\\plots\\eigenvectors-tissueClassificationSampleAssignmentMerged.txt";
+			superclasses = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-06-Tissues\\2019-04-12-brain.phenotypes.rna-groupsbiogen.txt";
+			outputallpcs = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-06-Tissues\\plots\\eigenvectors-tissuegroup-afterclassification.png";
+			inputxyfile = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-06-Tissues\\pc1_10.txt";
+//            p.plotColVsCol(inputxyfile, outputallpcs, knownClasses, superclasses, 0, 4);
+
+
+			// 2020-02-05 Freeze 2.1 - removing an additional 10 covariates
+			knownClasses = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-06-Tissues\\2020-02-05-brain.phenotypes.datasets.txt";
+			superclasses = null;
+			inputxyfile = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-06-Tissues\\pc1_10_residual.txt";
+			outputallpcs = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-06-Tissues\\plots\\eigenvectors-dataset_residual.png";
+//            p.plotColVsCol(inputxyfile, outputallpcs, knownClasses, superclasses, 0, 10);
+			knownClasses = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-06-Tissues\\2020-02-05-brain.phenotypes.tissues.txt";
+			outputallpcs = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-06-Tissues\\plots\\eigenvectors-tissue_residual.png";
+//            p.plotColVsCol(inputxyfile, outputallpcs, knownClasses, superclasses, 0, 4);
+
+			knownClasses = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-06-Tissues\\2020-02-05-brain.phenotypes.tissues.txt";
+			superclasses = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-06-Tissues\\2019-04-12-brain.phenotypes.rna-groupsbiogen.txt";
+			outputallpcs = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-06-Tissues\\plots\\eigenvectors-tissuegroup_residual.png";
+			inputxyfile = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-06-Tissues\\pc1_10_residual.txt";
+			//p.plotColVsCol(inputxyfile, outputallpcs, knownClasses, superclasses, null, null);
+			outputallpcs = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-06-Tissues\\plots\\eigenvectors-tissuegroup-pc1_2_residual.png";
+			inputxyfile = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-06-Tissues\\pc1_10_residual.txt";
+//            p.plotColVsCol(inputxyfile, outputallpcs, knownClasses, superclasses, null, null);
+			outputallpcs = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-06-Tissues\\plots\\eigenvectors-tissueClassification_residual";
+//			p.plot(inputxyfile, knownClasses, superclasses, 1, 2, "Samples with known tissues", "Unclassified samples", 5, outputallpcs);
+
+			knownClasses = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-06-Tissues\\plots\\eigenvectors-tissueClassification_residualSampleAssignmentMerged.txt";
+			superclasses = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-06-Tissues\\2019-04-12-brain.phenotypes.rna-groupsbiogen.txt";
+			outputallpcs = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-06-Tissues\\plots\\eigenvectors-tissuegroup-residual-afterclassification.png";
+			inputxyfile = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-06-Tissues\\pc1_10_residual.txt";
+			//	p.plotColVsCol(inputxyfile, outputallpcs, knownClasses, superclasses, 0, 4);
+
+			// 2020-02-06 Freeze 2.1 - missing samples fix, 20 covariates removed
+			superclasses = null;
+			knownClasses = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-06-Tissues\\2020-02-05-brain.phenotypes.datasets.txt";
+			inputxyfile = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-06-Tissues\\2020-02-06-pc1_10_residual.txt";
+			outputallpcs = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-06-Tissues\\plots\\2020-02-06-eigenvectors-dataset_residual.png";
+			//	p.plotColVsCol(inputxyfile, outputallpcs, knownClasses, superclasses, 0, 10);
+			knownClasses = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-06-Tissues\\2020-02-05-brain.phenotypes.tissues.txt";
+			outputallpcs = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-06-Tissues\\plots\\2020-02-06-eigenvectors-tissue_residual.png";
+			//	p.plotColVsCol(inputxyfile, outputallpcs, knownClasses, superclasses, 0, 10);
+			knownClasses = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-06-Tissues\\2020-02-05-brain.phenotypes.tissues.txt";
+			superclasses = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-06-Tissues\\2019-04-12-brain.phenotypes.rna-groupsbiogen.txt";
+			outputallpcs = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-06-Tissues\\plots\\2020-02-06-eigenvectors-tissuegroup_residual.png";
+			//	p.plotColVsCol(inputxyfile, outputallpcs, knownClasses, superclasses, null, null);
+
+
+			outputallpcs = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-06-Tissues\\plots\\2020-02-06-eigenvectors-tissueClassification_residual";
+//			p.plot(inputxyfile, knownClasses, superclasses, 1, 2, "Samples with known tissues", "Unclassified samples", 5, outputallpcs);
+
+			knownClasses = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-06-Tissues\\plots\\2020-02-06-eigenvectors-tissueClassification_residualSampleAssignmentAll.txt";
+			superclasses = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-06-Tissues\\2019-04-12-brain.phenotypes.rna-groupsbiogen.txt";
+			outputallpcs = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-06-Tissues\\plots\\2020-02-06-eigenvectors-tissuegroup-residual-afterclassification.png";
+//            p.plotColVsCol(inputxyfile, outputallpcs, knownClasses, superclasses, 0, 4);
+
+			// 2020-02-06 Freeze 2.1 - missing samples fix, 20 covariates removed
+			superclasses = null;
+			knownClasses = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-06-Tissues\\2020-02-05-brain.phenotypes.datasets.txt";
+			inputxyfile = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-17-tissues\\pc1_10_residual.txt";
+			outputallpcs = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-17-Tissues\\plots\\2020-02-06-eigenvectors-dataset_residual.png";
+			p.plotColVsCol(inputxyfile, outputallpcs, knownClasses, superclasses, 0, 10);
+			knownClasses = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-06-Tissues\\2020-02-05-brain.phenotypes.tissues.txt";
+			outputallpcs = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-17-Tissues\\plots\\2020-02-06-eigenvectors-tissue_residual.png";
+			p.plotColVsCol(inputxyfile, outputallpcs, knownClasses, superclasses, 0, 10);
+			knownClasses = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-06-Tissues\\2020-02-05-brain.phenotypes.tissues.txt";
+			superclasses = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-06-Tissues\\2019-04-12-brain.phenotypes.rna-groupsbiogen.txt";
+			outputallpcs = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-17-Tissues\\plots\\2020-02-06-eigenvectors-tissuegroup_residual.png";
+			//	p.plotColVsCol(inputxyfile, outputallpcs, knownClasses, superclasses, null, null);
+
+
+			outputallpcs = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-17-Tissues\\plots\\2020-02-06-eigenvectors-tissueClassification_residual";
+			p.plot(inputxyfile, knownClasses, superclasses, 1, 2, "Samples with known tissues", "Unclassified samples", 5, outputallpcs);
+
+			knownClasses = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-17-Tissues\\plots\\2020-02-06-eigenvectors-tissueClassification_residualSampleAssignmentAll.txt";
+			superclasses = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-06-Tissues\\2019-04-12-brain.phenotypes.rna-groupsbiogen.txt";
+			outputallpcs = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-17-Tissues\\plots\\2020-02-06-eigenvectors-tissuegroup-residual-afterclassification.png";
+			p.plotColVsCol(inputxyfile, outputallpcs, knownClasses, superclasses, 0, 4);
+
+//              for (int i = 1; i < 11; i++) {
+//                for (int j = i + 1; j < 11; j++) {
+//                    System.out.println(i + "\t" + j);
+//                    String output = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-06-Tissues\\plots\\eigenvectors-dataset-pc" + i + "vs" + j + ".png";
+//            p.plot(inputxyfile, knownClasses, superclasses, i, j, "", "", 7, output);
+//                }
+//            }
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (DocumentException e) {
@@ -258,14 +367,83 @@ public class PCAPlot {
 	}
 
 
-	private void plotColVsCol(String inputxyfile, String output) throws Exception {
+	private void plotColVsCol(String inputxyfile, String output, String knownclasses, String superclasses, Integer startcol, Integer stopcol) throws Exception {
+
+
+		// load super populations
+		HashMap<String, String> superpop = new HashMap<>();
+		if (superclasses != null) {
+			TextFile tfc = new TextFile(superclasses, TextFile.R);
+			tfc.readLine();
+			String[] elemsf = tfc.readLineElems(TextFile.tab);
+			while (elemsf != null) {
+				superpop.put(elemsf[0].toLowerCase(), elemsf[2].toLowerCase());
+				elemsf = tfc.readLineElems(TextFile.tab);
+			}
+			tfc.close();
+		} else {
+			TextFile tf = new TextFile(knownclasses, TextFile.R);
+			tf.readLine();
+			String[] elems = tf.readLineElems(TextFile.tab);
+			while (elems != null) {
+				String type = elems[1].toLowerCase();
+				superpop.put(type, type);
+				elems = tf.readLineElems(Strings.whitespace);
+			}
+			tf.close();
+		}
+		String nullpop = "NotDefined";
+
+
+		// load known classes
+		HashMap<String, HashSet<String>> samplesPerPop = new HashMap<>();
+		HashMap<String, String> sampleToPop = new HashMap<>();
+		TextFile tf = new TextFile(knownclasses, TextFile.R);
+		tf.readLine();
+		String[] elems = tf.readLineElems(TextFile.tab);
+		while (elems != null) {
+
+			String sample = elems[0];
+			if (sample.equals("A653_380")) {
+				System.out.println("???");
+			}
+			String type = elems[1].toLowerCase();
+
+			type = superpop.get(type).toLowerCase();
+			if (type != null) {
+				HashSet<String> set = samplesPerPop.get(type);
+				if (set == null) {
+					set = new HashSet<>();
+				}
+				set.add(sample);
+				samplesPerPop.put(type, set);
+				sampleToPop.put(sample, type);
+			}
+			elems = tf.readLineElems(Strings.whitespace);
+
+		}
+		tf.close();
+
+		System.out.println(sampleToPop.size() + " with known population.");
+		System.out.println(samplesPerPop.size() + " populations total.");
+
+
+		ArrayList<String> populations = new ArrayList<>();
+		ArrayList<String> populationstmp = new ArrayList<>();
+		populationstmp.addAll(samplesPerPop.keySet());
+		Collections.sort(populationstmp);
+		populations.add(nullpop);
+		populations.addAll(populationstmp);
+
 
 		DefaultTheme def = new DefaultTheme();
 
 		Color[] colors = new Color[]{
+				new Color(0, 0, 0),
+				new Color(145, 145, 145),
 
-				Color.decode("#0099ff".toUpperCase()),
-				Color.decode("#aaaaaa".toUpperCase()),
+				Color.decode("#f44336".toUpperCase()),
+				Color.decode("#2196f3".toUpperCase()),
 				Color.decode("#ffeb3b".toUpperCase()),
 				Color.decode("#e91e63".toUpperCase()),
 				Color.decode("#009688".toUpperCase()),
@@ -302,17 +480,71 @@ public class PCAPlot {
 
 		Grid grid = new Grid(500, 500, ds.columns() + 1, ds.columns() + 1, 100, 100);
 
+		HashMap<String, Integer> populationIndex = new HashMap<>();
+		for (int i = 0; i < populations.size(); i++) {
+			String pop = populations.get(i);
+			populationIndex.put(pop, i);
+		}
 
-		for (int c = 0; c < ds.columns(); c++) {
+		// index individuals to population
+		for (int r = 0; r < ds.rows(); r++) {
+			String sample = ds.getRowObjects().get(r);
+			String population = sampleToPop.get(sample);
+			if (population == null) {
+				population = nullpop;
+			}
+			sampleToPop.put(sample, population);
+
+		}
+
+		int sta = 0;
+		int sto = ds.columns();
+		if (startcol != null && stopcol != null) {
+			sta = startcol;
+			sto = stopcol;
+		}
+
+		for (int c = sta; c < sto; c++) {
 			double[] colA = ds.getCol(c).toArray();
-			for (int d = c + 1; d < ds.columns(); d++) {
+
+
+			for (int d = c + 1; d < sto; d++) {
 				double[] colB = ds.getCol(d).toArray();
-				ScatterplotPanel p = new ScatterplotPanel(1, 1);
-				p.setData(colA, colB);
-				p.setLabels(ds.getColObjects().get(c), ds.getColObjects().get(d));
-				p.setAlpha(0.1f);
-				p.setTheme(def);
-				grid.addPanel(p, c, d);
+
+				// group on the basis of defined categories
+				ArrayList<ArrayList<Double>> xvals = new ArrayList<>();
+				ArrayList<ArrayList<Double>> yvals = new ArrayList<>();
+				ArrayList<ArrayList<Double>> xvalsunlabeled = new ArrayList<>();
+				ArrayList<ArrayList<Double>> yvalsunlabeled = new ArrayList<>();
+				for (int i = 0; i < populations.size(); i++) {
+
+					xvals.add(new ArrayList<>());
+					xvalsunlabeled.add(new ArrayList<>());
+					yvals.add(new ArrayList<>());
+					yvalsunlabeled.add(new ArrayList<>());
+				}
+
+				for (int r = 0; r < ds.rows(); r++) {
+					String sample = ds.getRowObjects().get(r);
+					String population = sampleToPop.get(sample);
+					if (population == null) {
+						population = nullpop;
+					}
+					sampleToPop.put(sample, population);
+					Integer popindex = populationIndex.get(population);
+//                    if (population.equals(nullpop)) {
+//                        xvalsunlabeled.get(popindex).add(colA[r]);
+//                        yvalsunlabeled.get(popindex).add(colB[r]);
+//                    } else {
+					xvals.get(popindex).add(colA[r]);
+					yvals.get(popindex).add(colB[r]);
+//                    }
+				}
+
+				ScatterplotPanel p1 = preparePanel(null, populations, xvals, yvals, "Dataset", "PC" + c, "PC" + d, def);
+				p1.setAlpha(0.3f);
+				p1.setTheme(def);
+				grid.addPanel(p1, c, d);
 
 
 			}
@@ -509,21 +741,31 @@ public class PCAPlot {
 	}
 
 
-	public void plot(String pcafile, String knownclasses, String superclasses, int col1, int col2, String
-			referencename, String datasetname,
+	public void plot(String pcafile, String knownclasses, String superclasses, int col1, int col2, String referencename, String datasetname,
 					 int startk, String output) throws IOException, DocumentException {
 
 		// load super populations
 		HashMap<String, String> superpop = new HashMap<>();
-		TextFile tfc = new TextFile(superclasses, TextFile.R);
-		tfc.readLine();
-		String[] elemsf = tfc.readLineElems(TextFile.tab);
-		while (elemsf != null) {
-			superpop.put(elemsf[0], elemsf[2]);
-			elemsf = tfc.readLineElems(TextFile.tab);
+		if (superclasses != null) {
+			TextFile tfc = new TextFile(superclasses, TextFile.R);
+			tfc.readLine();
+			String[] elemsf = tfc.readLineElems(TextFile.tab);
+			while (elemsf != null) {
+				superpop.put(elemsf[0].toLowerCase(), elemsf[2].toLowerCase());
+				elemsf = tfc.readLineElems(TextFile.tab);
+			}
+			tfc.close();
+		} else {
+			TextFile tf = new TextFile(knownclasses, TextFile.R);
+			tf.readLine();
+			String[] elems = tf.readLineElems(TextFile.tab);
+			while (elems != null) {
+				String type = elems[1].toLowerCase();
+				superpop.put(type, type);
+				elems = tf.readLineElems(Strings.whitespace);
+			}
+			tf.close();
 		}
-		tfc.close();
-
 		String nullpop = "NotDefined";
 
 
@@ -536,16 +778,21 @@ public class PCAPlot {
 		while (elems != null) {
 
 			String sample = elems[0];
-			String type = elems[1];
-			type = superpop.get(type);
-			HashSet<String> set = samplesPerPop.get(type);
-			if (set == null) {
-				set = new HashSet<>();
-			}
-			set.add(sample);
-			samplesPerPop.put(type, set);
-			sampleToPop.put(sample, type);
 
+			String type = elems[1].toLowerCase();
+			type = superpop.get(type);
+			if (type != null) {
+				HashSet<String> set = samplesPerPop.get(type);
+				if (set == null) {
+					set = new HashSet<>();
+				}
+				set.add(sample);
+				samplesPerPop.put(type, set);
+				sampleToPop.put(sample, type);
+			} else {
+				System.out.println("Population: " + type + " not found in grouping file.");
+				System.exit(-1);
+			}
 			elems = tf.readLineElems(Strings.whitespace);
 
 		}
@@ -699,6 +946,7 @@ public class PCAPlot {
 
 		TextFile assignmentout = new TextFile(output + "SampleAssignment.txt", TextFile.W);
 		TextFile assignmentout2 = new TextFile(output + "SampleAssignmentKnown.txt", TextFile.W);
+		TextFile assignmentout3 = new TextFile(output + "SampleAssignmentAll.txt", TextFile.W);
 
 		for (Triple<String, Double, Double> sample : data) {
 			String prevpop = sampleToPop.get(sample.getLeft());
@@ -711,6 +959,7 @@ public class PCAPlot {
 					xvalsunlabeled.get(popindex).add(sample.getMiddle());
 					yvalsunlabeled.get(popindex).add(sample.getRight());
 					assignmentout.writeln(sample.getLeft() + "\t" + pop);
+					assignmentout3.writeln(sample.getLeft() + "\t" + pop);
 				}
 			} else {
 				String pop = sampleToPopTmp.get(sample.getLeft());
@@ -719,6 +968,7 @@ public class PCAPlot {
 					System.out.println("Could not find population : " + pop + " for sample: " + sample.getLeft());
 				} else {
 					assignmentout2.writeln(sample.getLeft() + "\t" + pop);
+					assignmentout3.writeln(sample.getLeft() + "\t" + pop);
 				}
 			}
 		}
@@ -736,6 +986,7 @@ public class PCAPlot {
 //        }
 		assignmentout2.close();
 		assignmentout.close();
+		assignmentout3.close();
 
 		ScatterplotPanel p3 = preparePanel(r, populations, xvalsunlabeled, yvalsunlabeled, datasetname, "PC" + col1, "PC" + col2, def);
 		grid.addPanel(p3);

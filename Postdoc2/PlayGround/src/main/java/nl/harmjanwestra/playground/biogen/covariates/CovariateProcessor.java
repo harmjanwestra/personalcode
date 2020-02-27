@@ -2,14 +2,17 @@ package nl.harmjanwestra.playground.biogen.covariates;
 
 import cern.colt.matrix.tdouble.DoubleMatrix1D;
 import org.apache.commons.math3.stat.correlation.SpearmansCorrelation;
+import org.apache.commons.math3.stat.regression.OLSMultipleLinearRegression;
 import umcg.genetica.containers.Pair;
 import umcg.genetica.io.text.TextFile;
 import umcg.genetica.math.matrix2.DoubleMatrixDataset;
+import umcg.genetica.math.stats.Descriptives;
 import umcg.genetica.text.Strings;
 import umcg.genetica.util.Primitives;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.IntStream;
 
 public class CovariateProcessor {
 
@@ -31,7 +34,22 @@ public class CovariateProcessor {
 
             String allcovars = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-03-06-ENA\\2019-03-27-brain.phenotype_QC_covariates.txt";
             String allcovarsfiltered = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-03-06-ENA\\2019-03-27-brain.phenotype_QC_covariates-noncategorical.txt";
-            c.removeCategoricalColumns(allcovars,allcovarsfiltered);
+
+
+//            c.removeCategoricalColumns(allcovars,allcovarsfiltered);
+
+            // Freeze 2.1
+            input = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-05-CovariateCorrelation\\2020-02-05-freeze2dot1.TMM.Covariates.withBrainRegion-woSid.txt";
+            String outputDummyVars = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-05-CovariateCorrelation\\2020-02-05-freeze2dot1.TMM.Covariates.withBrainRegion-dummyvars.txt.gz";
+            String outputNumerical = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-05-CovariateCorrelation\\2020-02-05-freeze2dot1.TMM.Covariates.withBrainRegion-noncategorical.txt.gz";
+            c.makeDummyVariables(input, 1, outputDummyVars);
+            c.removeCategoricalColumns(input, outputNumerical);
+
+            String outputVariable = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-05-CovariateCorrelation\\2020-02-05-freeze2dot1.TMM.Covariates.withBrainRegion-noncategorical-variable.txt.gz";
+            c.removeNonVariantColumns(outputNumerical, 2, outputVariable);
+
+            String correloutput = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-05-CovariateCorrelation\\withinCovariateCorrelation\\";
+            c.correlateNonCategorical(outputVariable, correloutput);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -166,18 +184,158 @@ public class CovariateProcessor {
 
         double[][] cormat = new double[covariates.columns()][covariates.columns()];
 
-        for (int i = 0; i < covariates.columns(); i++) {
-            DoubleMatrix1D covA = covariates.getCol(i);
-            for (int j = i + 1; j < covariates.columns(); j++) {
-                DoubleMatrix1D covB = covariates.getCol(j);
-                double r = removeNanAndCorrelate(covA, covB);
-                cormat[i][j] = r;
-                cormat[j][i] = r;
+//        IntStream.range(0, covariates.columns()).parallel().forEach(i -> {
+//            DoubleMatrix1D covA = covariates.getCol(i);
+//            for (int j = i + 1; j < covariates.columns(); j++) {
+//                DoubleMatrix1D covB = covariates.getCol(j);
+//                double r = removeNanAndCorrelate(covA, covB);
+//                cormat[i][j] = r;
+//                cormat[j][i] = r;
+//
+//            }
+//            System.out.println(i + " / " + covariates.columns());
+//
+//            cormat[i][i] = 1d;
+//
+//        });
 
+        TextFile tf = new TextFile(outdir + "CovariateCorrelations.txt", TextFile.W);
+        tf.writeln("-\t" + Strings.concat(covariates.getColObjects(), Strings.tab));
+        for (int c = 0; c < covariates.columns(); c++) {
+            tf.writeln(covariates.getColObjects().get(c) + "\t" + Strings.concat(cormat[c], Strings.tab));
+        }
+        tf.close();
+
+        // strip covariates with fewer than x values
+        ArrayList<String> names = new ArrayList<>();
+        ArrayList<DoubleMatrix1D> covars = new ArrayList<>();
+
+
+        // remove columns with > 10% missing values
+        for (int c = 0; c < covariates.columns(); c++) {
+            int missingctr = 0;
+            DoubleMatrix1D covA = covariates.getCol(c);
+            double[] y = covA.toArray();
+            ArrayList<Double> ytmp = new ArrayList<>();
+            HashSet<Double> nonnanvals = new HashSet<Double>();
+            for (int r = 0; r < y.length; r++) {
+                if (Double.isNaN(y[r])) {
+                    missingctr++;
+                } else {
+                    ytmp.add(y[r]);
+                    nonnanvals.add(y[r]);
+                }
             }
-            System.out.println(i + " / " + covariates.columns());
 
-            cormat[i][i] = 1d;
+            // calculate variance over non missing values
+            double var = Descriptives.variance(Primitives.toPrimitiveArr(ytmp));
+            if ((double) missingctr / y.length < 0.1 && var > 0.001 && nonnanvals.size() > 7000) {
+                covars.add(covA);
+                names.add(covariates.getColObjects().get(c));
+                System.out.println("Including covar:" + covariates.getColObjects().get(c) + "\t" + var + "\t" + nonnanvals.size());
+            }
+
+
+        }
+
+        boolean[] rowhasnan = new boolean[covars.get(0).toArray().length];
+
+        for (int c = 0; c < covars.size(); c++) {
+            DoubleMatrix1D covA = covars.get(c);
+            double[] y = covA.toArray();
+            for (int r = 0; r < y.length; r++) {
+                if (Double.isNaN(y[r])) {
+                    rowhasnan[r] = true;
+                }
+            }
+        }
+        int rownonan = 0;
+        for (int r = 0; r < rowhasnan.length; r++) {
+            if (!rowhasnan[r]) {
+                rownonan++;
+            }
+        }
+
+
+        // perform multilinear regression
+        for (int c = 0; c < covars.size(); c++) {
+
+
+            DoubleMatrix1D covA = covars.get(c);
+
+            double[] ytmp = covA.toArray();
+            double[] y = new double[rownonan];
+            int ctr = 0;
+            for (int r = 0; r < y.length; r++) {
+                if (!rowhasnan[r]) {
+                    y[ctr] = ytmp[r];
+                    ctr++;
+                }
+            }
+
+            // now make a matrix from the other covariates
+            int xctr = 0;
+
+
+            boolean[] includeCol = new boolean[covars.size()];
+            int nrcolsinc = 0;
+            for (int d = 0; d < covars.size(); d++) {
+                if (d != c) {
+                    ctr = 0;
+                    double[] xtmp = covars.get(d).toArray();
+                    double[][] xtmp2 = new double[rownonan][1];
+                    for (int r = 0; r < y.length; r++) {
+                        if (!rowhasnan[r]) {
+//                            x[ctr][xctr] = xtmp[r];
+                            xtmp2[ctr][0] = xtmp[r];
+                            ctr++;
+                        }
+                    }
+                    xctr++;
+
+                    OLSMultipleLinearRegression ols = new OLSMultipleLinearRegression();
+                    ols.newSampleData(y, xtmp2);
+                    double rsq = ols.calculateRSquared();
+                    double rsqb = ols.calculateAdjustedRSquared();
+                    if (rsq > 0.95) {
+                        System.out.println("Excluding col: " + names.get(c) + "\t" + names.get(d) + "\t" + rsq + "\t" + rsqb + "\t" + y.length);
+                        includeCol[d] = false;
+                    } else {
+                        includeCol[d] = true;
+                        nrcolsinc++;
+                    }
+                }
+            }
+
+            xctr = 0;
+            double[][] x = new double[rownonan][nrcolsinc];
+            for (int d = 0; d < covars.size(); d++) {
+                if (d != c && includeCol[d]) {
+                    ctr = 0;
+                    double[] xtmp = covars.get(d).toArray();
+
+                    for (int r = 0; r < y.length; r++) {
+                        if (!rowhasnan[r]) {
+                            if (!Double.isNaN(xtmp[r])) {
+                                x[ctr][xctr] = xtmp[r];
+                            }
+                            ctr++;
+
+                        }
+                    }
+                    xctr++;
+                }
+            }
+
+            try {
+                OLSMultipleLinearRegression ols = new OLSMultipleLinearRegression();
+                ols.newSampleData(y, x);
+                double rsq = ols.calculateRSquared();
+                double rsqb = ols.calculateAdjustedRSquared();
+                System.out.println(names.get(c) + "\t" + rsq + "\t" + rsqb + "\t" + y.length);
+            } catch (org.apache.commons.math3.linear.SingularMatrixException e) {
+                System.out.println(names.get(c) + "\tproduces singular matrix.");
+            }
         }
 
 //        // remove cols with NaN

@@ -6,6 +6,7 @@ import umcg.genetica.io.text.TextFile;
 import umcg.genetica.math.matrix2.DoubleMatrixConverter;
 import umcg.genetica.math.matrix2.DoubleMatrixDataset;
 import umcg.genetica.math.matrix2.DoubleMatrixDatasetAppendableWriter;
+import umcg.genetica.math.matrix2.DoubleMatrixDatasetRandomAccessTranspose;
 import umcg.genetica.text.Strings;
 
 import java.io.File;
@@ -137,6 +138,17 @@ public class Process450KData {
 				} else {
 					DoubleMatrixConverter.BinaryToText(args[1], args[2]);
 				}
+			} else if (args[0].equals("transpose")) {
+				if (args.length < 3) {
+					System.out.println("Usage: input output [nrrowstostoreinmemory]");
+				} else {
+					DoubleMatrixDatasetRandomAccessTranspose transpose = new DoubleMatrixDatasetRandomAccessTranspose();
+					int nrrowsToProcess = 1000;
+					if (args.length > 3) {
+						nrrowsToProcess = Integer.parseInt(args[3]);
+					}
+					transpose.transposeLargeMatrix(args[1], args[2], nrrowsToProcess);
+				}
 			} else {
 				printUsage();
 			}
@@ -159,11 +171,12 @@ public class Process450KData {
 				"logtransform\tlog2transform (expect samples on rows)\n" +
 				"correl\tcorrelations (expect samples on rows); outputs upper triangle correlation matrix over rows\n" +
 				"countnans\tcount the number of nans in a matrix\n" +
-				"mergebinarymatrices\tmerge binary matrices\n" +
+				"mergebinarymatrices\tmerge binary matrices (expect samples on rows)\n" +
 				"detriangle\tfill in the lower triangle of the matrix\n" +
 				"pca\tcalculate eigenvectors\n" +
 				"centerscale\tcenter and scale data (expect samples on rows)\n" +
-				"filter\tfilter rows or columns");
+				"filter\tfilter rows or columns\n" +
+				"transpose\ttranspose binary matrix\n");
 
 	}
 

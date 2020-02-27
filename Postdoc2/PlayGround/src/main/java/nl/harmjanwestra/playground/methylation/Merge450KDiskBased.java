@@ -14,13 +14,14 @@ import java.util.Set;
 
 public class Merge450KDiskBased {
 
+
 	public void run(String probelist, String inT1, String inT2, String out) throws IOException {
 
 		System.out.println("Merging:");
 		System.out.println(inT1);
 		System.out.println(inT2);
 
-		DoubleMatrixDatasetRowIterable t2iterator = new DoubleMatrixDatasetRowIterable(inT2);
+		DoubleMatrixDatasetRandomAccessReader t2reader = new DoubleMatrixDatasetRandomAccessReader(inT2);
 		DoubleMatrixDatasetRandomAccessReader t1reader = new DoubleMatrixDatasetRandomAccessReader(inT1);
 		HashMap<String, Integer> probeMap = new HashMap<String, Integer>();
 		ArrayList<String> probenames = new ArrayList<>();
@@ -37,27 +38,31 @@ public class Merge450KDiskBased {
 			}
 			tf.close();
 		} else {
-			Set<String> probesT2 = t2iterator.getCols();
 			int ctr = 0;
-			for (String s : probesT2) {
-				probenames.add(s);
-				probeMap.put(s, ctr);
-				ctr++;
-			}
 			ArrayList<String> probesT1 = t1reader.getColObjects();
 			for (String s : probesT1) {
 				probenames.add(s);
 				probeMap.put(s, ctr);
 				ctr++;
 			}
-
+			System.out.println(probeMap.size() + " unique probes in d1");
+			ArrayList<String> probesT2 = t2reader.getColObjects();
+			for (String s : probesT2) {
+				if (!probeMap.containsKey(s)) {
+					probenames.add(s);
+					probeMap.put(s, ctr);
+					ctr++;
+				}
+			}
+			System.out.println(probeMap.size() + " unique probes after merging in d2");
 		}
 
 		System.out.println("Col/probe map has " + probeMap.size() + " elements.");
 
 
-		ArrayList<String> probesT2 = new ArrayList<String>(t2iterator.getCols());
-		int[] t2colmap = new int[t2iterator.getNrCols()];
+		// create probe index
+		ArrayList<String> probesT2 = new ArrayList<String>(t2reader.getColObjects());
+		int[] t2colmap = new int[t2reader.cols()];
 		int nrcolsfound = 0;
 		for (int d = 0; d < t2colmap.length; d++) {
 			String probe = probesT2.get(d);
@@ -84,60 +89,92 @@ public class Merge450KDiskBased {
 		}
 		System.out.println(nrcolsfound + " cols can be found in both datasets.");
 
-		int[] samplemap = new int[t2iterator.getNrRows()];
-		ArrayList<String> samplesT2 = new ArrayList<String>(t2iterator.getRows());
-		ArrayList<String> samplesT1 = new ArrayList<String>(t2iterator.getRows());
-		HashMap<String, Integer> s1samplemap = new HashMap<>();
-		for (int i = 0; i < samplesT1.size(); i++) {
-			s1samplemap.put(samplesT1.get(i), i);
+		// index samples
+		ArrayList<String> samples = new ArrayList<String>();
+		HashMap<String, Integer> sampleMap = new HashMap<String, Integer>();
+
+		samples.addAll(t1reader.getRowObjects());
+		int sctr = 0;
+		for (int s = 0; s < samples.size(); s++) {
+			sampleMap.put(samples.get(s), sctr);
+			sctr++;
 		}
 
-		for (int i = 0; i < samplesT2.size(); i++) {
-			String sample = samplesT2.get(i);
-			Integer id = s1samplemap.get(sample);
-			samplemap[i] = id;
+		ArrayList<String> samples2 = new ArrayList<String>(t2reader.getRowObjects());
+		for (int s = 0; s < samples2.size(); s++) {
+			if (!sampleMap.containsKey(samples2.get(s))) {
+				samples.add(samples2.get(s));
+				sampleMap.put(samples2.get(s), sctr);
+				sctr++;
+			}
 		}
 
+		// create index
+		int[] d1sampleindex = new int[samples.size()];
+		int[] d2sampleindex = new int[samples.size()];
 
-		// probes are on columns?
+		for (int s = 0; s < samples.size(); s++) {
+			String samplename = samples.get(s);
+			Integer id1 = (Integer) t1reader.getHashRows().get(samplename);
+			Integer id2 = (Integer) t2reader.getHashRows().get(samplename);
+			if (id1 == null) {
+				d1sampleindex[s] = -1;
+			} else {
+				d1sampleindex[s] = id1;
+			}
+			if (id2 == null) {
+				d2sampleindex[s] = -1;
+			} else {
+				d2sampleindex[s] = id2;
+			}
+
+
+		}
+
+		System.out.println("Merged matrix will be " + samples.size() + " x " + probenames.size());
 		DoubleMatrixDatasetAppendableWriter writer = new DoubleMatrixDatasetAppendableWriter(probenames, out);
 		double[] output = new double[probenames.size()];
-		int row = 0;
-		ProgressBar pb = new ProgressBar(samplesT2.size(), "Merging rows..");
-		for (double[] d : t2iterator) {
-
+		ProgressBar pb = new ProgressBar(samples.size(), "Merging rows..");
+		for (int s = 0; s < samples.size(); s++) {
 			Arrays.fill(output, Double.NaN);
-			String sampleT2 = samplesT2.get(row);
 
-			// merge T2 probes
-			for (int i = 0; i < d.length; i++) {
-				int id = t2colmap[i];
-				if (id > -1) {
-					output[id] = d[i];
+
+			int rowid1 = d1sampleindex[s];
+			if (rowid1 > -1) {
+
+				// read the row
+				double[] row = t1reader.getRow(rowid1);
+
+				// merge T1 probes
+				for (int i = 0; i < row.length; i++) {
+					int id = t1colmap[i];
+					if (id > -1) {
+						output[id] = row[i];
+					}
 				}
 			}
 
+			int rowid2 = d2sampleindex[s];
+			if (rowid2 > -1) {
 
-			// get T1 sample row
-			Integer t1rowid = samplemap[row];
-			double[] d2 = t1reader.getRow(t1rowid);
+				// read the row
+				double[] row = t2reader.getRow(rowid2);
 
-			// merge T1 probes
-			for (int i = 0; i < d2.length; i++) {
-				int id = t1colmap[i];
-				if (id > -1) {
-					output[id] = d[i];
+				// merge T1 probes
+				for (int i = 0; i < row.length; i++) {
+					int id = t2colmap[i];
+					if (id > -1) {
+						output[id] = row[i];
+					}
 				}
 			}
-
-			writer.append(output, sampleT2);
-			row++;
-			pb.set(row);
-
+			writer.append(output, samples.get(s));
+			pb.set(s);
 		}
+
 		pb.close();
 		writer.close();
-		t2iterator.close();
+		t2reader.close();
 		t1reader.close();
 
 	}

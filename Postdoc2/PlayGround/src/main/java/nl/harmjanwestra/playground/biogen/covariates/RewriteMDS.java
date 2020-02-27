@@ -1,8 +1,12 @@
 package nl.harmjanwestra.playground.biogen.covariates;
 
+import cern.colt.matrix.tdouble.DoubleMatrix1D;
 import nl.harmjanwestra.playground.methylation.PCA;
+import org.apache.commons.math3.stat.regression.OLSMultipleLinearRegression;
 import umcg.genetica.io.text.TextFile;
 import umcg.genetica.math.matrix2.DoubleMatrixDataset;
+import umcg.genetica.math.stats.Descriptives;
+import umcg.genetica.math.stats.VIF;
 import umcg.genetica.text.Strings;
 
 import java.io.IOException;
@@ -245,7 +249,137 @@ public class RewriteMDS {
 //			m.run(linksFilesEurCortex, namesEurCortex, mdsfilesEurCortex, covars, outfileEurCortex);
 //			m.run(linksFilesAFRCortex, namesAFRCortes, mdsfilesAFRCortex, covars, outfileAFRCortex);
 //			m.run(linkFilesAll, namesAll, mdsfilesAll, covars, outfileall);
-			m.run(linksFilesEURCerebellum, namesEURCerebellum, mdsFilesEURCerebellum, covars, outfileEurCerebellum);
+//			m.run(linksFilesEURCerebellum, namesEURCerebellum, mdsFilesEURCerebellum, covars, outfileEurCerebellum);
+
+
+			// Freeze 2.1 - cortex
+			String[] linkfiles = new String[]{
+					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-17-LinkFiles\\2020-02-17-output\\splitpertissuemorethan30samples\\cortex.txt-dedup-gte.txt-AFR.txt-AMPAD-MSBB-V2.txt",
+					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-17-LinkFiles\\2020-02-17-output\\splitpertissuemorethan30samples\\cortex.txt-dedup-gte.txt-AFR.txt-CMC.txt",
+					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-17-LinkFiles\\2020-02-17-output\\splitpertissuemorethan30samples\\cortex.txt-dedup-gte.txt-AFR.txt-LIBD_1M.txt",
+					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-17-LinkFiles\\2020-02-17-output\\splitpertissuemorethan30samples\\cortex.txt-dedup-gte.txt-AFR.txt-LIBD_h650.txt",
+					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-17-LinkFiles\\2020-02-17-output\\splitpertissuemorethan30samples\\cortex.txt-dedup-gte.txt-EUR.txt-AMPAD-MAYO-V2.txt",
+					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-17-LinkFiles\\2020-02-17-output\\splitpertissuemorethan30samples\\cortex.txt-dedup-gte.txt-EUR.txt-AMPAD-MSBB-V2.txt",
+					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-17-LinkFiles\\2020-02-17-output\\splitpertissuemorethan30samples\\cortex.txt-dedup-gte.txt-EUR.txt-AMPAD-ROSMAP-V2.txt",
+					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-17-LinkFiles\\2020-02-17-output\\splitpertissuemorethan30samples\\cortex.txt-dedup-gte.txt-EUR.txt-BrainGVEX-V2.txt",
+					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-17-LinkFiles\\2020-02-17-output\\splitpertissuemorethan30samples\\cortex.txt-dedup-gte.txt-EUR.txt-CMC.txt",
+					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-17-LinkFiles\\2020-02-17-output\\splitpertissuemorethan30samples\\cortex.txt-dedup-gte.txt-EUR.txt-GTEx.txt",
+					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-17-LinkFiles\\2020-02-17-output\\splitpertissuemorethan30samples\\cortex.txt-dedup-gte.txt-EUR.txt-GVEX.txt",
+					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-17-LinkFiles\\2020-02-17-output\\splitpertissuemorethan30samples\\cortex.txt-dedup-gte.txt-EUR.txt-ENA.txt",
+					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-17-LinkFiles\\2020-02-17-output\\splitpertissuemorethan30samples\\cortex.txt-dedup-gte.txt-EUR.txt-LIBD_1M.txt",
+					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-17-LinkFiles\\2020-02-17-output\\splitpertissuemorethan30samples\\cortex.txt-dedup-gte.txt-EUR.txt-LIBD_h650.txt",
+					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-17-LinkFiles\\2020-02-17-output\\splitpertissuemorethan30samples\\cortex.txt-dedup-gte.txt-EUR.txt-NABEC-H550.txt",
+					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-17-LinkFiles\\2020-02-17-output\\splitpertissuemorethan30samples\\cortex.txt-dedup-gte.txt-EUR.txt-NABEC-H610.txt",
+					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-17-LinkFiles\\2020-02-17-output\\splitpertissuemorethan30samples\\cortex.txt-dedup-gte.txt-EUR.txt-TargetALS.txt",
+					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-17-LinkFiles\\2020-02-17-output\\splitpertissuemorethan30samples\\cortex.txt-dedup-gte.txt-EUR.txt-UCLA_ASD.txt"
+			};
+
+			String[] datasetnames = new String[]{
+					"AMPAD-MSBB-V2-AFR",
+					"CMC-AFR",
+					"LIBD_1M-AFR",
+					"LIBD_h650-AFR",
+					"AMPAD-MAYO-V2-EUR",
+					"AMPAD-MSBB-V2-EUR",
+					"AMPAD-ROSMAP-V2-EUR",
+					"BrainGVEX-V2-EUR",
+					"CMC-EUR",
+					"GTEx-EUR",
+					"GVEx",
+					"ENA-EUR",
+					"LIBD_1M-EUR",
+					"LIBD_h650-EUR",
+					"NABEC-H550-EUR",
+					"NABEC-H610-EUR",
+					"TargetALS-EUR",
+					"UCLA_ASD-EUR"
+			};
+			String[] mdsfiles = new String[]{
+					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-13-genotypeqc\\qcfiles\\AMPAD-MSBB-V2\\AMPAD-MSBB-V2-mds-ibd.mds.gz",
+					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-13-genotypeqc\\qcfiles\\CMC\\CMC-mds-ibd.mds.gz",
+					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-13-genotypeqc\\qcfiles\\LIBD_1M\\LIBD_1M-mds-ibd.mds.gz",
+					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-13-genotypeqc\\qcfiles\\LIBD_h650\\LIBD_h650-mds-ibd.mds.gz",
+					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-13-genotypeqc\\qcfiles\\AMPAD-MAYO-V2\\AMPAD-MAYO-V2-mds-ibd.mds.gz",
+					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-13-genotypeqc\\qcfiles\\AMPAD-MSBB-V2\\AMPAD-MSBB-V2-mds-ibd.mds.gz",
+					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-13-genotypeqc\\qcfiles\\AMPAD-ROSMAP-V2\\AMPAD-ROSMAP-V2-mds-ibd.mds.gz",
+					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-13-genotypeqc\\qcfiles\\BrainGVEX-V2\\BrainGVEXv2-mds.mds.gz",
+					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-13-genotypeqc\\qcfiles\\CMC\\CMC-mds-ibd.mds.gz",
+					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-13-genotypeqc\\qcfiles\\GTEx\\GTEx-mds-ibd.mds.gz",
+					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-13-genotypeqc\\qcfiles\\GVEX\\GVEX-mds-ibd.mds.gz",
+					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-01-12-ENAGenotypes\\7-plinkMAF0001\\ENA-mds.mds",
+					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-13-genotypeqc\\qcfiles\\LIBD_1M\\LIBD_1M-mds-ibd.mds.gz",
+					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-13-genotypeqc\\qcfiles\\LIBD_h650\\LIBD_h650-mds-ibd.mds.gz",
+					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-13-genotypeqc\\qcfiles\\NABEC-H550\\NABEC-H550-mds-ibd.mds.gz",
+					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-13-genotypeqc\\qcfiles\\NABEC-H610\\NABEC-H610-mds-ibd.mds.gz",
+					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-13-genotypeqc\\qcfiles\\TargetALS\\TargetALS-mds-ibd.mds.gz",
+					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-13-genotypeqc\\qcfiles\\UCLA_ASD\\UCLA_ASD-mds-ibd.mds.gz"
+			};
+			String covarfile = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-17-CovarsAndMDS\\2020-02-17-freeze2dot1.TMM.Covariates.withBrainRegion-noncategorical-variable.top20correlated.txt.gz";
+			String output = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-17-CovarsAndMDS\\2020-02-17-freeze2dot1.TMM.Covariates.withBrainRegion-noncategorical-variable.top20correlated-cortex-withMDS.txt.gz";
+
+			m.run(linkfiles, datasetnames, mdsfiles, covarfile, output);
+
+
+			// Freeze 2.1 - cerebellum
+			linkfiles = new String[]{
+					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-17-LinkFiles\\2020-02-17-output\\splitpertissuemorethan30samples\\cerebellum.txt-dedup-gte.txt-EUR.txt-AMPAD-MAYO-V2.txt",
+					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-17-LinkFiles\\2020-02-17-output\\splitpertissuemorethan30samples\\cerebellum.txt-dedup-gte.txt-EUR.txt-GTEx.txt",
+					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-17-LinkFiles\\2020-02-17-output\\splitpertissuemorethan30samples\\cerebellum.txt-dedup-gte.txt-EUR.txt-TargetALS.txt",
+					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-17-LinkFiles\\2020-02-17-output\\splitpertissuemorethan30samples\\cerebellum.txt-dedup-gte.txt-EUR.txt-UCLA_ASD.txt"
+			};
+			datasetnames = new String[]{
+					"AMPAD-MAYO-V2",
+					"GTEx",
+					"TargetALS",
+					"UCLA_ASD"
+			};
+			mdsfiles = new String[]{
+					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-13-genotypeqc\\qcfiles\\AMPAD-MAYO-V2\\AMPAD-MAYO-V2-mds-ibd.mds.gz",
+					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-13-genotypeqc\\qcfiles\\GTEx\\GTEx-mds-ibd.mds.gz",
+					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-13-genotypeqc\\qcfiles\\TargetALS\\TargetALS-mds-ibd.mds.gz",
+					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-13-genotypeqc\\qcfiles\\UCLA_ASD\\UCLA_ASD-mds-ibd.mds.gz"
+			};
+
+			output = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-17-CovarsAndMDS\\2020-02-17-freeze2dot1.TMM.Covariates.withBrainRegion-noncategorical-variable.top20correlated-cerebellum-withMDS.txt.gz";
+			m.run(linkfiles, datasetnames, mdsfiles, covarfile, output);
+
+			// Freeze 2.1 - basalganglia
+			linkfiles = new String[]{
+					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-17-LinkFiles\\2020-02-17-output\\splitpertissuemorethan30samples\\basalganglia.txt-dedup-gte.txt-EUR.txt-Braineac.txt",
+					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-17-LinkFiles\\2020-02-17-output\\splitpertissuemorethan30samples\\basalganglia.txt-dedup-gte.txt-EUR.txt-GTEx.txt",
+					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-17-LinkFiles\\2020-02-17-output\\splitpertissuemorethan30samples\\basalganglia.txt-dedup-gte.txt-EUR.txt-ENA.txt"
+			};
+			datasetnames = new String[]{
+					"Braineac",
+					"GTEx",
+					"ENA"
+			};
+			mdsfiles = new String[]{
+					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-13-genotypeqc\\qcfiles\\Braineac\\Braineac-mds-ibd.mds.gz",
+					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-13-genotypeqc\\qcfiles\\GTEx\\GTEx-mds-ibd.mds.gz",
+					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-01-12-ENAGenotypes\\7-plinkMAF0001\\ENA-mds.mds"
+			};
+
+			output = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-17-CovarsAndMDS\\2020-02-17-freeze2dot1.TMM.Covariates.withBrainRegion-noncategorical-variable.top20correlated-basalganglia-withMDS.txt.gz";
+			m.run(linkfiles, datasetnames, mdsfiles, covarfile, output);
+
+
+			// Freeze 2.1 - hippocampus
+			linkfiles = new String[]{
+					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-17-LinkFiles\\2020-02-17-output\\splitpertissuemorethan30samples\\hippocampus.txt-dedup-gte.txt-EUR.txt-Braineac.txt",
+					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-17-LinkFiles\\2020-02-17-output\\splitpertissuemorethan30samples\\hippocampus.txt-dedup-gte.txt-EUR.txt-GTEx.txt",
+			};
+			datasetnames = new String[]{
+					"Braineac",
+					"GTEx",
+			};
+			mdsfiles = new String[]{
+					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-13-genotypeqc\\qcfiles\\Braineac\\Braineac-mds-ibd.mds.gz",
+					"D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-13-genotypeqc\\qcfiles\\GTEx\\GTEx-mds-ibd.mds.gz",
+			};
+			output = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-17-CovarsAndMDS\\2020-02-17-freeze2dot1.TMM.Covariates.withBrainRegion-noncategorical-variable.top20correlated-hippocampus-withMDS.txt.gz";
+			m.run(linkfiles, datasetnames, mdsfiles, covarfile, output);
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (Exception e) {
@@ -254,7 +388,8 @@ public class RewriteMDS {
 	}
 
 
-	public void run(String[] linkfiles, String[] datasetnames, String[] mdsfiles, String covarfile, String output) throws Exception {
+	public void run(String[] linkfiles, String[] datasetnames, String[] mdsfiles, String covarfile, String output) throws
+			Exception {
 
 		if (linkfiles.length != datasetnames.length) {
 			System.out.println("Not equal lengths!");
@@ -394,6 +529,63 @@ public class RewriteMDS {
 
 		System.out.println(total + "/" + totalcovars);
 
+		System.out.println();
+		System.out.println("Output is here: " + output);
+		System.out.println();
+		System.out.println("Now checking properties of new covars.");
+
+		// remove non-variant columns
+		DoubleMatrixDataset<String, String> ds = DoubleMatrixDataset.loadDoubleData(output);
+
+//		boolean[] zerovariancecol = new boolean[ds.columns()];
+//		int colsWithVariance = 0;
+//		for (int c = 0; c < ds.columns(); c++) {
+//			DoubleMatrix1D col = ds.getCol(c);
+//			double var = Descriptives.variance(col.toArray());
+//			if (var == 0) {
+//				zerovariancecol[c] = true;
+//			} else {
+//				colsWithVariance++;
+//			}
+//		}
+//		double[][] newMatrix = new double[colsWithVariance][ds.rows()];
+//		ArrayList<String> newrows = new ArrayList<>();
+//
+//		int ctr = 0;
+//		for (int c = 0; c < ds.columns(); c++) {
+//			DoubleMatrix1D col = ds.getCol(c);
+//			if (!zerovariancecol[c]) {
+//				newMatrix[ctr] = col.toArray();
+//				newrows.add(ds.getColObjects().get(c));
+//				ctr++;
+//			}
+//		}
+
+//		for (int c = 0; c < newMatrix.length; c++) {
+//			double[] y = newMatrix[c];
+//			double[][] x = new double[newMatrix.length - 1][];
+//			int cctr = 0;
+//			for (int c2 = 0; c2 < newMatrix.length; c2++) {
+//				if (c2 != c) {
+//					x[cctr] = newMatrix[c2];
+//					cctr++;
+//				}
+//			}
+//
+//			omp.newSampleData(y, x);
+//			double rsq = omp.calculateRSquared();
+//			if (rsq >= 0.99){
+//
+//			}
+//
+//		}
+
+		// check for collinearity
+		VIF vif = new VIF();
+		vif.vifCorrect(ds, 0.999);
+		ds.save(output + "-VIFCorrected.txt.gz");
+
+//
 
 	}
 

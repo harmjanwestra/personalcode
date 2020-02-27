@@ -199,7 +199,7 @@ public class MergeWithGWAS {
 				}
 				read++;
 				if (read % 1000000 == 0) {
-					System.out.println(read + " read, " + nwritten + " added. " + nrSNPsNotFound + " have no MAF? " + nrskipped + " out of range.");
+					System.out.print(read + " read, " + nwritten + " added. " + nrSNPsNotFound + " have no MAF? " + nrskipped + " out of range.\r");
 				}
 				elems = efile.readLineElems(TextFile.tab);
 			}
@@ -243,7 +243,7 @@ public class MergeWithGWAS {
 					}
 					geneswritten++;
 					if (geneswritten % 250 == 0) {
-						System.out.println(geneswritten + "genes written sofar.");
+						System.out.print(geneswritten + "genes written sofar.\r");
 					}
 					outf.close();
 				}
@@ -265,7 +265,7 @@ public class MergeWithGWAS {
 			snpToMaf.put(snp, maf);
 			ctr++;
 			if (ctr % 1000000 == 0) {
-				System.out.println(ctr + " maf annotations read.");
+				System.out.print(ctr + " maf annotations read.\r");
 			}
 			elems = tf.readLineElems(TextFile.tab);
 		}

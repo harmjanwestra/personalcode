@@ -29,12 +29,12 @@
             <groupId>nl.systemsgenetics</groupId>
             <artifactId>genetica-libraries</artifactId>
             <version>1.0.10-SNAPSHOT</version>
-            <!--<version>1.0.5</version>-->
+
         </dependency>
         <dependency>
             <groupId>nl.systemsgenetics</groupId>
             <artifactId>eqtl-mapping-pipeline</artifactId>
-            <version>1.4.6-SNAPSHOT</version>
+            <version>1.4.8-SNAPSHOT</version>
         </dependency>
 
         <dependency>
@@ -58,11 +58,7 @@
             <version>5.5.6</version>
         </dependency>
 
-        <dependency>
-            <groupId>com.github.lejon</groupId>
-            <artifactId>T-SNE-Java</artifactId>
-            <version>2.5.0</version>
-        </dependency>
+
         <dependency>
             <groupId>com.aparapi</groupId>
             <artifactId>aparapi</artifactId>
@@ -102,7 +98,10 @@
                     <archive>
                         <manifest>
                             <!--                            <mainClass>nl.harmjanwestra.playground.cis.SimplifyQTLFile</mainClass>-->
-                            <mainClass>nl.harmjanwestra.playground.cis.GWAS.COLOCTools</mainClass>
+<!--                            <mainClass>nl.harmjanwestra.playground.cis.GWAS.COLOCTools</mainClass>-->
+<!--                            <mainClass>nl.harmjanwestra.playground.biogen.covariates.CovariatePlotter</mainClass>-->
+<!--                            <mainClass>nl.harmjanwestra.playground.biogen.SplitExpressionDatasets</mainClass>-->
+                            <mainClass>nl.harmjanwestra.playground.conv.ConvertVCFToTT</mainClass>
                             <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
                             <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
                         </manifest>

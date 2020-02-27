@@ -57,6 +57,14 @@ public class COLOCTools {
 				.build();
 		OPTIONS.addOption(option);
 
+
+		option = Option.builder()
+				.longOpt("input")
+				.desc("Input File/Dir")
+				.hasArg()
+				.build();
+		OPTIONS.addOption(option);
+
 		option = Option.builder()
 				.longOpt("output")
 				.desc("Output File/Dir")
@@ -110,7 +118,7 @@ public class COLOCTools {
 					System.out.println("mergegwaswitheqtls needs --eqtl --gwasfile --eqtlsummarystats and --output");
 				}
 			} else if (cmd.hasOption("colocparser")) {
-				if (cmd.hasOption("input") && cmd.hasOption("output")) {
+				if (cmd.hasOption("input") && cmd.hasOption("colocsummaryout") && cmd.hasOption("colocgeneoutput")) {
 					COLOCParser p = new COLOCParser();
 
 					p.parseSummariesInDir(cmd.getOptionValue("input"), cmd.getOptionValue("colocsummaryout"));
@@ -122,7 +130,7 @@ public class COLOCTools {
 					p.identifyLociWithColocalizingSNPs(cmd.getOptionValue("input"), cmd.getOptionValue("colocgeneoutput"), PPthreshold);
 
 				} else {
-					System.out.println("colocparser needs --input and --output");
+					System.out.println("colocparser needs --input --colocgeneoutput and --colocsummaryout");
 				}
 
 

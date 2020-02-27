@@ -64,6 +64,9 @@ public class GTFAnnotation extends Annotation {
                     String geneName = lineObj.getGeneId();
                     String transcriptName = lineObj.getTranscriptId();
                     Gene tmpGene = new Gene(geneName, lineObj.getChr(), lineObj.getStr());
+                    if (lineObj.getGeneType() != null) {
+                        tmpGene.setType(lineObj.getGeneType());
+                    }
                     tmpGene.setGeneSymbol(lineObj.getGeneName());
                     if (strToGene.containsKey(tmpGene.getName())) {
                         // continue annotating transcripts and exons with this gene
@@ -113,6 +116,8 @@ public class GTFAnnotation extends Annotation {
                     }
 
 
+                } else {
+                    System.out.println("Unknown type " + lineObj.getType() + " found.");
                 }
             }
 
