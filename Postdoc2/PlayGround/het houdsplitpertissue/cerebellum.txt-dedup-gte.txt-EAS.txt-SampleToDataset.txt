@@ -1,2 +1,0 @@
-AN13872_vermis_51	UCLA_ASD
-HRA_00197	TargetALS
