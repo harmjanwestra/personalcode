@@ -38,8 +38,12 @@ public class MakeSNPAndProbeAnnotationFiles {
 //                    "gencode.v32",
 //                    "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\gencode.v32.primary_assembly.annotation.collapsedGenes.ProbeAnnotation.TSS.txt.gz",
 //                    true);
-            p.writeListOfProteinCodingGenes("D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\gencode.v32.primary_assembly.annotation.collapsedGenes.gtf.gz",
-                    "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\gencode.v32.primary_assembly.annotation.collapsedGenes.proteincoding.txt.gz");
+//            p.writeListOfProteinCodingGenes("D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\gencode.v32.primary_assembly.annotation.collapsedGenes.gtf.gz",
+//                    "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\gencode.v32.primary_assembly.annotation.collapsedGenes.proteincoding.txt.gz");
+
+            p.gtfToProbeAnnotationFile("D:\\tmp\\Homo_sapiens.GRCh37.75.gtf",
+                    "ensemble.75",
+                    "D:\\tmp\\Homo_sapiens.GRCh37.75.ProbeAnnotation.txt.gz", true);
         } catch (IOException e) {
             e.printStackTrace();
         }

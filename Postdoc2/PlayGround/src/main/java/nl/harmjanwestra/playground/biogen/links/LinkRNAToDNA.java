@@ -1,7 +1,6 @@
 package nl.harmjanwestra.playground.biogen.links;
 
 
-import it.unimi.dsi.fastutil.Hash;
 import org.apache.poi.ss.formula.functions.T;
 import umcg.genetica.containers.Triple;
 import umcg.genetica.io.Gpio;
@@ -23,26 +22,43 @@ public class LinkRNAToDNA {
         String freeze1links = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-14-linksIntegrativeFirst\\Freeze1Links.txt";
         String psychencodelinks = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-04-14-linksIntegrativeFirst\\PsychEncodeIndividualToGT.txt";
 
+        String[] origlinkPhenotypeFile = new String[]{
+                "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-17-linkFiles\\2020-02-17-OriginalGenotypeExpressionLinks-withSamplesInExpressionData.txt",
 
-        String origlinkPhenotypeFile = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-17-linkFiles\\2020-02-17-OriginalGenotypeExpressionLinks-withSamplesInExpressionData.txt";
+        };
         String individualfile = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-08-LinkFiles\\2020-02-08-individualfiles.txt";
 
+
+        individualfile = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-08-LinkFiles\\2020-02-08-individualfiles-woCMCHBCC.txt";
 
         String tissuemapfile = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-17-Tissues\\plots\\2020-02-06-eigenvectors-tissueClassification_residualSampleAssignmentAll.txt";
         String popfile = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-08-LinkFiles\\2020-02-08-GenotypePopulationAssignments.txt";
         String rnaseqoutliers = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-08-LinkFiles\\2020-02-11-OutlierSamplesAndThoseWithoutCovariates.txt";
 
+        String cmcLinks = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-17-LinkFiles\\2020-05-25-output-exclusionsFixed-popcheck\\CMC_HumansampleIDkey_GTE.txt";
 
-        String outdir = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-17-LinkFiles\\2020-02-17-output\\";
+        String outdir = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-17-LinkFiles\\2020-05-25-output-exclusionsFixed-popcheck\\";
         String output = outdir + "links-";
         String output2 = outdir + "links2-";
 
+        boolean excludepihat = true;
 
         try {
+            Gpio.createDir(outdir);
+            String cmcIndToDNA = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-17-LinkFiles\\2020-05-25-output-exclusionsFixed-popcheck\\CMC\\CMC_individualIdToGenotype.txt";
+            String cmcIndToRNA = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-17-LinkFiles\\2020-05-25-output-exclusionsFixed-popcheck\\CMC\\CMC_individualIdToRNASeq.txt";
+            String cmcDNAToRNA = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-17-LinkFiles\\2020-05-25-output-exclusionsFixed-popcheck\\CMC\\CMC_GenotypeIdToRNASeq-throughIndIds.txt";
+            l.linkCMCSamples(cmcIndToDNA, cmcIndToRNA, cmcDNAToRNA);
+            String newCMCLinkFile = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-17-LinkFiles\\2020-05-25-output-exclusionsFixed-popcheck\\CMC_HumansampleIDkey_GTE-actualIDs.txt";
+            l.cmcLinkCheck(cmcDNAToRNA, individualfile, newCMCLinkFile);
+//            System.exit(0);
             String listOfExpressionSamples = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-17-tissues\\2020-02-17-listOfRNASeqSamples.txt";
-            l.run2(listOfExpressionSamples, individualfile, origlinkPhenotypeFile, freeze1links, psychencodelinks, output2);
+            l.run2(listOfExpressionSamples, individualfile, origlinkPhenotypeFile, freeze1links, psychencodelinks, newCMCLinkFile, excludepihat, output2);
 
-
+//			String newList = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-17-LinkFiles\\2020-05-25-output-exclusionsFixed-popcheck\\links2-ExpressionSamplesLinked.txt";
+//			String oldList = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-17-linkFiles2\\2020-02-17-output\\links2-ExpressionSamplesLinked.txt";
+//			compareLists(newList, oldList);
+//			System.exit(-1);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -87,7 +103,7 @@ public class LinkRNAToDNA {
                     "spinalcord"
             };
             String[] populations = new String[]{
-					"EUR","AFR","EAS","SAS", "AMR"
+                    "EUR", "AFR", "EAS", "SAS", "AMR"
             };
             for (String tissue : tissues) {
                 String[] files = new String[]{outdir + "splitpertissue\\" + tissue + ".txt"};
@@ -101,15 +117,15 @@ public class LinkRNAToDNA {
                     l.splitPerPopulation(linkfile, popfile);
                 }
 
-                for(String pop: populations){
-                	String popgtefile = outdir + "splitpertissue\\" + tissue + ".txt-dedup-gte.txt-"+pop+".txt";
-                	if(Gpio.exists(popgtefile)){
-						files = new String[]{popgtefile};
-					}
-					for (String linkfile : files) {
-						l.splitPerDataset(linkfile, pathstrippeddedupfile);
-					}
-				}
+                for (String pop : populations) {
+                    String popgtefile = outdir + "splitpertissue\\" + tissue + ".txt-dedup-gte.txt-" + pop + ".txt";
+                    if (Gpio.exists(popgtefile)) {
+                        files = new String[]{popgtefile};
+                    }
+                    for (String linkfile : files) {
+                        l.splitPerDataset(linkfile, pathstrippeddedupfile);
+                    }
+                }
             }
 
         } catch (IOException e) {
@@ -126,27 +142,222 @@ public class LinkRNAToDNA {
 //		}
     }
 
-    private void run2(String listOfExpressionSamples, String genotypedIndividualsFile, String originalLinks, String freeze1Links, String psychEncodeLinks, String output) throws IOException {
+    private void linkCMCSamples(String cmcIndToDNA, String cmcIndToRNA, String cmcDNAToRNA) throws IOException {
+        HashMap<String, HashSet<String>> indToDNA = new HashMap<>();
+        TextFile tf = new TextFile(cmcIndToDNA, TextFile.R);
+        String[] elems = tf.readLineElems(TextFile.tab);
+        while (elems != null) {
+            String ind = elems[0];
+            String dna = elems[1];
+            if (!dna.equals("NA")) {
+                HashSet<String> set = indToDNA.get(ind);
+                if (set == null) {
+                    set = new HashSet<>();
+                }
+                set.add(dna);
+                indToDNA.put(ind, set);
+            }
+            elems = tf.readLineElems(TextFile.tab);
+        }
+        tf.close();
+
+        HashMap<String, HashSet<String>> indToRNA = new HashMap<>();
+        tf = new TextFile(cmcIndToRNA, TextFile.R);
+        elems = tf.readLineElems(TextFile.tab);
+        while (elems != null) {
+            String ind = elems[0];
+            String rna = elems[1];
+            if (!rna.equals("NA")) {
+                HashSet<String> set = indToDNA.get(ind);
+                if (set == null) {
+                    set = new HashSet<>();
+                }
+                set.add(rna);
+                indToRNA.put(ind, set);
+            }
+            elems = tf.readLineElems(TextFile.tab);
+        }
+        tf.close();
+
+        // link the IDs
+        TextFile output = new TextFile(cmcDNAToRNA, TextFile.W);
+        TextFile output2 = new TextFile(cmcDNAToRNA + "DNAsWithoutRNA.txt", TextFile.W);
+        for (String key : indToDNA.keySet()) {
+            HashSet<String> genotypes = indToDNA.get(key);
+            HashSet<String> rnas = indToRNA.get(key);
+            if (rnas != null) {
+                for (String geno : genotypes) {
+                    for (String rna : rnas) {
+                        output.writeln(geno + "\t" + rna + "\t" + key);
+                    }
+                }
+            } else {
+                output2.writeln(indToDNA.get(key) + "\t" + key);
+            }
+        }
+        output.close();
+        output2.close();
+        output2 = new TextFile(cmcDNAToRNA + "RNAsWithoutDNA.txt", TextFile.W);
+        for (String key : indToRNA.keySet()) {
+            HashSet<String> genotypes = indToDNA.get(key);
+            if (genotypes == null) {
+                output2.writeln(indToRNA.get(key) + "\t" + key);
+            }
+        }
+        output2.close();
+
+
+    }
+
+    private void cmcLinkCheck(String cmcLinks, String individualfile, String s) throws IOException {
+
+        HashMap<String, String> genotypeIds = new HashMap<String, String>();
+        HashMap<String, String> aliases = new HashMap<String, String>();
+        TextFile tf = new TextFile(individualfile, TextFile.R);
+        String[] elems = tf.readLineElems(TextFile.tab);
+        TextFile out2 = new TextFile(s + "-allIds.txt", TextFile.W);
+        while (elems != null) {
+            String ind = elems[0];
+            if (ind.contains("CMC")) {
+                TextFile tf2 = new TextFile(ind, TextFile.R);
+                String id = tf2.readLine();
+                while (id != null) {
+                    genotypeIds.put(id, id);
+                    out2.writeln(id);
+                    String[] idelems = id.split("_");
+                    if (idelems.length > 2) {
+                        String newId = idelems[1] + "_" + idelems[2];
+                        genotypeIds.put(newId, id);
+                        aliases.put(newId, id);
+                        out2.writeln(newId);
+                    }
+                    id = tf2.readLine();
+                }
+                tf2.close();
+            }
+            elems = tf.readLineElems(TextFile.tab);
+        }
+        out2.close();
+        tf.close();
+        System.out.println(genotypeIds.size() + " genotypes loaded.");
+        TextFile out = new TextFile(s, TextFile.W);
+        TextFile in = new TextFile(cmcLinks, TextFile.R);
+        elems = in.readLineElems(TextFile.tab);
+        HashSet<String> idsFound = new HashSet<>();
+        while (elems != null) {
+            String gt = elems[0];
+            if (genotypeIds.containsKey(gt)) {
+                idsFound.add(genotypeIds.get(gt));
+                out.writeln(genotypeIds.get(gt) + "\t" + elems[1]);
+            }
+            elems = in.readLineElems(TextFile.tab);
+        }
+        in.close();
+        out.close();
+
+
+    }
+
+    private static void compareLists(String newList, String oldList) throws IOException {
+        HashSet<String> list1 = new HashSet<>();
+        TextFile tf = new TextFile(oldList, TextFile.R);
+        String[] elems = tf.readLineElems(TextFile.tab);
+        while (elems != null) {
+            String q = elems[0] + "\t" + elems[1] + "\t" + elems[4];
+            list1.add(q);
+            elems = tf.readLineElems(TextFile.tab);
+        }
+        tf.close();
+
+        HashSet<String> list2 = new HashSet<>();
+        tf = new TextFile(newList, TextFile.R);
+        elems = tf.readLineElems(TextFile.tab);
+        while (elems != null) {
+            String q = elems[0] + "\t" + elems[1] + "\t" + elems[4];
+
+            if (list2.contains(q)) {
+                System.out.println("Duplicate: " + Strings.concat(elems, Strings.tab));
+            }
+            list2.add(q);
+
+            elems = tf.readLineElems(TextFile.tab);
+        }
+        tf.close();
+
+        System.out.println(list1.size());
+        System.out.println(list2.size());
+
+        System.out.println();
+        System.out.println("Compare old to new:");
+        for (String s : list1) {
+            if (!s.startsWith("CMC_HBCC") && !s.startsWith("R")) {
+                if (!list2.contains(s)) {
+                    System.out.println(s + "\tnot present in new list");
+                }
+            }
+        }
+
+
+        System.out.println("Compare new to old:");
+        for (String s : list2) {
+            if (!s.startsWith("CMC_HBCC") && !s.startsWith("R")) {
+                if (!list1.contains(s)) {
+                    System.out.println(s + "\tnot present in old list");
+                }
+            }
+        }
+    }
+
+    private void run2(String listOfExpressionSamples, String genotypedIndividualsFile,
+                      String[] originalLinks,
+                      String freeze1Links,
+                      String psychEncodeLinks,
+                      String cmcLinks, boolean excludepihat, String output) throws IOException {
 
         // load supposed links between samples
         HashMap<String, String> rnaToGenotype = new HashMap<String, String>();
         HashMap<String, String> rnaToDataset = new HashMap<String, String>();
 
-        TextFile tf = new TextFile(originalLinks, TextFile.R);
+        for (String linkfile : originalLinks) {
+            TextFile tf = new TextFile(linkfile, TextFile.R);
+            String[] elems = tf.readLineElems(TextFile.tab);
+            while (elems != null) {
+                rnaToGenotype.put(elems[0], elems[1]);
+                if (elems.length > 3) {
+                    rnaToDataset.put(elems[0], elems[3] + "\t" + elems[2]);
+                }
+                elems = tf.readLineElems(TextFile.tab);
+            }
+            tf.close();
+        }
+
+
+        HashMap<String, String> freeze1RnaToGenotype = new HashMap<String, String>();
+        TextFile tf = new TextFile(freeze1Links, TextFile.R);
         String[] elems = tf.readLineElems(TextFile.tab);
         while (elems != null) {
-            rnaToGenotype.put(elems[0], elems[1]);
-            rnaToDataset.put(elems[0], elems[3] + "\t" + elems[2]);
+            freeze1RnaToGenotype.put(elems[0], elems[1]);
+//            freeze1RnaToGenotype.put(elems[0], elems[2] + " / " + elems[3]);
             elems = tf.readLineElems(TextFile.tab);
         }
         tf.close();
 
-        HashMap<String, String> freeze1RnaToGenotype = new HashMap<String, String>();
-        tf = new TextFile(freeze1Links, TextFile.R);
+        HashMap<String, HashSet<String>> cmcRnaToGenotype = new HashMap<>();
+        tf = new TextFile(cmcLinks, TextFile.R);
         elems = tf.readLineElems(TextFile.tab);
         while (elems != null) {
-            freeze1RnaToGenotype.put(elems[0], elems[1]);
+            if (elems[1].contains("CMC_HBCC_RNA_PFC_3207")) {
+                System.out.println("?");
+            }
+            HashSet<String> samples = cmcRnaToGenotype.get(elems[1]);
+            if (samples == null) {
+                samples = new HashSet<>();
+            }
+            samples.add(elems[0]);
+
 //            freeze1RnaToGenotype.put(elems[0], elems[2] + " / " + elems[3]);
+            cmcRnaToGenotype.put(elems[1], samples);
+
             elems = tf.readLineElems(TextFile.tab);
         }
         tf.close();
@@ -178,28 +389,33 @@ public class LinkRNAToDNA {
         TextFile gtOut = new TextFile(output + "AvailableGenotypeIDs.txt", TextFile.W);
         gtOut.writeln("GenotypeID\tDatasetFile");
         while (elems2 != null) {
-            String sampleFile = elems2[0];
             Set<String> exclusions = null;
-            if (elems2.length >= 2) {
-                String exclusionfile = elems2[1];
-                TextFile tf3 = new TextFile(exclusionfile, TextFile.R);
-                exclusions = tf3.readAsSet(0, TextFile.tab);
-                for (String s : exclusions) {
-                    HashSet<String> exclusionset = allExclusions.get(s);
-                    if (exclusionset == null) {
-                        exclusionset = new HashSet<>();
+            if (excludepihat) {
+                if (elems2.length >= 2) {
+                    String exclusionfile = elems2[1];
+                    TextFile tf3 = new TextFile(exclusionfile, TextFile.R);
+                    exclusions = tf3.readAsSet(1, TextFile.tab);
+                    for (String s : exclusions) {
+                        HashSet<String> exclusionset = allExclusions.get(s);
+                        if (exclusionset == null) {
+                            exclusionset = new HashSet<>();
+                        }
+                        exclusionset.add(exclusionfile);
+                        allExclusions.put(s, exclusionset);
                     }
-                    exclusionset.add(exclusionfile);
-                    allExclusions.put(s, exclusionset);
                 }
             }
 
+            String sampleFile = elems2[0];
             TextFile tf3 = new TextFile(sampleFile, TextFile.R);
             String ln = tf3.readLine();
             while (ln != null) {
 
                 if (exclusions == null || !exclusions.contains(ln)) {
                     HashSet<String> fileset = availableGenotypeIds.get(ln);
+                    if (ln.contains("4256126122")) {
+                        System.out.println("Got it");
+                    }
                     if (fileset == null) {
                         fileset = new HashSet<>();
                     }
@@ -225,10 +441,11 @@ public class LinkRNAToDNA {
         String rnaSample = tf3.readLine();
 
         while (rnaSample != null) {
-
             String rnaDataset = rnaToDataset.get(rnaSample);
+            if (rnaSample.contains("CMC_HBCC_RNA_PFC_3207")) {
+                System.out.println("Watch this");
+            }
             String genotypeImLookingFor = rnaToGenotype.get(rnaSample);
-
             if (genotypeImLookingFor == null) {
                 System.err.println("Error no original genotype assignment for: " + rnaSample + "\t" + rnaDataset);
                 System.exit(0);
@@ -317,11 +534,20 @@ public class LinkRNAToDNA {
 
                 // now find the last CMC_HBCC samples
                 if (!found) {
-                    if (rnaSample.startsWith("CMC_HBCC_RNA_PFC_3345")) {
+                    if (rnaSample.startsWith("CMC_HBCC_RNA_PFC_3207")) {
                         System.out.println("Got it");
                     }
+
                     // check old psychencode links ; some of them list the actual genotype ID... :(
                     HashSet<String> genotypesImActuallyLookingFor = psychEncodeRnaToGenotype.get(genotypeImLookingFor);
+                    if (genotypesImActuallyLookingFor == null) {
+                        genotypesImActuallyLookingFor = new HashSet<>();
+                    }
+                    // fix: add original CMC links as well
+                    HashSet<String> cmc = cmcRnaToGenotype.get(rnaSample);
+                    if (cmc != null) {
+                        genotypesImActuallyLookingFor.addAll(cmc);
+                    }
                     if (genotypesImActuallyLookingFor != null) {
                         for (String genotype : genotypesImActuallyLookingFor) {
                             // check if we can find it immediately
@@ -343,11 +569,16 @@ public class LinkRNAToDNA {
                                         String indWithoutFamId = indElems[1] + "_" + indElems[2];
                                         if (indWithoutFamId.equals(genotype)) {
                                             // found it!
+                                            if (indWithoutFamId.contains("4463344373")) {
+
+                                                // should be 4040296008_A, is
+                                                System.out.println("found the gt as well");
+                                            }
                                             String genotypeImActuallyActuallyLookingFor = ind;
                                             genotypeDatasets = availableGenotypeIds.get(genotypeImActuallyActuallyLookingFor);
                                             if (genotypeDatasets != null) {
                                                 for (String genotypeDataset : genotypeDatasets) {
-                                                    expSamplesLinked.writeln(rnaSample + "\t" + genotype + "\t" + rnaDataset + "\t" + genotypeDataset);
+                                                    expSamplesLinked.writeln(rnaSample + "\t" + genotypeImActuallyActuallyLookingFor + "\t" + rnaDataset + "\t" + genotypeDataset);
                                                 }
                                                 found = true;
                                             }
@@ -390,8 +621,6 @@ public class LinkRNAToDNA {
                     expSamplesLinked.writeln(rnaSample + "\t" + genotypeImLookingFor + "\t" + rnaDataset + "\t" + genotypeDataset);
                 }
             }
-
-
             rnaSample = tf3.readLine();
         }
         expSamplesNotLinked.close();
@@ -514,12 +743,12 @@ public class LinkRNAToDNA {
 
             String gt = elems[0];
             String pop = popPerSample.get(gt);
-            if (gt.startsWith("SAMN") || gt.startsWith("SAMEA")) {
-                pop = "EUR";
-            }
+//            if (gt.startsWith("SAMN") || gt.startsWith("SAMEA")) {
+//                pop = "EUR";
+//            }
 
             if (pop == null) {
-                System.out.println("Could not find sample: " + gt);
+                System.out.println("Could not find population for sample: " + gt);
             } else {
                 popout.get(pop).writeln(elems[0] + "\t" + elems[1]);
             }

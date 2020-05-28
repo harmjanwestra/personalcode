@@ -105,4 +105,13 @@ public class BootstrapCI {
 		double[] estimates = new double[M[0].length];
 		return estimates;
 	}
+
+	public void bootstrapCI(double[][] x, double[] y) {
+		double alpha = 0.05;
+		int nrBootStrapIterations = 5000;
+
+		double[] estimates = EvalStat(x);
+
+
+	}
 }

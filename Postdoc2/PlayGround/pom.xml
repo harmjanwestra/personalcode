@@ -4,6 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+
     <groupId>PlayGround</groupId>
     <artifactId>PlayGround</artifactId>
     <version>1.0-SNAPSHOT</version>
@@ -22,7 +23,18 @@
             <name>Maven Central</name>
             <url>https://repo1.maven.org/maven2/</url>
         </repository>
+        <repository>
+            <id>apache</id>
+            <url>http://maven.apache.org</url>
+        </repository>
     </repositories>
+
+    <properties>
+        <spark.version>2.4.5</spark.version>
+        <scala.version>2.11.12</scala.version>
+        <scala.compat.version>2.11</scala.compat.version>
+    </properties>
+
 
     <dependencies>
         <dependency>
@@ -80,9 +92,43 @@
             <version>3.17</version>
         </dependency>
         <dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>poi-ooxml-schemas</artifactId>
-            <version>3.17</version>
+            <groupId>org.apache.parquet</groupId>
+            <artifactId>parquet-avro</artifactId>
+            <version>1.11.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.parquet</groupId>
+            <artifactId>parquet-column</artifactId>
+            <version>1.11.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.parquet</groupId>
+            <artifactId>parquet-hadoop</artifactId>
+            <version>1.11.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-core</artifactId>
+            <version>1.2.1</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-common</artifactId>
+            <version>3.2.1</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-client</artifactId>
+            <version>3.2.1</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.graphstream</groupId>
+            <artifactId>gs-core</artifactId>
+            <version>1.3</version>
+            <optional>false</optional>
         </dependency>
     </dependencies>
 
@@ -98,10 +144,11 @@
                     <archive>
                         <manifest>
                             <!--                            <mainClass>nl.harmjanwestra.playground.cis.SimplifyQTLFile</mainClass>-->
-<!--                            <mainClass>nl.harmjanwestra.playground.cis.GWAS.COLOCTools</mainClass>-->
-<!--                            <mainClass>nl.harmjanwestra.playground.biogen.covariates.CovariatePlotter</mainClass>-->
-<!--                            <mainClass>nl.harmjanwestra.playground.biogen.SplitExpressionDatasets</mainClass>-->
-                            <mainClass>nl.harmjanwestra.playground.conv.ConvertVCFToTT</mainClass>
+                            <!--                            <mainClass>nl.harmjanwestra.playground.cis.GWAS.COLOCTools</mainClass>-->
+                            <!--                            <mainClass>nl.harmjanwestra.playground.biogen.covariates.CovariatePlotter</mainClass>-->
+                            <!--                            <mainClass>nl.harmjanwestra.playground.biogen.SplitExpressionDatasets</mainClass>-->
+                            <!--                            <mainClass>nl.harmjanwestra.playground.conv.ConvertVCFToTT</mainClass>-->
+                            <mainClass>nl.harmjanwestra.playground.methylation.Process450KData</mainClass>
                             <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
                             <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
                         </manifest>

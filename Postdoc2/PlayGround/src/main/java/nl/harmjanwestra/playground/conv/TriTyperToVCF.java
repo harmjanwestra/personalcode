@@ -1,6 +1,5 @@
 package nl.harmjanwestra.playground.conv;
 
-import it.unimi.dsi.fastutil.Hash;
 import umcg.genetica.enums.Chromosome;
 import umcg.genetica.io.bin.BinaryFile;
 import umcg.genetica.io.text.TextFile;

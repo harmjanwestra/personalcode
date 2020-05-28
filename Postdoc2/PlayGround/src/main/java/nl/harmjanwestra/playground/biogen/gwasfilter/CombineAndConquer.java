@@ -14,9 +14,9 @@ import java.util.HashMap;
 public class CombineAndConquer {
 
     public static void main(String[] args) {
-        String gwas = "D:\\Sync\\SyncThing\\Data\\Ref\\gwascatalog\\gwas_catalog_v1.0-associations_e93_r2018-10-29.tsv";
-        String efile = "d:\\tuur\\eQTLsFDR0.5.txt.gz";
-        String out = "D:\\tuur\\tuur.txt";
+        String gwas = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\gwas_catalog_v1.0.2-associations_e98_r2020-02-25.tsv.gz";
+        String efile = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-18-eqtls\\trans-cortex-EURandAFR\\eQTLsFDR0.05.txt.gz";
+        String out = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-18-eqtls\\trans-cortex-EURandAFR\\eQTLsFDR0.05-traits.txt.gz";
         CombineAndConquer c = new CombineAndConquer();
         try {
             c.run(gwas, efile, out);
@@ -37,13 +37,14 @@ public class CombineAndConquer {
         tf.close();
 
         for (EQTL e : set) {
-            ArrayList<EQTL> list = snpToEQTL.get(e.getRsName());
+            String rsName = e.getRsName().split(":")[2];
+            ArrayList<EQTL> list = snpToEQTL.get(rsName);
             if (list == null) {
                 list = new ArrayList<>();
             }
 
             list.add(e);
-            snpToEQTL.put(e.getRsName(), list);
+            snpToEQTL.put(rsName, list);
 
         }
 

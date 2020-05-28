@@ -1458,7 +1458,7 @@ public class VCFVariant {
 		String[] alleles = getAlleles();
 		boolean isIndel = false;
 		for (String s : alleles) {
-			if (s.length() > 1 || s.equals("*")) {
+			if (s.length() > 1 || s.equals("*")|| s.equals(".")) {
 				return true;
 			}
 		}

@@ -1,10 +1,13 @@
 package nl.harmjanwestra.playground;
 
+import umcg.genetica.io.Gpio;
 import umcg.genetica.io.text.TextFile;
+import umcg.genetica.text.Strings;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.regex.Pattern;
 
 public class SettingsFileGenerator {
 
@@ -18,21 +21,104 @@ public class SettingsFileGenerator {
         SettingsFileGenerator g = new SettingsFileGenerator();
         try {
 //			g.run(input, order, output);
+//
+//			String[] tissues = new String[]{
+//					"cortex", "cortex-mixup", "cortex-mixup-afterCisRegression", "cerebellum", "hippocampus", "basalganglia"
+//			};
+//			for (String tissue : tissues) {
+//				String datasetDefinition = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-14-mixup\\" + tissue + "-combos.txt";
+//				String platform = "gencode.v32";
+//				String annotation = "/groups/umcg-biogen/tmp03/annotation/gencode.v32.primary_assembly.annotation.collapsedGenes.ProbeAnnotation.TSS.txt.gz";
+//				output = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-14-mixup\\output\\" + tissue + "-combos.xml";
+//				g.generateDatasetRows(datasetDefinition, platform, annotation, output);
+//			}
 
-            String[] tissues = new String[]{
-                    "cortex", "cortex-mixup", "cerebellum", "hippocampus", "basalganglia"
-            };
-            for (String tissue : tissues) {
-                String datasetDefinition = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-14-mixup\\" + tissue + "-combos.txt";
-                String platform = "gencode.v32";
-                String annotation = "/groups/umcg-biogen/tmp03/annotation/gencode.v32.primary_assembly.annotation.collapsedGenes.ProbeAnnotation.TSS.txt.gz";
-                output = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-14-mixup\\output\\" + tissue + "-combos.xml";
-                g.generateDatasetRows(datasetDefinition, platform, annotation, output);
-            }
+
+            String template = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-05-25-settingsfiles\\template-cis.xml";
+            String collections = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-05-25-settingsfiles\\collections-postmixup.txt";
+            String settingsdir = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-05-25-settingsfiles\\postmixup\\";
+            String settingsPrefix = "2020-05-26-";
+            String outputDirOnServer = "/groups/umcg-biogen/tmp03/output/2019-11-06-FreezeTwoDotOne/2020-05-26-eqtls-rsidfix-popfix/cis/2020-05-26-";
+            String annotation = "/groups/umcg-biogen/tmp03/annotation/gencode.v32.primary_assembly.annotation.collapsedGenes.ProbeAnnotation.TSS.txt.gz";
+            String platform = "gencode.v32";
+            g.generateFromTemplate(collections, template, settingsdir, settingsPrefix, outputDirOnServer, annotation, platform);
+
         } catch (IOException e) {
             e.printStackTrace();
         }
 
+    }
+
+    private void generateFromTemplate(String collections, String template, String settingsdir, String settingsPrefix, String outputDirOnServer, String annotation, String platform) throws IOException {
+        Gpio.createDir(settingsdir);
+        TextFile tf = new TextFile(template, TextFile.R);
+        ArrayList<String> templateStr = new ArrayList<>();
+        String ln = tf.readLine();
+        while (ln != null) {
+            templateStr.add(ln);
+            ln = tf.readLine();
+        }
+        tf.close();
+
+        TextFile col = new TextFile(collections, TextFile.R);
+        String[] elems = col.readLineElems(TextFile.tab);
+
+        String currentCollection = null;
+        ArrayList<String> datasetLines = null;
+        while (elems != null) {
+            if (elems.length > 0) {
+                if (elems[0].equals("collection")) {
+                    if (currentCollection != null) {
+                        System.out.println("Writing: " + settingsdir + settingsPrefix + currentCollection + ".xml");
+                        TextFile out = new TextFile(settingsdir + settingsPrefix + currentCollection + ".xml", TextFile.W);
+                        for (String line : templateStr) {
+                            String serverCollectionOut = outputDirOnServer + currentCollection + "/";
+
+                            String tpl = line.replaceAll("OUTDIR", serverCollectionOut);
+                            tpl = tpl.replaceAll("DATASETS", Strings.concat(datasetLines.toArray(new String[0]), Pattern.compile("\n")));
+                            out.writeln(tpl);
+                        }
+                        out.close();
+                    }
+                    datasetLines = new ArrayList<>();
+                    currentCollection = elems[1];
+
+                } else {
+                    if (elems[0].equals("dataset") || elems[0].length() == 0) {
+                        // skip line
+                    } else {
+                        String dataset = elems[0];
+                        String exp = elems[1];
+                        String genotype = elems[2];
+                        String gte = elems[3];
+
+                        datasetLines.add("\t\t<dataset>");
+                        datasetLines.add("\t\t\t<name>" + dataset + "</name>");
+                        datasetLines.add("\t\t\t<location>" + genotype + "</location>");
+                        datasetLines.add("\t\t\t<genometoexpressioncoupling>" + gte + "</genometoexpressioncoupling>");
+                        datasetLines.add("\t\t\t<expressiondata>" + exp + "</expressiondata>");
+                        datasetLines.add("\t\t\t<probeannotation>" + annotation + "</probeannotation>");
+                        datasetLines.add("\t\t\t<expressionplatform>" + platform + "</expressionplatform>");
+                        datasetLines.add("\t\t\t<covariates/>");
+                        datasetLines.add("\t\t\t<quantilenormalize>false</quantilenormalize>");
+                        datasetLines.add("\t\t\t<logtransform>false</logtransform>");
+                        datasetLines.add("\t\t</dataset>\n");
+                    }
+                }
+            }
+            elems = col.readLineElems(TextFile.tab);
+        }
+
+        System.out.println("Writing: " + settingsdir + settingsPrefix + currentCollection + ".xml");
+        TextFile out = new TextFile(settingsdir + settingsPrefix + currentCollection + ".xml", TextFile.W);
+
+        for (String line : templateStr) {
+            String serverCollectionOut = outputDirOnServer + currentCollection + "/";
+            String tpl = line.replaceAll("OUTDIR", serverCollectionOut);
+            tpl = tpl.replaceAll("DATASETS", Strings.concat(datasetLines.toArray(new String[0]), Pattern.compile("\n")));
+            out.writeln(tpl);
+        }
+        out.close();
     }
 
     private void generateDatasetRows(String datasetDefinition, String platform, String annotation, String output) throws IOException {

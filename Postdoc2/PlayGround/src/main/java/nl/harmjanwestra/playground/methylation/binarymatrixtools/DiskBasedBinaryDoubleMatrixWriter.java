@@ -173,7 +173,7 @@ public class DiskBasedBinaryDoubleMatrixWriter {
 
     public void writeBlock(int startRow, int startCol, double[] vals) throws IOException {
         long seekLoc = ((long) startRow * bytesPerRow) + headerLen + (startCol * 8);
-        System.out.println(startRow + "\t" + startCol + "\t" + seekLoc + "\t" + vals[0]);
+//        System.out.println(startRow + "\t" + startCol + "\t" + seekLoc + "\t" + vals[0]);
         channel.position(seekLoc);
 
         if (blockbuffer == null || blockbuffer.limit() != vals.length * 8) {
