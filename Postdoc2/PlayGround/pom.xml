@@ -148,7 +148,9 @@
                             <!--                            <mainClass>nl.harmjanwestra.playground.biogen.covariates.CovariatePlotter</mainClass>-->
                             <!--                            <mainClass>nl.harmjanwestra.playground.biogen.SplitExpressionDatasets</mainClass>-->
                             <!--                            <mainClass>nl.harmjanwestra.playground.conv.ConvertVCFToTT</mainClass>-->
-                            <mainClass>nl.harmjanwestra.playground.methylation.Process450KData</mainClass>
+<!--                            <mainClass>nl.harmjanwestra.playground.methylation.Process450KData</mainClass>-->
+<!--                            <mainClass>nl.harmjanwestra.playground.transeqtl.MakeTranscriptome</mainClass>-->
+                            <mainClass>nl.harmjanwestra.playground.trityper.LDCalculator</mainClass>
                             <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
                             <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
                         </manifest>

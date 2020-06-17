@@ -15,6 +15,7 @@ import umcg.genetica.io.Gpio;
 import umcg.genetica.io.text.TextFile;
 import umcg.genetica.io.trityper.EQTL;
 import umcg.genetica.io.trityper.QTLTextFile;
+import umcg.genetica.io.trityper.util.BaseAnnot;
 import umcg.genetica.text.Strings;
 
 import java.io.File;
@@ -42,6 +43,7 @@ public class MakeTranscriptome {
 //				"true",
 //				"false"
 //		};
+
 		MakeTranscriptome mt = new MakeTranscriptome();
 		if (args.length < 1) {
 			System.out.println("Usage: makeseq || align || quantifyIndividualEQTL || combine ");
@@ -560,7 +562,7 @@ public class MakeTranscriptome {
 		for (String snp : snpids) {
 			System.out.println(snpoutputdir + snp + ".fa.gz");
 			if (Gpio.exists(snpoutputdir + snp + ".fa.gz")) {
-				tfs1.writeln("bwa index ./snps/" + snp + ".fa.gz");
+				tfs1.writeln("bwa index "+outputdir+"/snps/" + snp + ".fa.gz");
 			}
 		}
 		tfs1.close();
@@ -586,14 +588,14 @@ public class MakeTranscriptome {
 		
 		TextFile tfs2 = new TextFile(outputdir + "align.sh", TextFile.W);
 		TextFile tfs3 = new TextFile(outputdir + "samse.sh", TextFile.W);
-		tfs2.writeln("mkdir -p alignments");
+		tfs2.writeln("mkdir -p "+outputdir+"/alignments/");
 		while (elems != null) {
 			
 			String snp = elems[0];
 			String gene = elems[3];
 			if (Gpio.exists(snpoutputdir + snp + ".fa.gz") && Gpio.exists(geneoutputdir + gene + ".fa.gz")) {
-				String ln = "bwa aln -t 1 -l 10 -0 ./snps/" + snp + ".fa.gz ./genes/" + gene + ".fa.gz > ./alignments/" + snp + "_" + gene + ".sai";
-				String ln2 = "bwa samse ./snps/" + snp + ".fa.gz ./alignments/" + snp + "_" + gene + ".sai ./genes/" + gene + ".fa.gz > ./alignments/" + snp + "_" + gene + ".sam";
+				String ln = "bwa aln -t 1 -l 10 -0 "+outputdir+"/snps/" + snp + ".fa.gz "+outputdir+"/genes/" + gene + ".fa.gz > "+outputdir+"/alignments/" + snp + "_" + gene + ".sai";
+				String ln2 = "bwa samse "+outputdir+"/snps/" + snp + ".fa.gz "+outputdir+"/alignments/" + snp + "_" + gene + ".sai "+outputdir+"/genes/" + gene + ".fa.gz > "+outputdir+"/alignments/" + snp + "_" + gene + ".sam";
 				tfs2.writeln(ln);
 				tfs3.writeln(ln2);
 			}

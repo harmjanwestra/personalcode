@@ -13,6 +13,21 @@ public class RewriteRSids {
         String allassocfileo = "U:\\IEUGWAS\\2020-05-03-allTopAssociations-wgwascatalog-wALS-MetaBrain2dot1IDs.txt.gz";
         String topassocfile = "U:\\IEUGWAS\\2020-05-03-topHitsUniqueRSids-wgwascatalog-wALS.txt.gz";
         String topassocfileo = "U:\\IEUGWAS\\2020-05-03-topHitsUniqueRSids-wgwascatalog-wALS-MetaBrain2dot1IDs.txt.gz";
+
+        allassocfile = "U:\\IEUGWAS\\2020-06-01-2020-05-03-allTopAssociations-wgwascatalog-wALS-wMetaBrain.txt.gz";
+        allassocfileo = "U:\\IEUGWAS\\2020-06-01-2020-05-03-allTopAssociations-wgwascatalog-wALS-wMetaBrain-MetaBrain2dot1IDs.txt.gz";
+        topassocfile = "U:\\IEUGWAS\\2020-06-01-2020-05-03-topHitsUniqueRSids-wgwascatalog-wALS-wMetaBrain.txt.gz";
+        topassocfileo = "U:\\IEUGWAS\\2020-06-01-2020-05-03-topHitsUniqueRSids-wgwascatalog-wALS-wMetaBrain-MetaBrain2dot1IDs.txt.gz";
+
+        allassocfile = "U:\\IEUGWAS\\2020-06-01-2020-05-03-allTopAssociations-wgwascatalog-wALS-wAlzheimer-wMetaBrain.txt.gz";
+        allassocfileo = "U:\\IEUGWAS\\2020-06-01-2020-05-03-allTopAssociations-wgwascatalog-wALS-wAlzheimer-wMetaBrain-MetaBrain2dot1IDs.txt.gz";
+        topassocfile = "U:\\IEUGWAS\\2020-06-01-2020-05-03-topHitsUniqueRSids-wgwascatalog-wALS-wAlzheimer-wMetaBrain.txt.gz";
+        topassocfileo = "U:\\IEUGWAS\\2020-06-01-2020-05-03-topHitsUniqueRSids-wgwascatalog-wALS-wAlzheimer-wMetaBrain-MetaBrain2dot1IDs.txt.gz";
+
+        // 2020-06-01-2020-05-03-gwaslist-wgwascatalog-wALS-wMetaBrain.txt.gz
+        //
+        // .txt.gz
+
         String refrs = "U:\\IEUGWAS\\allSNPs.txt.gz";
         RewriteRSids r = new RewriteRSids();
         try {
@@ -21,7 +36,6 @@ public class RewriteRSids {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
 
 
     }
@@ -41,13 +55,20 @@ public class RewriteRSids {
 
         TextFile in = new TextFile(ieugwasfile, TextFile.R);
         TextFile outf = new TextFile(ieugwasfileout, TextFile.W);
-        outf.writeln(in.readLine());
+        if (!ieugwasfile.contains("topHitsUniqueRSids")) {
+            outf.writeln(in.readLine());
+        }
         String[] elems = in.readLineElems(TextFile.tab);
         while (elems != null) {
             String id = elems[col];
             String rs = rstors.get(id);
+            String[] idelems = id.split(":");
+
             if (rs != null) {
                 elems[col] = rs;
+                outf.writeln(Strings.concat(elems, Strings.tab));
+            } else if (idelems.length > 2) {
+                elems[col] = id;
                 outf.writeln(Strings.concat(elems, Strings.tab));
             }
             elems = in.readLineElems(TextFile.tab);

@@ -1,9 +1,11 @@
 package nl.harmjanwestra.playground.biogen.freeze2dot1.gtex;
 
 import umcg.genetica.console.ProgressBar;
+import umcg.genetica.containers.Pair;
 import umcg.genetica.io.Gpio;
 import umcg.genetica.io.text.TextFile;
 import umcg.genetica.io.trityper.util.BaseAnnot;
+import umcg.genetica.text.Strings;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -26,28 +28,118 @@ public class Replicate {
 
 
         Replicate r = new Replicate();
-        try {
+
 //            r.run(eqtlfile, gtex, out);
-            r.run(eqtlfile, gtex, out, false, pvalthreshold);
-            r.run(eqtlfile, gtexsignificant, outSignificant, true, pvalthreshold);
-            eqtlfile = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-04-13-eqtls\\cis-cerebellum-EUR\\eQTLProbesFDR0.05-ProbeLevel.txt.gz";
-            out = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-04-13-eqtls\\cis-cerebellum-EUR\\gtexV8Comparison\\";
-            outSignificant = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-04-13-eqtls\\cis-cerebellum-EUR\\gtexV8ComparisonSignificant\\";
+//            r.run(eqtlfile, gtex, out, false, pvalthreshold);
+//            r.run(eqtlfile, gtexsignificant, outSignificant, true, pvalthreshold);
+        eqtlfile = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-04-13-eqtls\\cis-cerebellum-EUR\\eQTLProbesFDR0.05-ProbeLevel.txt.gz";
+        out = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-04-13-eqtls\\cis-cerebellum-EUR\\gtexV8Comparison\\";
+        outSignificant = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-04-13-eqtls\\cis-cerebellum-EUR\\gtexV8ComparisonSignificant\\";
 
 //            r.run(eqtlfile, gtexsignificant, outSignificant, true, pvalthreshold);
-            r.run(eqtlfile, gtex, out, false, pvalthreshold);
+//            r.run(eqtlfile, gtex, out, false, pvalthreshold);
 
-            eqtlfile = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-04-13-eqtls\\cis-basalganglia-EUR\\eQTLProbesFDR0.05-ProbeLevel.txt.gz";
-            out = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-04-13-eqtls\\cis-basalganglia-EUR\\gtexV8Comparison\\";
-            outSignificant = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-04-13-eqtls\\cis-basalganglia-EUR\\gtexV8ComparisonSignificant\\";
-            r.run(eqtlfile, gtex, out, false, pvalthreshold);
+        eqtlfile = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-04-13-eqtls\\cis-basalganglia-EUR\\eQTLProbesFDR0.05-ProbeLevel.txt.gz";
+        out = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-04-13-eqtls\\cis-basalganglia-EUR\\gtexV8Comparison\\";
+        outSignificant = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-04-13-eqtls\\cis-basalganglia-EUR\\gtexV8ComparisonSignificant\\";
+//            r.run(eqtlfile, gtex, out, false, pvalthreshold);
 //            r.run(eqtlfile, gtexsignificant, outSignificant, true, pvalthreshold);
 
 
+        // 2020-05-26 release
+
+        String outall = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-05-26-assoc\\cisReplicationGTEx\\";
+
+
+        String[] eqtlfiles = new String[]{
+                "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-05-26-assoc\\cis\\2020-05-26-Cortex-EUR-Iteration1-eQTLProbesFDR0.05-ProbeLevel.txt.gz",
+                "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-05-26-assoc\\cis\\2020-05-26-Basalganglia-EUR-Iteration1-eQTLProbesFDR0.05-ProbeLevel.txt.gz",
+                "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-05-26-assoc\\cis\\2020-05-26-Cerebellum-EUR-Iteration1-eQTLProbesFDR0.05-ProbeLevel.txt.gz",
+                "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-05-26-assoc\\cis\\2020-05-26-Cortex-AFR-Iteration1-eQTLProbesFDR0.05-ProbeLevel.txt.gz",
+                "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-05-26-assoc\\cis\\2020-05-26-Cortex-EAS-Iteration1-eQTLProbesFDR0.05-ProbeLevel.txt.gz",
+                "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-05-26-assoc\\cis\\2020-05-26-Hippocampus-EUR-Iteration1-eQTLProbesFDR0.05-ProbeLevel.txt.gz",
+                "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-05-26-assoc\\cis\\2020-05-26-Spinalcord-EUR-Iteration1-eQTLProbesFDR0.05-ProbeLevel.txt.gz"
+        };
+        String[] tissue = new String[]{
+                "Cortex-EUR-Iteration1",
+                "Basalganglia-EUR-Iteration1",
+                "Cerebellum-EUR-Iteration1",
+                "Cortex-AFR-Iteration1",
+                "Cortex-EAS-Iteration1",
+                "Hippocampus-EUR-Iteration1",
+                "Spinalcord-EUR-Iteration1",
+        };
+        IntStream.range(0, eqtlfiles.length).parallel().forEach(v -> {
+            String efile = eqtlfiles[v];
+            String outallprefix = outall + tissue[v] + "-all";
+            String outsigprefix = outall + tissue[v] + "-sig";
+//            try {
+//                r.run(efile, gtex, outallprefix, false, pvalthreshold, false);
+//                r.run(efile, gtexsignificant, outsigprefix, true, pvalthreshold, false);
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+
+        });
+
+        String mergedout = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-05-26-assoc\\cisReplicationGTEx\\2020-05-26-AllTissues";
+        try {
+            r.mergeFiles(outall, tissue, mergedout);
         } catch (IOException e) {
             e.printStackTrace();
         }
 
+
+    }
+
+    private void mergeFiles(String outall, String[] tissueList, String mergedout) throws IOException {
+
+        HashSet<String> gtexTissues = new HashSet<>();
+        HashMap<String, HashMap<String, Pair<Integer, Double>>> data = new HashMap<>();
+        for (int t = 0; t < tissueList.length; t++) {
+            String outsigprefix = outall + tissueList[t] + "-sig-summary.txt";
+            TextFile tf = new TextFile(outsigprefix, TextFile.R);
+            tf.readLine();//header
+            String[] elems = tf.readLineElems(TextFile.tab);
+            HashMap<String, Pair<Integer, Double>> tissuedata = new HashMap<>();
+            while (elems != null) {
+                String tissue = elems[0];
+                Double perc = Double.parseDouble(elems[3]);
+                Integer shared = Integer.parseInt(elems[1]);
+                tissuedata.put(tissue, new Pair<Integer, Double>(shared, perc));
+                gtexTissues.add(tissue);
+                elems = tf.readLineElems(TextFile.tab);
+            }
+            tf.close();
+            data.put(tissueList[t], tissuedata);
+        }
+
+        TextFile sigmerged = new TextFile(mergedout + "-merged-sig.txt", TextFile.W);
+        String header = "-";
+        for (int t = 0; t < tissueList.length; t++) {
+            header += "\t" + tissueList[t] + "-Shared\t" + tissueList[t] + "-Concordant";
+        }
+
+        sigmerged.writeln(header);
+        for (String tissue : gtexTissues) {
+            String ln = tissue;
+            for (int t = 0; t < tissueList.length; t++) {
+                HashMap<String, Pair<Integer, Double>> d = data.get(tissueList[t]);
+                if (d != null) {
+                    Pair<Integer, Double> pair = d.get(tissue);
+
+                    if (pair != null) {
+                        ln += "\t" + pair.getLeft() + "\t" + pair.getRight();
+                    } else {
+                        ln += "\t" + 0 + "\t" + 0;
+                    }
+                } else {
+                    ln += "\t" + 0 + "\t" + 0;
+                }
+            }
+            sigmerged.writeln(ln);
+        }
+        sigmerged.close();
 
     }
 
@@ -61,7 +153,8 @@ public class Replicate {
 
     }
 
-    public void run(String eqtlfile, String gtexfolder, String output, boolean GTEXsignificantFolder, double pvalthreshold) throws IOException {
+    public void run(String eqtlfile, String gtexfolder, String output, boolean GTEXsignificantFolder,
+                    double pvalthreshold, boolean writeTissueOutput) throws IOException {
 
         Gpio.createDir(output);
         HashMap<String, EQTL> eqtls = new HashMap<String, EQTL>();
@@ -92,7 +185,7 @@ public class Replicate {
 
         System.out.println(tissues.size() + " total tissues.");
 
-        TextFile summary = new TextFile(output + "Summary.txt", TextFile.W);
+        TextFile summary = new TextFile(output + "-summary.txt", TextFile.W);
         if (GTEXsignificantFolder) {
             summary.writeln("Tissue\tShared\tSharedSameDir\tPercSharedSameDir\tSignificantGenes(<gtexfdrthreshold)");
         } else {
@@ -135,24 +228,34 @@ public class Replicate {
             });
 
             // write results
-            TextFile out = new TextFile(output + tissue + ".txt.gz", TextFile.W);
-            out.writeln("EQTL\tZ\totherZ");
+            TextFile out = null;
+            if (writeTissueOutput) {
+                out = new TextFile(output + tissue + ".txt.gz", TextFile.W);
+                out.writeln("EQTL\tZ\totherZ");
+            }
+
             int shared = 0;
             int shareddirection = 0;
             for (String key : eqtls.keySet()) {
                 EQTL e = eqtls.get(key);
                 if (!Double.isNaN(e.otherZ)) {
-                    out.writeln(key + "\t" + e.z + "\t" + e.otherZ);
+                    if (writeTissueOutput) {
+                        out.writeln(key + "\t" + e.z + "\t" + e.otherZ);
+                    }
                     shared++;
                     if ((e.z >= 0 && e.otherZ >= 0) || (e.z < 0 && e.otherZ < 0)) {
                         shareddirection++;
                     }
                 }
             }
-            out.close();
+            if (writeTissueOutput) {
+                out.close();
+            }
+
             double perc = (double) shareddirection / shared;
             System.out.println(tctr + "/" + tissues.size() + "\t" + tissue + " Done.\t" + shared + "\t" + shareddirection + "\t" + perc);
             summary.writeln(tissue + "\t" + shared + "\t" + shareddirection + "\t" + perc + "\t" + significantGenes.get());
+            summary.flush();
             pb.set(tctr);
             tctr++;
 
@@ -164,7 +267,8 @@ public class Replicate {
     }
 
 
-    private void processFileSignificant(HashMap<String, EQTL> eqtls, String file, AtomicInteger significantGenes, AtomicInteger sharedF, AtomicInteger sharedSameDirF) throws IOException {
+    private void processFileSignificant(HashMap<String, EQTL> eqtls, String file, AtomicInteger
+            significantGenes, AtomicInteger sharedF, AtomicInteger sharedSameDirF) throws IOException {
 
         TextFile tf = new TextFile(file, TextFile.R, 8 * 1048576);
         tf.readLine();
@@ -206,7 +310,8 @@ public class Replicate {
         significantGenes.getAndAdd(uniqueGenes.size());
     }
 
-    private void processFile(HashMap<String, EQTL> eqtls, String file, AtomicInteger significantGenes, AtomicInteger sharedF, AtomicInteger sharedSameDirF, double pvalthreshold) throws IOException {
+    private void processFile(HashMap<String, EQTL> eqtls, String file, AtomicInteger
+            significantGenes, AtomicInteger sharedF, AtomicInteger sharedSameDirF, double pvalthreshold) throws IOException {
 
 
         TextFile tf = new TextFile(file, TextFile.R, 8 * 1048576);

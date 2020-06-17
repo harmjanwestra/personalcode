@@ -34,6 +34,7 @@ public class SettingsFileGenerator {
 //			}
 
 
+            // cis
             String template = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-05-25-settingsfiles\\template-cis.xml";
             String collections = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-05-25-settingsfiles\\collections-postmixup.txt";
             String settingsdir = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-05-25-settingsfiles\\postmixup\\";
@@ -41,8 +42,33 @@ public class SettingsFileGenerator {
             String outputDirOnServer = "/groups/umcg-biogen/tmp03/output/2019-11-06-FreezeTwoDotOne/2020-05-26-eqtls-rsidfix-popfix/cis/2020-05-26-";
             String annotation = "/groups/umcg-biogen/tmp03/annotation/gencode.v32.primary_assembly.annotation.collapsedGenes.ProbeAnnotation.TSS.txt.gz";
             String platform = "gencode.v32";
+//            g.generateFromTemplate(collections, template, settingsdir, settingsPrefix, outputDirOnServer, annotation, platform);
+
+            template = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-05-25-settingsfiles\\template-cis.xml";
+            collections = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-05-25-settingsfiles\\collections-postmixup-wTransEthnic.txt";
+            settingsdir = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-05-25-settingsfiles\\postmixup-transethnic\\";
+            settingsPrefix = "2020-05-26-";
+            outputDirOnServer = "/groups/umcg-biogen/tmp03/output/2019-11-06-FreezeTwoDotOne/2020-05-26-eqtls-rsidfix-popfix/cis/2020-05-26-";
+            annotation = "/groups/umcg-biogen/tmp03/annotation/gencode.v32.primary_assembly.annotation.collapsedGenes.ProbeAnnotation.TSS.txt.gz";
+            platform = "gencode.v32";
             g.generateFromTemplate(collections, template, settingsdir, settingsPrefix, outputDirOnServer, annotation, platform);
 
+            // trans
+            template = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-05-25-settingsfiles\\template-trans.xml";
+            collections = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-05-25-settingsfiles\\collections-postmixup-trans.txt";
+            settingsdir = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-05-25-settingsfiles\\trans\\";
+            settingsPrefix = "2020-05-26-";
+            outputDirOnServer = "/groups/umcg-biogen/tmp03/output/2019-11-06-FreezeTwoDotOne/2020-05-26-eqtls-rsidfix-popfix/trans/2020-05-26-";
+            //            g.generateFromTemplate(collections, template, settingsdir, settingsPrefix, outputDirOnServer, annotation, platform);
+
+            // cis replication
+            template = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-05-25-settingsfiles\\template-cis-replicate.xml";
+            collections = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-05-25-settingsfiles\\collections-postmixup.txt";
+            settingsdir = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-05-25-settingsfiles\\cis-replicate\\";
+            settingsPrefix = "2020-05-26-replicate-";
+            outputDirOnServer = "/groups/umcg-biogen/tmp03/output/2019-11-06-FreezeTwoDotOne/2020-05-26-eqtls-rsidfix-popfix/cis/2020-05-26-";
+
+//            g.generateFromTemplate(collections, template, settingsdir, settingsPrefix, outputDirOnServer, annotation, platform);
         } catch (IOException e) {
             e.printStackTrace();
         }

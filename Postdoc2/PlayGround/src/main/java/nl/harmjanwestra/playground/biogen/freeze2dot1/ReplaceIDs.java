@@ -83,7 +83,17 @@ public class ReplaceIDs {
             String outputUpdatedPos = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\eqtlgen\\2019-12-11-cis-eQTLProbesFDR0.05-ProbeLevel-MetaBrain2dot1IDsandPos.txt.gz";
             String geneAnnotation = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\gencode.v32.primary_assembly.annotation.collapsedGenes.ProbeAnnotation.TSS.txt.gz";
             String snpmap = "";
-            r.updatePositions(output, snpmap, geneAnnotation, outputUpdatedPos);
+//            r.updatePositions(output, snpmap, geneAnnotation, outputUpdatedPos);
+
+            // D:\Sync\SyncThing\Postdoc2\2019-BioGen\data\2020-01-Freeze2dot1\2020-05-26-assoc\cisBIOS\010517-BIOS-independent-eQTLs.txt
+            // rewrite bios ids
+            input = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-05-26-assoc\\cisBIOS\\010517-BIOS-independent-eQTLs.txt";
+            output = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-05-26-assoc\\cisBIOS\\010517-BIOS-independent-eQTLs-MetaBrain2dot1IDs.txt";
+            // r.run(filelistfile, gtf, input, output, 0, 1);
+
+            input = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-05-26-assoc\\cisBIOS\\010517-BIOS-testedGenes.txt";
+            output = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-05-26-assoc\\cisBIOS\\010517-BIOS-testedGenes-MetaBrain2dot1IDs.txt";
+            r.run(filelistfile, gtf, input, output, -1, 0);
         } catch (IOException e) {
 
 
@@ -245,44 +255,45 @@ public class ReplaceIDs {
     public void run(String filelistfile, String gtf, String input, String output, int snpcol, int genecol) throws IOException {
 
         HashMap<String, String> rsToId = new HashMap<String, String>();
-        TextFile tf = new TextFile(input, TextFile.R);
-        String[] elems = tf.readLineElems(TextFile.tab);
-        int ctr = 0;
-        while (elems != null) {
-            String snpid = elems[snpcol];
-            rsToId.put(snpid, "NotInDs-" + snpid);
-            elems = tf.readLineElems(TextFile.tab);
-            ctr++;
-            if (ctr % 100000 == 0) {
-                System.out.print(ctr + " lines processed. " + rsToId.size() + " rsids found sofar.\r");
-            }
-        }
-        tf.close();
-        System.out.print(ctr + " lines processed. " + rsToId.size() + " rsids found sofar.\r");
-        System.out.println();
-        TextFile tf1 = new TextFile(filelistfile, TextFile.R);
-        ArrayList<String> list = tf1.readAsArrayList();
-        tf1.close();
-
-
-        for (String s : list) {
-            TextFile tf2 = new TextFile(s, TextFile.R);
-
-            String ln = tf2.readLine();
-
-            while (ln != null) {
-                elems = ln.split(":");
-                if (rsToId.containsKey(ln)) {
-                    rsToId.put(ln, ln);
-                } else if (rsToId.containsKey(elems[2])) {
-                    rsToId.put(elems[2], ln);
+        if (snpcol > -1) {
+            TextFile tf = new TextFile(input, TextFile.R);
+            String[] elems = tf.readLineElems(TextFile.tab);
+            int ctr = 0;
+            while (elems != null) {
+                String snpid = elems[snpcol];
+                rsToId.put(snpid, "NotInDs-" + snpid);
+                elems = tf.readLineElems(TextFile.tab);
+                ctr++;
+                if (ctr % 100000 == 0) {
+                    System.out.print(ctr + " lines processed. " + rsToId.size() + " rsids found sofar.\r");
                 }
-                ln = tf2.readLine();
             }
-            tf2.close();
-            System.out.println(rsToId.size() + " ids after reading: " + s);
-        }
+            tf.close();
+            System.out.print(ctr + " lines processed. " + rsToId.size() + " rsids found sofar.\r");
+            System.out.println();
+            TextFile tf1 = new TextFile(filelistfile, TextFile.R);
+            ArrayList<String> list = tf1.readAsArrayList();
+            tf1.close();
 
+
+            for (String s : list) {
+                TextFile tf2 = new TextFile(s, TextFile.R);
+
+                String ln = tf2.readLine();
+
+                while (ln != null) {
+                    elems = ln.split(":");
+                    if (rsToId.containsKey(ln)) {
+                        rsToId.put(ln, ln);
+                    } else if (rsToId.containsKey(elems[2])) {
+                        rsToId.put(elems[2], ln);
+                    }
+                    ln = tf2.readLine();
+                }
+                tf2.close();
+                System.out.println(rsToId.size() + " ids after reading: " + s);
+            }
+        }
 
         GTFAnnotation g = new GTFAnnotation(gtf);
         Collection<Gene> genes = g.getGenes();
@@ -292,13 +303,15 @@ public class ReplaceIDs {
             genemap.put(id, gene.getName());
         }
 
-        tf = new TextFile(input, TextFile.R);
+        TextFile tf = new TextFile(input, TextFile.R);
         TextFile out = new TextFile(output, TextFile.W);
-        elems = tf.readLineElems(TextFile.tab);
-        ctr = 0;
+        String[] elems = tf.readLineElems(TextFile.tab);
+        int ctr = 0;
         while (elems != null) {
-            String snpid = elems[snpcol];
-            elems[snpcol] = rsToId.get(snpid);
+            if (snpcol > -1) {
+                String snpid = elems[snpcol];
+                elems[snpcol] = rsToId.get(snpid);
+            }
             String geneid = elems[genecol].split("\\.")[0];
             String replacements = genemap.get(geneid);
             if (replacements == null) {
