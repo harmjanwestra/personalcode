@@ -1,4 +1,4 @@
-package nl.harmjanwestra.playground.methylation;
+package nl.harmjanwestra.methylation;
 
 import umcg.genetica.console.ProgressBar;
 import umcg.genetica.io.text.TextFile;

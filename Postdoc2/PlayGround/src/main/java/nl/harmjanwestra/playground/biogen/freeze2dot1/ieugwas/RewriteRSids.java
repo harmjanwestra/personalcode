@@ -27,6 +27,10 @@ public class RewriteRSids {
         // 2020-06-01-2020-05-03-gwaslist-wgwascatalog-wALS-wMetaBrain.txt.gz
         //
         // .txt.gz
+        allassocfile = "U:\\IEUGWAS\\2020-06-25-2020-05-03-allTopAssociations-wgwascatalog-wALS-wAlzheimer-wMetaBrain.txt.gz";
+        allassocfileo = "U:\\IEUGWAS\\2020-06-25-2020-05-03-allTopAssociations-wgwascatalog-wALS-wAlzheimer-wMetaBrain-MetaBrain2dot1IDs.txt.gz";
+        topassocfile = "U:\\IEUGWAS\\2020-06-25-2020-05-03-topHitsUniqueRSids-wgwascatalog-wALS-wAlzheimer-wMetaBrain.txt.gz";
+        topassocfileo = "U:\\IEUGWAS\\2020-06-25-2020-05-03-topHitsUniqueRSids-wgwascatalog-wALS-wAlzheimer-wMetaBrain-MetaBrain2dot1IDs.txt.gz";
 
         String refrs = "U:\\IEUGWAS\\allSNPs.txt.gz";
         RewriteRSids r = new RewriteRSids();

@@ -93,7 +93,28 @@ public class ReplaceIDs {
 
             input = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-05-26-assoc\\cisBIOS\\010517-BIOS-testedGenes.txt";
             output = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-05-26-assoc\\cisBIOS\\010517-BIOS-testedGenes-MetaBrain2dot1IDs.txt";
-            r.run(filelistfile, gtf, input, output, -1, 0);
+//            r.run(filelistfile, gtf, input, output, -1, 0);
+
+            input = "D:\\Sync\\SyncThing\\Postdoc2\\2019-eQTLMeta\\data\\2018-05-22-assoc\\cis\\2019-12-11-eQTLProbesFDR0.05-ProbeLevel.txt.gz";
+            output = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-05-26-assoc\\eqtlgen\\2019-12-11-eqtlgen-cis-eQTLProbesFDR0.05-ProbeLevel-MetaBrain2dot1IDs.txt.gz";
+//            r.run(filelistfile, gtf, input, output, 1, 4);
+
+            input = "D:\\Sync\\SyncThing\\Postdoc2\\2019-eQTLMeta\\data\\2018-05-22-assoc\\cis\\2019-12-11-cis-eQTLsFDR-ProbeLevel-CohortInfoRemoved.txt.gz";
+            output = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-05-26-assoc\\eqtlgen\\2019-12-11-eqtlgen-cis-eQTLsFDR-ProbeLevel-MetaBrain2dot1IDs.txt.gz";
+//            r.run(filelistfile, gtf, input, output, 1, 4);
+
+            input = "D:\\Sync\\SyncThing\\Postdoc2\\2019-eQTLMeta\\data\\2018-05-22-assoc\\trans\\2018-04-03-eQTLsFDR-Significant-0.05-WithoutCrossMappingEffects-PrunedFDR-Significant-0.05.txt.gz";
+            output = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-05-26-assoc\\eqtlgen\\2019-12-11-eqtlgen-trans-eQTLsFDR-WithoutCrossMappingEffects-PrunedFDR-Significant-0.05-MetaBrain2dot1IDs.txt.gz";
+//            r.run(filelistfile, gtf, input, output, 1, 4);
+
+            input = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2019-12-18-BenteSNPs\\Alzheimer.txt";
+            output = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2019-12-18-BenteSNPs\\Alzheimer-metabrainfreeze2ids.txt";
+            r.run(filelistfile, gtf, input, output, 0, -1);
+
+            input = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2019-12-18-BenteSNPs\\Depression.txt";
+            output = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2019-12-18-BenteSNPs\\Depression-metabrainfreeze2ids.txt";
+            r.run(filelistfile, gtf, input, output, 0, -1);
+
         } catch (IOException e) {
 
 
@@ -312,12 +333,14 @@ public class ReplaceIDs {
                 String snpid = elems[snpcol];
                 elems[snpcol] = rsToId.get(snpid);
             }
-            String geneid = elems[genecol].split("\\.")[0];
-            String replacements = genemap.get(geneid);
-            if (replacements == null) {
-                replacements = "NotInDs-" + geneid;
+            if (genecol > -1) {
+                String geneid = elems[genecol].split("\\.")[0];
+                String replacements = genemap.get(geneid);
+                if (replacements == null) {
+                    replacements = "NotInDs-" + geneid;
+                }
+                elems[genecol] = replacements;
             }
-            elems[genecol] = replacements;
             out.writeln(Strings.concat(elems, Strings.tab));
             elems = tf.readLineElems(TextFile.tab);
             ctr++;

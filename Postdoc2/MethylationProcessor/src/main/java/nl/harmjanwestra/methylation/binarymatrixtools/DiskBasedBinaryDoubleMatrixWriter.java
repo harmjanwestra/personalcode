@@ -1,13 +1,10 @@
-package nl.harmjanwestra.playground.methylation.binarymatrixtools;
+package nl.harmjanwestra.methylation.binarymatrixtools;
 
 import org.apache.commons.io.input.CountingInputStream;
 import org.apache.commons.io.output.CountingOutputStream;
-import umcg.genetica.io.bin.BinaryFile;
 
 import java.io.*;
-import java.nio.Buffer;
 import java.nio.ByteBuffer;
-import java.nio.DoubleBuffer;
 import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
 

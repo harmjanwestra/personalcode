@@ -1,4 +1,4 @@
-package nl.harmjanwestra.playground.methylation.binarymatrixtools;
+package nl.harmjanwestra.methylation.binarymatrixtools;
 
 import umcg.genetica.console.ProgressBar;
 import umcg.genetica.io.text.TextFile;

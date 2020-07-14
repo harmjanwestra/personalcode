@@ -1,4 +1,4 @@
-package nl.harmjanwestra.playground.methylation.binarymatrixtools;
+package nl.harmjanwestra.methylation.binarymatrixtools;
 
 import org.apache.commons.io.input.CountingInputStream;
 

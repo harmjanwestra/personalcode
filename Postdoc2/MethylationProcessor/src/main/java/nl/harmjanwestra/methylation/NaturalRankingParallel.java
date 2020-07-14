@@ -1,11 +1,10 @@
-package nl.harmjanwestra.playground.methylation;
+package nl.harmjanwestra.methylation;
 
 import org.apache.commons.math3.exception.MathInternalError;
 import org.apache.commons.math3.exception.NotANumberException;
 import org.apache.commons.math3.random.RandomDataGenerator;
 import org.apache.commons.math3.random.RandomGenerator;
 import org.apache.commons.math3.stat.ranking.NaNStrategy;
-import org.apache.commons.math3.stat.ranking.NaturalRanking;
 import org.apache.commons.math3.stat.ranking.RankingAlgorithm;
 import org.apache.commons.math3.stat.ranking.TiesStrategy;
 import org.apache.commons.math3.util.FastMath;
@@ -68,11 +67,11 @@ public class NaturalRankingParallel implements RankingAlgorithm {
 	}
 
 	public double[] rank(double[] data) {
-		NaturalRankingParallel.IntDoublePair[] ranks = new NaturalRankingParallel.IntDoublePair[data.length];
+		IntDoublePair[] ranks = new IntDoublePair[data.length];
 
 		IntDoublePair[] finalRanks = ranks;
 		IntStream.range(0, data.length).parallel().forEach(i -> {
-			finalRanks[i] = new NaturalRankingParallel.IntDoublePair(data[i], i);
+			finalRanks[i] = new IntDoublePair(data[i], i);
 		});
 		ranks = finalRanks;
 
@@ -135,39 +134,39 @@ public class NaturalRankingParallel implements RankingAlgorithm {
 		return out;
 	}
 
-	private NaturalRankingParallel.IntDoublePair[] removeNaNs(NaturalRankingParallel.IntDoublePair[] ranks) {
+	private IntDoublePair[] removeNaNs(IntDoublePair[] ranks) {
 		if (!this.containsNaNs(ranks)) {
 			return ranks;
 		} else {
-			NaturalRankingParallel.IntDoublePair[] outRanks = new NaturalRankingParallel.IntDoublePair[ranks.length];
+			IntDoublePair[] outRanks = new IntDoublePair[ranks.length];
 			int j = 0;
 
 			for (int i = 0; i < ranks.length; ++i) {
 				if (Double.isNaN(ranks[i].getValue())) {
 					for (int k = i + 1; k < ranks.length; ++k) {
-						ranks[k] = new NaturalRankingParallel.IntDoublePair(ranks[k].getValue(), ranks[k].getPosition() - 1);
+						ranks[k] = new IntDoublePair(ranks[k].getValue(), ranks[k].getPosition() - 1);
 					}
 				} else {
-					outRanks[j] = new NaturalRankingParallel.IntDoublePair(ranks[i].getValue(), ranks[i].getPosition());
+					outRanks[j] = new IntDoublePair(ranks[i].getValue(), ranks[i].getPosition());
 					++j;
 				}
 			}
 
-			NaturalRankingParallel.IntDoublePair[] returnRanks = new NaturalRankingParallel.IntDoublePair[j];
+			IntDoublePair[] returnRanks = new IntDoublePair[j];
 			System.arraycopy(outRanks, 0, returnRanks, 0, j);
 			return returnRanks;
 		}
 	}
 
-	private void recodeNaNs(NaturalRankingParallel.IntDoublePair[] ranks, double value) {
+	private void recodeNaNs(IntDoublePair[] ranks, double value) {
 		IntStream.range(0, ranks.length).parallel().forEach(i -> {
 			if (Double.isNaN(ranks[i].getValue())) {
-				ranks[i] = new NaturalRankingParallel.IntDoublePair(value, ranks[i].getPosition());
+				ranks[i] = new IntDoublePair(value, ranks[i].getPosition());
 			}
 		});
 	}
 
-	private boolean containsNaNs(NaturalRankingParallel.IntDoublePair[] ranks) {
+	private boolean containsNaNs(IntDoublePair[] ranks) {
 		for (int i = 0; i < ranks.length; ++i) {
 			if (Double.isNaN(ranks[i].getValue())) {
 				return true;
@@ -226,7 +225,7 @@ public class NaturalRankingParallel implements RankingAlgorithm {
 		}
 	}
 
-	private List<Integer> getNanPositions(NaturalRankingParallel.IntDoublePair[] ranks) {
+	private List<Integer> getNanPositions(IntDoublePair[] ranks) {
 		ArrayList<Integer> out = new ArrayList();
 
 		for (int i = 0; i < ranks.length; ++i) {
@@ -243,7 +242,7 @@ public class NaturalRankingParallel implements RankingAlgorithm {
 		DEFAULT_TIES_STRATEGY = TiesStrategy.AVERAGE;
 	}
 
-	private static class IntDoublePair implements Comparable<NaturalRankingParallel.IntDoublePair> {
+	private static class IntDoublePair implements Comparable<IntDoublePair> {
 		private final double value;
 		private final int position;
 
@@ -252,7 +251,7 @@ public class NaturalRankingParallel implements RankingAlgorithm {
 			this.position = position;
 		}
 
-		public int compareTo(NaturalRankingParallel.IntDoublePair other) {
+		public int compareTo(IntDoublePair other) {
 			return Double.compare(this.value, other.value);
 		}
 

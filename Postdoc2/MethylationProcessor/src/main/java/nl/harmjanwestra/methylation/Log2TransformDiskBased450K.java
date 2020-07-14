@@ -1,11 +1,10 @@
-package nl.harmjanwestra.playground.methylation;
+package nl.harmjanwestra.methylation;
 
 import umcg.genetica.math.matrix2.DoubleMatrixDatasetAppendableWriter;
 import umcg.genetica.math.matrix2.DoubleMatrixDatasetRowIterable;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.stream.IntStream;
 
 public class Log2TransformDiskBased450K {
 

@@ -1,16 +1,14 @@
-package nl.harmjanwestra.playground.methylation;
+package nl.harmjanwestra.methylation;
 
 import umcg.genetica.console.ProgressBar;
 import umcg.genetica.io.text.TextFile;
 import umcg.genetica.math.matrix2.DoubleMatrixDatasetAppendableWriter;
 import umcg.genetica.math.matrix2.DoubleMatrixDatasetRandomAccessReader;
-import umcg.genetica.math.matrix2.DoubleMatrixDatasetRowIterable;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Set;
 
 public class Merge450KDiskBased {
 

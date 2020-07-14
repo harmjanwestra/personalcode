@@ -46,7 +46,7 @@
         <dependency>
             <groupId>nl.systemsgenetics</groupId>
             <artifactId>eqtl-mapping-pipeline</artifactId>
-            <version>1.4.8-SNAPSHOT</version>
+            <version>1.4.9-SNAPSHOT</version>
         </dependency>
 
         <dependency>
@@ -151,6 +151,8 @@
 <!--                            <mainClass>nl.harmjanwestra.playground.methylation.Process450KData</mainClass>-->
 <!--                            <mainClass>nl.harmjanwestra.playground.transeqtl.MakeTranscriptome</mainClass>-->
                             <mainClass>nl.harmjanwestra.playground.trityper.LDCalculator</mainClass>
+<!--                            <mainClass>nl.harmjanwestra.playground.biogen.interactions.QTLAnalysis</mainClass>-->
+<!--                            <mainClass>nl.harmjanwestra.playground.biogen.freeze2dot1.conditional.RegionPlotter</mainClass>-->
                             <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
                             <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
                         </manifest>
