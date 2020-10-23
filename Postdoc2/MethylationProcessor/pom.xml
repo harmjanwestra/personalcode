@@ -31,7 +31,7 @@
                     </descriptorRefs>
                     <archive>
                         <manifest>
-                            <mainClass>nl.harmjanwestra.methylation.Process450KData</mainClass>
+                            <mainClass>nl.harmjanwestra.methylation.MainClass</mainClass>
                             <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
                             <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
                         </manifest>

@@ -11,31 +11,78 @@ import java.util.ArrayList;
 public class CenterScale450K {
 
 
-	public void run(String in, String out) throws IOException {
-		DoubleMatrixDatasetRowIterable it = new DoubleMatrixDatasetRowIterable(in);
+    public void run(String in, String out) throws IOException {
+        DoubleMatrixDatasetRowIterable it = new DoubleMatrixDatasetRowIterable(in);
 
-		DoubleMatrixDatasetAppendableWriter writer = new DoubleMatrixDatasetAppendableWriter(new ArrayList<String>(it.getCols()), out);
 
-		ArrayList<String> rowids = new ArrayList<>(it.getRows());
-		ProgressBar pb = new ProgressBar(it.getNrRows(), "Centering and scaling...");
-		int rowid = 0;
-		for (double[] row : it) {
+        DoubleMatrixDatasetAppendableWriter writer = new DoubleMatrixDatasetAppendableWriter(new ArrayList<String>(it.getCols()), out);
 
-			double mean = Descriptives.mean(row);
-			double sd = Math.sqrt(Descriptives.variance(row));
+        ArrayList<String> rowids = new ArrayList<>(it.getRows());
+        ProgressBar pb = new ProgressBar(it.getNrRows(), "Centering and scaling...");
+        int rowid = 0;
+        for (double[] row : it) {
 
-			for (int d = 0; d < row.length; d++) {
-				row[d] = (row[d] - mean) / sd;
-			}
+            double mean = Descriptives.mean(row);
+            double sd = Math.sqrt(Descriptives.variance(row));
 
-			writer.append(row, rowids.get(rowid));
-			pb.iterate();
-			rowid++;
-		}
-		pb.close();
+            for (int d = 0; d < row.length; d++) {
+                row[d] = (row[d] - mean) / sd;
+            }
 
-		it.close();
-		writer.close();
+            writer.append(row, rowids.get(rowid));
+            pb.iterate();
+            rowid++;
+        }
+        pb.close();
 
-	}
+        it.close();
+        writer.close();
+
+    }
+
+    public void runCenterOnly(String in, String out) throws IOException {
+        DoubleMatrixDatasetRowIterable it = new DoubleMatrixDatasetRowIterable(in);
+
+        DoubleMatrixDatasetAppendableWriter writer = new DoubleMatrixDatasetAppendableWriter(new ArrayList<String>(it.getCols()), out);
+
+        ArrayList<String> rowids = new ArrayList<>(it.getRows());
+        ProgressBar pb = new ProgressBar(it.getNrRows(), "Centering and scaling...");
+        int rowid = 0;
+        for (double[] row : it) {
+            double mean = Descriptives.mean(row);
+            for (int d = 0; d < row.length; d++) {
+                row[d] = (row[d] - mean);
+            }
+
+            writer.append(row, rowids.get(rowid));
+            pb.iterate();
+            rowid++;
+        }
+        pb.close();
+
+        it.close();
+        writer.close();
+    }
+
+    public void removeZeroVariance(String in, String out) throws IOException {
+        DoubleMatrixDatasetRowIterable it = new DoubleMatrixDatasetRowIterable(in);
+        DoubleMatrixDatasetAppendableWriter writer = new DoubleMatrixDatasetAppendableWriter(new ArrayList<String>(it.getCols()), out);
+
+        ArrayList<String> rowids = new ArrayList<>(it.getRows());
+        ProgressBar pb = new ProgressBar(it.getNrRows(), "Centering and scaling...");
+        int rowid = 0;
+        for (double[] row : it) {
+
+            double sd = Math.sqrt(Descriptives.variance(row));
+            if (sd > 0) {
+                writer.append(row, rowids.get(rowid));
+            }
+            pb.iterate();
+            rowid++;
+        }
+        pb.close();
+
+        it.close();
+        writer.close();
+    }
 }

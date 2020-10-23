@@ -15,7 +15,7 @@ public class RewriteGeneIDs {
     public static void main(String[] args) {
         String gtf = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\gencode.v32.primary_assembly.annotation.collapsedGenes.gtf.gz";
         String file = "U:\\2020-05-DDG2P\\DDG2P_11_5_2020.csv.gz";
-        String fileout = "U:\\2020-05-DDG2P\\DDG2P_11_5_2020-ensg.txt";
+        String fileout = "U:\\2020-05-DDG2P\\DDG2P_11_5_2020-ensg-v2.txt";
         RewriteGeneIDs r = new RewriteGeneIDs();
 
         String synonyms = "U:\\2020-05-DDG2P\\Homo_sapiens.gene_info.gz";
@@ -60,11 +60,11 @@ public class RewriteGeneIDs {
         int ctr = 0;
         int found = 0;
         String[] header = tf.readLineElems(TextFile.comma);
-        tfo.writeln(Strings.concat(header, Strings.tab) + "\tENSG");
+        tfo.writeln("ENSG" + Strings.concat(header, Strings.tab));
         String[] elems = tf.readLineElems(TextFile.comma);
         while (elems != null) {
             String id = elems[0];
-            if(id.equals("KIFBP")){
+            if (id.equals("KIFBP")) {
                 System.out.println("!");
             }
             String ensg = symbolToENSG.get(id);
@@ -89,7 +89,7 @@ public class RewriteGeneIDs {
                 System.out.println("Can't find:\t" + id);
             }
             ctr++;
-            tfo.writeln(Strings.concat(elems, Strings.tab).replaceAll(" ","_") + "\t" + ensg);
+            tfo.writeln(ensg + "\t" + Strings.concat(elems, Strings.tab).replaceAll(" ", "_"));
             elems = tf.readLineElems(TextFile.comma);
         }
         tf.close();

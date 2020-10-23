@@ -70,12 +70,6 @@
             <version>5.5.6</version>
         </dependency>
 
-
-        <dependency>
-            <groupId>com.aparapi</groupId>
-            <artifactId>aparapi</artifactId>
-            <version>1.10.0</version>
-        </dependency>
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi</artifactId>

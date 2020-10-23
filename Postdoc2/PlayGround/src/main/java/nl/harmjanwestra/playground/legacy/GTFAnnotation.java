@@ -57,7 +57,7 @@ public class GTFAnnotation extends Annotation {
 
 
                 if (lineObj.getType().equals("exon") || lineObj.getType().equals("start_codon") || lineObj.getType().equals("stop_codon") || lineObj.getType().equals("transcript")
-                        || lineObj.getType().equals("gene")) {
+                        || lineObj.getType().equals("gene") || lineObj.getType().equals("CDS") || lineObj.getType().equals("UTR")) {
                     Gene currentGene = null;
                     Transcript currentTranscript = null;
 

@@ -109,10 +109,14 @@ public class ReplaceIDs {
 
             input = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2019-12-18-BenteSNPs\\Alzheimer.txt";
             output = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2019-12-18-BenteSNPs\\Alzheimer-metabrainfreeze2ids.txt";
-            r.run(filelistfile, gtf, input, output, 0, -1);
+//            r.run(filelistfile, gtf, input, output, 0, -1);
 
             input = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2019-12-18-BenteSNPs\\Depression.txt";
             output = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2019-12-18-BenteSNPs\\Depression-metabrainfreeze2ids.txt";
+//            r.run(filelistfile, gtf, input, output, 0, -1);
+            
+            input = "D:\\TMP\\eqtlgen\\allSNPs.txt";
+            output = "D:\\TMP\\eqtlgen\\allSNPs-metabrain2dot1ids.txt";
             r.run(filelistfile, gtf, input, output, 0, -1);
 
         } catch (IOException e) {

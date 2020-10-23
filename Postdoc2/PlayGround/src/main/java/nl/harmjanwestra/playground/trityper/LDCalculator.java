@@ -10,11 +10,13 @@ import umcg.genetica.io.text.TextFile;
 import umcg.genetica.io.trityper.SNP;
 import umcg.genetica.io.trityper.SNPLoader;
 import umcg.genetica.io.trityper.TriTyperGenotypeData;
+import umcg.genetica.io.trityper.util.BaseAnnot;
 import umcg.genetica.io.trityper.util.DetermineLD;
 import umcg.genetica.text.Strings;
 
 import java.io.Console;
 import java.io.IOException;
+import java.text.NumberFormat;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.IntStream;
@@ -61,7 +63,8 @@ public class LDCalculator {
                         ldthreshold = Double.parseDouble(ldThreshStr);
                     }
                     String individualsubset = cmd.getOptionValue("i");
-                    ld.run(setfile1, setfile2, trityper, individualsubset, ldthreshold, output);
+                    boolean skipchr6 = cmd.hasOption("s6");
+                    ld.run(setfile1, setfile2, trityper, individualsubset, ldthreshold, output, skipchr6);
                 }
                 break;
                 case "traitprune": {
@@ -163,22 +166,24 @@ public class LDCalculator {
                             int prunedistance, double prunethreshold,
                             double ldthreshold, String outputfile, boolean skipchr6) throws IOException {
 
+        System.out.println("Skipping chr6: " + skipchr6);
         System.out.println("RSquared threshold: " + ldthreshold);
         System.out.println("Prune threshold: " + prunethreshold);
         System.out.println("Prune distance: " + prunedistance);
 
-        HashSet<String> gwasSet = loadSet(gwasset, skipchr6);
-        HashSet<String> eqtlSet = loadSet(eqtlset, skipchr6);
+        HashSet<String> gwasSet = loadSet(gwasset);
+        HashSet<String> eqtlSet = loadSet(eqtlset);
+
         System.out.println("gwasSet: " + gwasset + " has " + gwasSet.size() + " snps");
         System.out.println("eqtlSet: " + eqtlset + " has " + eqtlSet.size() + " snps");
 
         // load eQTL info
-        HashMap<String, ArrayList<Pair<String, String>>> eqtlsPerSNP = loadEQTLInfo(eqtlfile);
+        HashMap<String, ArrayList<eQTLResult>> eqtlsPerSNP = loadEQTLInfo(eqtlfile);
 
         // load GWAS info
-        Pair<HashMap<String, String>, HashMap<String, HashMap<String, Double>>> gwasinfo = loadGWASInfo(gwasAssocFile, gwasListFile);
+        Pair<HashMap<String, String>, HashMap<String, HashMap<String, GWASResult>>> gwasinfo = loadGWASInfo(gwasAssocFile, gwasListFile);
         HashMap<String, String> gwasIdToTrait = gwasinfo.getLeft();
-        HashMap<String, HashMap<String, Double>> gwasSNPs = gwasinfo.getRight();
+        HashMap<String, HashMap<String, GWASResult>> gwasSNPs = gwasinfo.getRight();
 
         System.out.println("Loading data from: " + trityperdir);
 
@@ -208,7 +213,7 @@ public class LDCalculator {
         }
 
 
-        HashMap<String, SNP> genotypes = loadSNPs(allSNPs, data);
+        HashMap<String, SNP> genotypes = loadSNPs(allSNPs, data, skipchr6);
         System.out.println(genotypes.size() + " snps found in total.");
 
         TextFile tfq = new TextFile(outputfile + "-eQTLSNPsPresent.txt", TextFile.W);
@@ -285,8 +290,9 @@ public class LDCalculator {
         outSum.writeln(header2);
 
         TextFile outPrune = new TextFile(outputfile + "-PrunedSNPsPerTrait.txt", TextFile.W);
-        String pruneheader = "GWASID\tTrait\tIndexVariant\tIndexVariantP\tnrEQTLSNPsLinked\tLinkedEQTLSNPs\tGWASClusterSize\tSNPsInGWASCluster";
+        String pruneheader = "GWASID\tTrait\tIndexVariant\tIndexVariantP\tIndexVariantAlleles\tIndexVariantEffect\tLinkedEQTLSNP\tLD(rsq)\tLinkedEQTLGenes\tLinkedEQTLHgncIDs\tLinkedEQTLAlleles\tLinkedEQTLZScores\tLinkedEQTLP\tGWASClusterSize\tSNPsInGWASCluster";
         outPrune.writeln(pruneheader);
+
 
         // count eQTL SNPs with genotypes
         int nrEQTLSNPs = 0;
@@ -303,7 +309,7 @@ public class LDCalculator {
         ProgressBar pb = new ProgressBar(allgwas.size(), "Calculating LD.");
         IntStream.range(0, allgwas.size()).forEach(g -> {
             String gwasID = allgwas.get(g);
-            HashMap<String, Double> gwasSNPsPValues = gwasSNPs.get(gwasID);
+            HashMap<String, GWASResult> gwasSNPsPValues = gwasSNPs.get(gwasID);
 
             // find gwasSNPsPValues that are within 1mb of each other
             ArrayList<String> allGWASSNPs = new ArrayList<>();
@@ -313,44 +319,56 @@ public class LDCalculator {
 
             // determine linked variants
             HashMap<String, HashSet<String>> allLinkedSNPs = new HashMap<>();
+            HashMap<String, HashMap<String, Double>> ldforGWASSNPs = new HashMap<>();
             IntStream.range(0, allGWASSNPs.size()).forEach(i -> {
                 DetermineLD ld = new DetermineLD();
-                String snp1Str = allGWASSNPs.get(i);
-                SNP snp1obj = genotypes.get(snp1Str);
+                String gwasSNPId = allGWASSNPs.get(i);
+                SNP gwasSNPObj = genotypes.get(gwasSNPId);
 
                 HashSet<String> linkedSNPs = new HashSet<>();
-                if (snp1obj != null) {
-                    byte chr = snp1obj.getChr();
-                    int pos = snp1obj.getChrPos();
-                    for (String snp2Str : eqtlSet) {
-                        SNP snp2obj = genotypes.get(snp2Str);
-                        if (snp2obj != null) {
-                            byte chr2 = snp2obj.getChr();
-                            int pos2 = snp2obj.getChrPos();
+                if (gwasSNPObj != null) {
+                    byte chr = gwasSNPObj.getChr();
+                    int pos = gwasSNPObj.getChrPos();
+                    for (String eqtlSNP : eqtlSet) {
+                        SNP eQTLSNPObj = genotypes.get(eqtlSNP);
+                        if (eQTLSNPObj != null) {
+                            byte chr2 = eQTLSNPObj.getChr();
+                            int pos2 = eQTLSNPObj.getChrPos();
                             if (chr == chr2 && Math.abs(pos - pos2) < 5000000) {
-                                Pair<Double, Double> ldvals = ld.getLD(snp1obj, snp2obj, data, 1, false);
+                                Pair<Double, Double> ldvals = ld.getLD(gwasSNPObj, eQTLSNPObj, data, 1, false);
                                 double rsq = ldvals.getRight();
                                 double dpr = ldvals.getLeft();
+
+                                synchronized (ldforGWASSNPs) {
+                                    HashMap<String, Double> ldsnps = ldforGWASSNPs.get(gwasSNPId);
+                                    if (ldsnps == null) {
+                                        ldsnps = new HashMap<>();
+                                    }
+                                    ldsnps.put(eqtlSNP, rsq);
+                                    ldforGWASSNPs.put(gwasSNPId, ldsnps);
+                                }
+
+
                                 if (rsq > ldthreshold) {
-                                    linkedSNPs.add(snp2Str);
-                                    ArrayList<Pair<String, String>> genedata = eqtlsPerSNP.get(snp2Str);
+                                    linkedSNPs.add(eqtlSNP);
+                                    ArrayList<eQTLResult> genedata = eqtlsPerSNP.get(eqtlSNP);
                                     ArrayList<String> genes = new ArrayList<>();
                                     ArrayList<String> hugos = new ArrayList<>();
                                     String ensg = "-";
                                     String hugo = "-";
                                     if (genedata != null) {
-                                        for (Pair<String, String> p : genedata) {
-                                            genes.add(p.getLeft());
-                                            hugos.add(p.getRight());
+                                        for (eQTLResult p : genedata) {
+                                            genes.add(p.gene);
+                                            hugos.add(p.hugo);
                                         }
                                         ensg = Strings.concat(genes, Strings.semicolon);
                                         hugo = Strings.concat(hugos, Strings.semicolon);
                                     }
 
                                     try {
-                                        outAll.writelnsynced(gwasID + "\t" + gwasIdToTrait.get(gwasID) + "\t" + gwasSNPsPValues.get(snp1obj.getName())
-                                                + "\t" + snp1obj.getName() + "\t" + snp1obj.getMAF() + "\t" + snp1obj.getHWEP()
-                                                + "\t" + snp2Str + "\t" + snp2obj.getMAF() + "\t" + snp2obj.getHWEP()
+                                        outAll.writelnsynced(gwasID + "\t" + gwasIdToTrait.get(gwasID) + "\t" + gwasSNPsPValues.get(gwasSNPObj.getName())
+                                                + "\t" + gwasSNPObj.getName() + "\t" + gwasSNPObj.getMAF() + "\t" + gwasSNPObj.getHWEP()
+                                                + "\t" + eqtlSNP + "\t" + eQTLSNPObj.getMAF() + "\t" + eQTLSNPObj.getHWEP()
                                                 + "\t" + rsq + "\t" + dpr
                                                 + "\t" + ensg + "\t" + hugo);
                                     } catch (IOException e) {
@@ -363,12 +381,12 @@ public class LDCalculator {
                     }
                 }
                 synchronized (allLinkedSNPs) {
-                    HashSet<String> linked = allLinkedSNPs.get(snp1Str);
+                    HashSet<String> linked = allLinkedSNPs.get(gwasSNPId);
                     if (linked == null) {
                         linked = new HashSet<>();
                     }
                     linked.addAll(linkedSNPs);
-                    allLinkedSNPs.put(snp1Str, linked);
+                    allLinkedSNPs.put(gwasSNPId, linked);
                 }
             });
 
@@ -378,99 +396,82 @@ public class LDCalculator {
             int nrGWASClustersLinked = 0;
             int nrGWASClusters = 0;
             HashSet<String> eqtlSNPsLinkedToGWASSNPClusters = new HashSet<String>();
+
             for (int s = 0; s < allGWASSNPs.size(); s++) {
-                String snp1 = allGWASSNPs.get(s);
-                SNP snp1obj = genotypes.get(snp1);
+                String gwasSNP1 = allGWASSNPs.get(s);
+                SNP gwasSNP1Obj = genotypes.get(gwasSNP1);
 
+                String indexVariant = gwasSNP1;
 
-                if (snp1obj != null && !visited.contains(snp1)) {
-//                    String[] elems = snp1.split(":");
-//                    String chr = elems[0];
-                    byte chr = snp1obj.getChr();
-                    Integer pos = snp1obj.getChrPos(); // Integer.parseInt(elems[1]);
+                if (gwasSNP1Obj != null && !visited.contains(gwasSNP1)) {
+                    byte chr = gwasSNP1Obj.getChr();
+                    Integer pos = gwasSNP1Obj.getChrPos(); // Integer.parseInt(elems[1]);
 
-                    // determine which gwasSNPsPValues are within 1mb of each other
-                    ArrayList<Pair<String, Double>> cluster = new ArrayList<>();
+                    // check whether there are any SNPs linked to the current one
+                    // determine which gwasSNPsPValues are within prunedistance of each other that are in LD
+                    // if so, gather all linked eQTLs
+                    ArrayList<Pair<String, Double>> gwasCluster = new ArrayList<>();
                     HashSet<String> eqtlSNPsLinkedToCluster = new HashSet<String>();
-
-                    Double p = gwasSNPsPValues.get(snp1);
-                    Pair<String, Double> pair = new Pair<String, Double>(snp1, p, Pair.SORTBY.RIGHT);
-                    cluster.add(pair);
-                    visited.add(snp1);
-
+                    GWASResult gwasResult = gwasSNPsPValues.get(gwasSNP1);
+                    Pair<String, Double> pair = new Pair<String, Double>(gwasSNP1, gwasResult.p, Pair.SORTBY.RIGHT);
+                    gwasCluster.add(pair);
+                    visited.add(gwasSNP1);
                     for (int s2 = s + 1; s2 < allGWASSNPs.size(); s2++) {
-                        String snp2 = allGWASSNPs.get(s2);
-                        SNP snp2obj = genotypes.get(snp2);
-                        if (snp2obj != null && !visited.contains(snp2)) {
-                            String[] elems2 = allGWASSNPs.get(s2).split(":");
-                            byte chr2 = snp2obj.getChr();
-                            Integer pos2 = snp2obj.getChrPos(); // Integer.parseInt(elems2[1]);
+                        String gwasSNP2 = allGWASSNPs.get(s2);
+                        SNP gwasSNP2Obj = genotypes.get(gwasSNP2);
+                        if (gwasSNP2Obj != null && !visited.contains(gwasSNP2)) {
+                            byte chr2 = gwasSNP2Obj.getChr();
+                            Integer pos2 = gwasSNP2Obj.getChrPos(); // Integer.parseInt(elems2[1]);
                             if (chr == chr2) {
                                 int distance = Math.abs(pos - pos2);
                                 if (distance < prunedistance) {
-                                    Double p2 = gwasSNPsPValues.get(snp2);
-                                    Pair<String, Double> pair2 = new Pair<String, Double>(snp2, p2, Pair.SORTBY.RIGHT);
-                                    cluster.add(pair2);
-                                    visited.add(snp2);
+                                    // determine LD
+                                    DetermineLD ld = new DetermineLD();
+                                    SNP snpjobj = genotypes.get(gwasSNP2);
+                                    Pair<Double, Double> ldvals = ld.getLD(gwasSNP1Obj, snpjobj, data, 1, false);
+                                    double rsq = ldvals.getRight();
+                                    if (rsq > prunethreshold) {
+                                        GWASResult gwasResult2 = gwasSNPsPValues.get(gwasSNP2);
+                                        Pair<String, Double> pair2 = new Pair<String, Double>(gwasSNP2, gwasResult2.p, Pair.SORTBY.RIGHT);
+                                        gwasCluster.add(pair2);
+                                        visited.add(gwasSNP2);
+
+                                        // get all linked eQTLs
+                                        HashSet<String> linked = allLinkedSNPs.get(gwasSNP2);
+                                        // add to 'gwasCluster' set
+                                        if (linked != null) {
+                                            eqtlSNPsLinkedToCluster.addAll(linked);
+                                        }
+                                    }
                                 }
                             }
                         }
                     }
 
-                    // prune cluster
+                    // prune gwasCluster
                     ArrayList<SNP> remainingSNPs = new ArrayList<>();
-                    if (cluster.size() == 1) {
-                        String snpi = cluster.get(0).getLeft();
+                    if (gwasCluster.size() == 1) {
+                        String snpi = gwasCluster.get(0).getLeft();
                         SNP snpiobj = genotypes.get(snpi);
                         remainingSNPs.add(snpiobj);
                         HashSet<String> linked = allLinkedSNPs.get(snpi);
                         if (linked != null) {
                             eqtlSNPsLinkedToCluster.addAll(linked);
                         }
-
-                    } else if (cluster.size() > 1) {
-                        // sort cluster on P
-                        Collections.sort(cluster);
-                        int min = Math.min(10, cluster.size());
+                    } else if (gwasCluster.size() > 1) {
+                        // sort gwasCluster on P
+                        Collections.sort(gwasCluster);
+                        int min = Math.min(5, gwasCluster.size());
                         for (int i = 0; i < min; i++) {
-                            System.out.println(cluster.get(i));
+                            System.out.println(gwasCluster.get(i));
                         }
-                        for (int i = 0; i < cluster.size(); i++) {
-                            System.out.println(cluster.get(i));
-                        }
-                        DetermineLD ld = new DetermineLD();
-                        HashSet<String> visitedPrune = new HashSet<>();
-                        for (int i = 0; i < cluster.size(); i++) {
-                            String snpi = cluster.get(i).getLeft();
-                            if (!visitedPrune.contains(snpi)) {
-                                visitedPrune.add(snpi);
-                                SNP snpiobj = genotypes.get(snpi);
-                                remainingSNPs.add(snpiobj);
-                                for (int j = i + 1; j < cluster.size(); j++) {
-                                    String snpj = cluster.get(j).getLeft();
-                                    if (!visitedPrune.contains(snpj)) {
-                                        // check LD
-                                        SNP snpjobj = genotypes.get(snpj);
-                                        Pair<Double, Double> ldvals = ld.getLD(snpiobj, snpjobj, data, 1, false);
-                                        double rsq = ldvals.getRight();
-//                                        System.out.println(snpi + "\t" + snpj + "\t" + rsq + "\t" + (rsq > prunethreshold));
-                                        if (rsq > prunethreshold) {
-                                            HashSet<String> linked = allLinkedSNPs.get(snpj);
-                                            if (linked != null) {
-                                                eqtlSNPsLinkedToCluster.addAll(linked);
-                                            }
-                                            visitedPrune.add(snpj); // don't consider this snp as an independent one
-                                        }
-                                    }
-                                }
-                            }
-
-                        }
-//                        System.out.println(cluster.size() + " SNPs in cluster " + clusterctr.get() + ", " + remainingSNPs.size() + " remain after pruning for trait: " + gwasID + "\t" + gwasIdToTrait.get(gwasID));
+                        System.out.println();
+                        indexVariant = gwasCluster.get(0).getLeft();
+//                        System.out.println(gwasCluster.size() + " SNPs in gwasCluster " + clusterctr.get() + ", " + remainingSNPs.size() + " remain after pruning for trait: " + gwasID + "\t" + gwasIdToTrait.get(gwasID));
 //                        waitForEnter("Check this out!");
                     }
 
-                    // eqtlSNPsLinkedToCluster has all linked SNPs for this cluster.
+                    // eqtlSNPsLinkedToCluster has all linked SNPs for this gwasCluster.
                     if (!eqtlSNPsLinkedToCluster.isEmpty()) {
                         nrGWASClustersLinked++;
                         eqtlSNPsLinkedToGWASSNPClusters.addAll(eqtlSNPsLinkedToCluster);
@@ -478,9 +479,9 @@ public class LDCalculator {
                     nrGWASClusters++;
 
                     String clusterStr = "";
-                    for (Pair<String, Double> clusterpair : cluster) {
+                    for (Pair<String, Double> clusterpair : gwasCluster) {
                         String snp = clusterpair.getLeft();
-                        if (!snp.equals(snp1)) {
+                        if (!snp.equals(gwasSNP1)) {
                             if (clusterStr.length() == 0) {
                                 clusterStr += snp;
                             } else {
@@ -488,43 +489,63 @@ public class LDCalculator {
                             }
                         }
                     }
-                    String linkedEQTLstr = "";
-                    ArrayList<String> hugos = new ArrayList<>();
-                    ArrayList<String> ensgs = new ArrayList<>();
+
+
                     for (String eqtl : eqtlSNPsLinkedToCluster) {
-                        ArrayList<Pair<String, String>> eqtlinfo = eqtlsPerSNP.get(eqtl);
+                        ArrayList<eQTLResult> eqtlinfo = eqtlsPerSNP.get(eqtl);
                         if (eqtlinfo != null) {
-                            for (Pair<String, String> pinfo : eqtlinfo) {
-                                hugos.add(pinfo.getRight());
-                                ensgs.add(pinfo.getLeft());
-                                if (linkedEQTLstr.length() == 0) {
-                                    linkedEQTLstr += eqtl + "_" + pinfo.getLeft() + "_" + pinfo.getRight();
+                            for (eQTLResult r : eqtlinfo) {
+                                // write index variant, clustered SNPs, and linked eQTL SNPs
+                                // get list of genes as well?
+                                // 	GWASID	Trait	IndexVariant	IndexVariantP	IndexVariantAlleles	IndexVariantEffect	nrEQTLSNPsLinked
+                                // 	LinkedEQTLSNPs	LinkedEQTLGenes	LinkedEQTLHgncIDs	LinkedEQTLAlleles	LinkedEQTLZScores	GWASClusterSize	SNPsInGWASCluster
+                                HashMap<String, Double> ldsnps = ldforGWASSNPs.get(indexVariant);
+                                double rsq = ldsnps.get(r.snp);
+
+                                // check direction?
+
+                                String[] allelesGWAS = gwasSNPsPValues.get(gwasSNP1).alleles.split("/");
+                                String assessedGWAS = "";
+                                String gwasAlleleStr = gwasSNPsPValues.get(gwasSNP1).alleles;
+                                direction dir = direction.UNKNOWN;
+                                if (allelesGWAS.length > 1) {
+                                    assessedGWAS = allelesGWAS[1];
+                                    Boolean alleleflip = BaseAnnot.flipalleles(gwasSNPsPValues.get(gwasSNP1).alleles, assessedGWAS, r.alleles, r.assessed);
+                                    if (alleleflip != null) {
+                                        try {
+                                            double beta = Double.parseDouble(gwasSNPsPValues.get(gwasSNP1).beta);
+                                            double z = Double.parseDouble(r.z);
+                                            if (alleleflip) {
+                                                z *= -1;
+                                            }
+                                            if ((beta >= 0 && z >= 0) || (beta < 0 && z <= 0)) {
+                                                dir = direction.SAME;
+                                            } else {
+                                                dir = direction.OPPOSITE;
+                                            }
+                                        } catch (NumberFormatException e) {
+
+                                        }
+                                    }
                                 } else {
-                                    linkedEQTLstr += ";" + eqtl + "_" + pinfo.getLeft() + "_" + pinfo.getRight();
+
+                                }
+
+                                String outln = gwasID + "\t" + gwasIdToTrait.get(gwasID)
+                                        + "\t" + indexVariant + "\t" + gwasSNPsPValues.get(gwasSNP1).p + "\t" + gwasAlleleStr + "\t" + gwasSNPsPValues.get(gwasSNP1).beta
+                                        + "\t" + r.snp + "\t" + rsq + "\t" + r.gene + "\t" + r.hugo + "\t" + r.alleles + "\t" + r.assessed + "\t" + r.z + "\t" + r.p
+                                        + "\t" + gwasCluster.size() + "\t" + clusterStr;
+                                try {
+                                    outPrune.writelnsynced(outln);
+                                } catch (IOException e) {
+                                    e.printStackTrace();
                                 }
                             }
-                        } else {
-                            if (linkedEQTLstr.length() == 0) {
-                                linkedEQTLstr += eqtl;
-                            } else {
-                                linkedEQTLstr += ";" + eqtl;
-                            }
+
                         }
                     }
 
 
-                    // write index variant, clustered SNPs, and linked eQTL SNPs
-                    // get list of genes as well?
-
-                    String outln = gwasID + "\t" + gwasIdToTrait.get(gwasID)
-                            + "\t" + snp1 + "\t" + gwasSNPsPValues.get(snp1)
-                            + "\t" + eqtlSNPsLinkedToCluster.size() + "\t" + linkedEQTLstr
-                            + "\t" + cluster.size() + "\t" + clusterStr;
-                    try {
-                        outPrune.writelnsynced(outln);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
                 } // end: if snpobj!=null and notvisited(snp)
             } // end loop: iterate GWAS SNPs
 
@@ -557,21 +578,50 @@ public class LDCalculator {
 
     }
 
-    private HashMap<String, ArrayList<Pair<String, String>>> loadEQTLInfo(String eqtlfile) throws IOException {
+    enum direction {
+        SAME,
+        OPPOSITE,
+        UNKNOWN
+    }
+
+    class eQTLResult {
+        String p;
+        String snp;
+        String gene;
+        String hugo;
+        String z;
+        String alleles;
+        String assessed;
+
+    }
+
+    private HashMap<String, ArrayList<eQTLResult>> loadEQTLInfo(String eqtlfile) throws IOException {
         TextFile tf = new TextFile(eqtlfile, TextFile.R);
-        HashMap<String, ArrayList<Pair<String, String>>> output = new HashMap<>();
+        HashMap<String, ArrayList<eQTLResult>> output = new HashMap<>();
         tf.readLine();
         String[] elems = tf.readLineElems(TextFile.tab);
         while (elems != null) {
+
             String snp = elems[1];
             String gene = elems[4];
+            String z = elems[10];
+            String alleles = elems[8];
+            String assessed = elems[9];
             String hugo = elems[16];
-            Pair<String, String> p = new Pair<String, String>(gene, hugo);
-            ArrayList<Pair<String, String>> pairs = output.get(snp);
+
+            eQTLResult r = new eQTLResult();
+            r.p = elems[0];
+            r.alleles = alleles;
+            r.assessed = assessed;
+            r.z = z;
+            r.snp = snp;
+            r.gene = gene;
+            r.hugo = hugo;
+            ArrayList<eQTLResult> pairs = output.get(snp);
             if (pairs == null) {
                 pairs = new ArrayList<>();
             }
-            pairs.add(p);
+            pairs.add(r);
             output.put(snp, pairs);
             elems = tf.readLineElems(TextFile.tab);
         }
@@ -589,15 +639,15 @@ public class LDCalculator {
         System.out.println("Prune threshold: " + prunethreshold);
         System.out.println("Prune distance: " + prunedistance);
 
-        HashSet<String> gwasSet = loadSet(gwasset, skipchr6);
-        HashSet<String> eqtlSet = loadSet(eqtlset, skipchr6);
+        HashSet<String> gwasSet = loadSet(gwasset);
+        HashSet<String> eqtlSet = loadSet(eqtlset);
         System.out.println("gwasSet: " + gwasset + " has " + gwasSet.size() + " snps");
         System.out.println("eqtlSet: " + eqtlset + " has " + eqtlSet.size() + " snps");
 
         // load GWAS info
-        Pair<HashMap<String, String>, HashMap<String, HashMap<String, Double>>> gwasinfo = loadGWASInfo(gwasAssocFile, gwasListFile);
+        Pair<HashMap<String, String>, HashMap<String, HashMap<String, GWASResult>>> gwasinfo = loadGWASInfo(gwasAssocFile, gwasListFile);
         HashMap<String, String> gwasIdToTrait = gwasinfo.getLeft();
-        HashMap<String, HashMap<String, Double>> gwasSNPs = gwasinfo.getRight();
+        HashMap<String, HashMap<String, GWASResult>> gwasSNPs = gwasinfo.getRight();
 
         System.out.println("Loading data from: " + trityperdir);
 
@@ -626,7 +676,7 @@ public class LDCalculator {
             data.setIsIncluded(include);
         }
 
-        HashMap<String, SNP> genotypes = loadSNPs(allSNPs, data);
+        HashMap<String, SNP> genotypes = loadSNPs(allSNPs, data, skipchr6);
         System.out.println(genotypes.size() + " snps found in total.");
 
         // for each GWAS, determine loaded SNPs, and their associated p-values
@@ -659,7 +709,7 @@ public class LDCalculator {
         ProgressBar pb = new ProgressBar(allgwas.size(), "Calculating LD.");
         IntStream.range(0, allgwas.size()).forEach(g -> {
             String gwasID = allgwas.get(g);
-            HashMap<String, Double> snps = gwasSNPs.get(gwasID);
+            HashMap<String, GWASResult> snps = gwasSNPs.get(gwasID);
 
             // find snps that are within 1mb of each other
             ArrayList<String> allGWASSNPs = new ArrayList<>();
@@ -682,8 +732,8 @@ public class LDCalculator {
 
                     // determine which snps are within 1mb of each other
                     ArrayList<Pair<String, Double>> cluster = new ArrayList<>();
-                    Double p = snps.get(snp1);
-                    Pair<String, Double> pair = new Pair<String, Double>(snp1, p, Pair.SORTBY.RIGHT);
+                    GWASResult gwasResult = snps.get(snp1);
+                    Pair<String, Double> pair = new Pair<String, Double>(snp1, gwasResult.p, Pair.SORTBY.RIGHT);
                     cluster.add(pair);
                     visited.add(snp1);
                     for (int s2 = s + 1; s2 < allGWASSNPs.size(); s2++) {
@@ -696,8 +746,8 @@ public class LDCalculator {
                             if (chr == chr2) {
                                 int distance = Math.abs(pos - pos2);
                                 if (distance < prunedistance) {
-                                    Double p2 = snps.get(snp2);
-                                    Pair<String, Double> pair2 = new Pair<String, Double>(snp2, p2, Pair.SORTBY.RIGHT);
+                                    GWASResult gwasResult2 = snps.get(snp2);
+                                    Pair<String, Double> pair2 = new Pair<String, Double>(snp2, gwasResult2.p, Pair.SORTBY.RIGHT);
                                     cluster.add(pair2);
                                     visited.add(snp2);
                                 }
@@ -845,8 +895,15 @@ public class LDCalculator {
 
     }
 
+    class GWASResult {
+        double p;
+        String snp;
+        String alleles;
+        String beta;
+        String se;
+    }
 
-    private Pair<HashMap<String, String>, HashMap<String, HashMap<String, Double>>> loadGWASInfo(String gwasAssocFile, String gwasListFile) throws IOException {
+    private Pair<HashMap<String, String>, HashMap<String, HashMap<String, GWASResult>>> loadGWASInfo(String gwasAssocFile, String gwasListFile) throws IOException {
         System.out.println("Loading GWAS list: " + gwasListFile);
         TextFile tf = new TextFile(gwasListFile, TextFile.R);
         tf.readLine();
@@ -860,19 +917,26 @@ public class LDCalculator {
         }
         tf.close();
 
+
         System.out.println("Loading GWAS assoc: " + gwasAssocFile);
         tf = new TextFile(gwasAssocFile, TextFile.R);
         tf.readLine();
 
-        HashMap<String, HashMap<String, Double>> gwassnps = new HashMap<>();
+        HashMap<String, HashMap<String, GWASResult>> gwassnps = new HashMap<>();
 
         elems = tf.readLineElems(TextFile.tab);
         while (elems != null) {
+            // ID      RsID    OtherAllele     EffectAllele    EffectAlleleFreq        Beta    SE      Pvalue
             String id = elems[0];
-            HashMap<String, Double> snps = gwassnps.get(id);
+            HashMap<String, GWASResult> snps = gwassnps.get(id);
             if (snps == null) {
                 snps = new HashMap<>();
             }
+
+
+            String allele = elems[2] + "/" + elems[3];
+            String beta = elems[5];
+            String se = elems[6];
 
             String snp = elems[1];
             double p = 1;
@@ -881,7 +945,15 @@ public class LDCalculator {
             } catch (NumberFormatException e) {
 
             }
-            snps.put(snp, p);
+
+            GWASResult r = new GWASResult();
+            r.alleles = allele;
+            r.beta = beta;
+            r.se = se;
+            r.snp = snp;
+            r.p = p;
+
+            snps.put(snp, r);
             gwassnps.put(id, snps);
             elems = tf.readLineElems(TextFile.tab);
         }
@@ -889,7 +961,7 @@ public class LDCalculator {
         return new Pair<>(idToTrait, gwassnps);
     }
 
-    public void run(String set1file, String set2file, String trityperdir, String individualSubset, double threshold, String outputfile) throws IOException {
+    public void run(String set1file, String set2file, String trityperdir, String individualSubset, double threshold, String outputfile, boolean skipchr6) throws IOException {
 
         System.out.println("RSquared threshold: " + threshold);
         HashSet<String> set1 = loadSet(set1file);
@@ -930,7 +1002,7 @@ public class LDCalculator {
             data.setIsIncluded(include);
         }
 
-        HashMap<String, SNP> snps = loadSNPs(allSNPs, data);
+        HashMap<String, SNP> snps = loadSNPs(allSNPs, data, skipchr6);
         System.out.println(snps.size() + " snps found in total.");
 
 
@@ -1011,7 +1083,7 @@ public class LDCalculator {
 
     }
 
-    private HashMap<String, SNP> loadSNPs(ArrayList<String> allSNPs, TriTyperGenotypeData data) throws IOException {
+    private HashMap<String, SNP> loadSNPs(ArrayList<String> allSNPs, TriTyperGenotypeData data, boolean skipchr6) throws IOException {
 
 
         // sort SNPs according to dataset
@@ -1038,13 +1110,14 @@ public class LDCalculator {
         for (Pair<String, Integer> snppair : ids) {
             Integer id1 = snppair.getRight();
             if (id1 >= 0) {
-
                 SNP snpobj1 = data.getSNPObject(id1);
-                loader.loadGenotypes(snpobj1);
-                if (loader.hasDosageInformation()) {
-                    loader.loadDosage(snpobj1);
+                if (!skipchr6 || snpobj1.getChr() != 6) {
+                    loader.loadGenotypes(snpobj1);
+                    if (loader.hasDosageInformation()) {
+                        loader.loadDosage(snpobj1);
+                    }
+                    output.put(snppair.getLeft(), snpobj1);
                 }
-                output.put(snppair.getLeft(), snpobj1);
             }
             ctr++;
             pb.iterate();
@@ -1069,22 +1142,15 @@ public class LDCalculator {
         tf2.close();
     }
 
-    private HashSet<String> loadSet(String set1file) throws IOException {
-        return loadSet(set1file, false);
-    }
 
-    private HashSet<String> loadSet(String set1file, boolean skipchr6) throws IOException {
+    private HashSet<String> loadSet(String set1file) throws IOException {
         TextFile tf = new TextFile(set1file, TextFile.R);
         String ln = tf.readLine();
         HashSet<String> set = new HashSet<>();
         while (ln != null) {
-            if (skipchr6) {
-                if (!(ln.startsWith("6:") || ln.startsWith("chr6"))) {
-                    set.add(ln);
-                }
-            } else {
-                set.add(ln);
-            }
+
+            set.add(ln);
+
 
             ln = tf.readLine();
         }
