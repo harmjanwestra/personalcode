@@ -1083,7 +1083,7 @@ public class LDCalculator {
 
     }
 
-    private HashMap<String, SNP> loadSNPs(ArrayList<String> allSNPs, TriTyperGenotypeData data, boolean skipchr6) throws IOException {
+    public HashMap<String, SNP> loadSNPs(ArrayList<String> allSNPs, TriTyperGenotypeData data, boolean skipchr6) throws IOException {
 
 
         // sort SNPs according to dataset
@@ -1143,7 +1143,7 @@ public class LDCalculator {
     }
 
 
-    private HashSet<String> loadSet(String set1file) throws IOException {
+    public HashSet<String> loadSet(String set1file) throws IOException {
         TextFile tf = new TextFile(set1file, TextFile.R);
         String ln = tf.readLine();
         HashSet<String> set = new HashSet<>();

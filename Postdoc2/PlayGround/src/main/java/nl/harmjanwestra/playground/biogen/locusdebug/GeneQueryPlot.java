@@ -74,10 +74,9 @@ public class GeneQueryPlot {
 
             inputmetabrain = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-18-eqtls\\MAPT\\2020-02-19-MAPT-sample.txt";
             output = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-18-eqtls\\MAPT\\2020-02-19-MAPT-sample.png";
-            output = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-18-eqtls\\MAPT\\2020-02-19-MAPT-sample-withmissing.png";
-
-//            p.plotIndividualDatasetsEQTLGenFormat(inputmetabrain, output, zscores, true, true, 100);
-
+            output = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-18-eqtls\\MAPT\\2020-02-19-MAPT-sample.pdf";
+            p.plotIndividualDatasetsEQTLGenFormat(inputmetabrain, output, zscores, false, true, 100);
+            System.exit(0);
 //            inputmetabrain = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-09-24-GeneQueries\\MAPT\\MAPT-metabrain-Cis-Cortex-EUR.txt";
             inputmetabrain = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2019-04-Freeze2\\2019-09-24-PatchSequenceIssue\\MAPT\\MAPT-metabrain-Cis-Cortex-EUR.txt";
             output = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-02-18-eqtls\\MAPT\\2019-09-24MAPT-metabrain-Cis-Cortex-EUR-z.png";
@@ -378,11 +377,12 @@ public class GeneQueryPlot {
                 Pair<Double, Double> pair = new Pair<Double, Double>(dataset.x.get(i), dataset.y.get(i), Pair.SORTBY.RIGHT);
                 fx.add(pair);
             }
-            Collections.sort(fx);
+            Collections.sort(fx, Collections.reverseOrder());
             for (int i = 0; i < nrOfTopFXToSelect; i++) {
                 topfx.add(fx.get(i).getLeft());
             }
         }
+
 
         ScatterplotPanel p = new ScatterplotPanel(1, 1);
         if (colorTopAssocDifferently) {

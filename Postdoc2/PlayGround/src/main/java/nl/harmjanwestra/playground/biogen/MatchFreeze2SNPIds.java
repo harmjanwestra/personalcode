@@ -42,8 +42,11 @@ public class MatchFreeze2SNPIds {
 //            s.rewriteFile(in, out, filelistfile, gtf, new int[]{0}, new int[]{4}, true);
             in = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-05-22-MostafaviInteractionQTL\\SupTable4.txt";
             out = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-05-22-MostafaviInteractionQTL\\SupTable4-MetabrainFreeze2dot1IDs.txt";
-            s.rewriteFile(in, out, filelistfile, gtf, new int[]{0}, new int[]{4, 5}, true);
+//            s.rewriteFile(in, out, filelistfile, gtf, new int[]{0}, new int[]{4, 5}, true);
 
+            in = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-08-Downstreamer\\MS-transZscores\\mrSNPs.txt";
+            out = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2020-08-Downstreamer\\MS-transZscores\\mrSNPs-MetabrainFreeze2dot1IDs.txt";
+            s.rewriteFile(in, out, filelistfile, gtf, new int[]{0}, null, false);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -127,20 +130,26 @@ public class MatchFreeze2SNPIds {
         }
         elems = tf.readLineElems(TextFile.tab);
         while (elems != null) {
-            for (int snpcol : snpcols) {
-                String snp = elems[snpcol];
-                String snprepl = rsToId.get(snp);
-                elems[snpcol] = snprepl;
-            }
-            for (int genecol : genecols) {
-                String gene = elems[genecol];
-                String generepl = hgncToGene.get(gene);
-                if (gene.startsWith("ENSG")) {
-                    gene = gene.split("\\.")[0];
-                    generepl = ensgToGene.get(gene);
+            if (snpcols != null) {
+                for (int snpcol : snpcols) {
+                    String snp = elems[snpcol];
+                    String snprepl = rsToId.get(snp);
+                    if (snprepl != null) {
+                        elems[snpcol] = snprepl;
+                    }
                 }
+            }
+            if (genecols != null) {
+                for (int genecol : genecols) {
+                    String gene = elems[genecol];
+                    String generepl = hgncToGene.get(gene);
+                    if (gene.startsWith("ENSG")) {
+                        gene = gene.split("\\.")[0];
+                        generepl = ensgToGene.get(gene);
+                    }
 
-                elems[genecol] = generepl;
+                    elems[genecol] = generepl;
+                }
             }
             tfo.writeln(Strings.concat(elems, Strings.tab));
 
