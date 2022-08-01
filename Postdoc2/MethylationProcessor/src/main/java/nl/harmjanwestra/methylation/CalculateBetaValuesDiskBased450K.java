@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
 
-public class CalculateMValuesDiskBased450K {
+public class CalculateBetaValuesDiskBased450K {
 
 
     public void run(String inU, String inM, String out) {
@@ -51,20 +51,20 @@ public class CalculateMValuesDiskBased450K {
             }
 
             int rowctr = 0;
-            double[] mvals = new double[itU.getNrCols()];
+            double[] bvals = new double[itU.getNrCols()];
             DoubleMatrixDatasetAppendableWriter writer = new DoubleMatrixDatasetAppendableWriter(uColList, out);
-            ProgressBar pb = new ProgressBar(itU.getNrRows(), "Calculating M-values.");
+            ProgressBar pb = new ProgressBar(itU.getNrRows(), "Calculating Beta-values.");
             for (double[] sampleU : itU) {
                 String sample = uSamples.get(rowctr);
 
                 Integer sampleMid = readerM.getHashRows().get(sample);
                 // System.out.println(sample + "\tU: " + rowctr + "\tM: " + sampleMid);
                 double[] sampleM = readerM.getRow(sampleMid);
-                for (int d = 0; d < mvals.length; d++) {
-                    double mval = Math.log((Math.max(sampleM[probeMap[d]], 0) + 1) / (Math.max(sampleU[d], 0) + 1));
-                    mvals[d] = mval;
+                for (int d = 0; d < bvals.length; d++) {
+                    double bval = (Math.max(sampleM[probeMap[d]], 0) + 100) / ((Math.max(sampleM[probeMap[d]], 0) + 100) + Math.max(sampleU[d], 0) + 100);
+                    bvals[d] = bval;
                 }
-                writer.append(mvals, sample);
+                writer.append(bvals, sample);
                 rowctr++;
                 pb.set(rowctr);
             }

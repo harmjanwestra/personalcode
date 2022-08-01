@@ -6,6 +6,7 @@ import nl.harmjanwestra.playground.legacy.bedfile.BedFileReader;
 import nl.harmjanwestra.playground.legacy.vcf.*;
 import nl.harmjanwestra.playground.legacy.vcf.filter.variantfilters.VCFVariantFilters;
 import nl.harmjanwestra.playground.legacy.vcf.filter.variantfilters.VCFVariantSetFilter;
+
 import org.broad.tribble.readers.TabixReader;
 import umcg.genetica.console.ProgressBar;
 import umcg.genetica.containers.Pair;

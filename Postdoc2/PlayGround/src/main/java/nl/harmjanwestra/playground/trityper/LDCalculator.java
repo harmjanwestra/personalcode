@@ -366,7 +366,7 @@ public class LDCalculator {
                                     }
 
                                     try {
-                                        outAll.writelnsynced(gwasID + "\t" + gwasIdToTrait.get(gwasID) + "\t" + gwasSNPsPValues.get(gwasSNPObj.getName())
+                                        outAll.writelnsynced(gwasID + "\t" + gwasIdToTrait.get(gwasID) + "\t" + gwasSNPsPValues.get(gwasSNPObj.getName()).p
                                                 + "\t" + gwasSNPObj.getName() + "\t" + gwasSNPObj.getMAF() + "\t" + gwasSNPObj.getHWEP()
                                                 + "\t" + eqtlSNP + "\t" + eQTLSNPObj.getMAF() + "\t" + eQTLSNPObj.getHWEP()
                                                 + "\t" + rsq + "\t" + dpr

@@ -10,6 +10,7 @@ import umcg.genetica.text.Strings;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 
 /**
  * Created by hwestra on 10/6/16.
@@ -75,8 +76,8 @@ public class VCFTabix {
 
 //		System.out.println("Query: " + region.getChromosome().getNumber() + ":" + start + "-" + stop + "\t" + treader.getSource());
         String queryStr = region.getChromosome().getNumber() + ":" + start + "-" + stop;
+        System.out.println(queryStr);
         try {
-
             TabixReader.Iterator window = treader.query(queryStr);
             return window;
         } catch (ArrayIndexOutOfBoundsException e) {
@@ -88,6 +89,45 @@ public class VCFTabix {
 
     public void close() {
         treader.close();
+    }
+
+    class VCFVariantIterator implements Iterator<VCFVariant> {
+
+        private final boolean[] samplefilter;
+        TabixReader.Iterator it;
+        boolean hasnext = true;
+
+        public VCFVariantIterator(TabixReader.Iterator it, boolean[] samplefilter) {
+            this.it = it;
+            this.samplefilter = samplefilter;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return hasnext;
+        }
+
+        @Override
+        public VCFVariant next() {
+            try {
+
+                String next = it.next();
+                if (next == null) {
+                    hasnext = false;
+                    return null;
+                } else {
+                    return new VCFVariant(next, VCFVariant.PARSE.ALL, samplefilter);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+    }
+
+    public Iterator<VCFVariant> getVariants(Feature f, boolean[] samplefilter) throws IOException {
+        TabixReader.Iterator iterator = query(f);
+        return new VCFVariantIterator(iterator, samplefilter);
     }
 
     public ArrayList<VCFVariant> getAllVariants(Feature f, boolean[] samplefilter) throws IOException {

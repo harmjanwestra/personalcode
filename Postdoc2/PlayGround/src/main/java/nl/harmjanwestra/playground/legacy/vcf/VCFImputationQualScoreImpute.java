@@ -70,7 +70,6 @@ public class VCFImputationQualScoreImpute {
 		fallBackDist[1] = 2 * theta_mle * (1 - theta_mle);
 		fallBackDist[2] = theta_mle * theta_mle;
 
-
 		info = 1 - compExpVar(probs, fallBackDist) / (2 * theta_mle * (1 - theta_mle));
 		impinfo = 1 - compExpVar(probs, imputeFallBackDist) / (2 * theta_mle * (1 - theta_mle));
 

@@ -1,14 +1,14 @@
 package nl.harmjanwestra.playground.biogen.freeze2dot1.convergence;
 
-import org.graphstream.graph.*;
-import org.graphstream.graph.implementations.*;
-import org.graphstream.stream.file.FileSink;
-import org.graphstream.stream.file.FileSinkFactory;
-import org.graphstream.stream.file.FileSinkSVG2;
-import org.graphstream.ui.layout.Layout;
-import org.graphstream.ui.layout.Layouts;
-import org.graphstream.ui.layout.springbox.implementations.SpringBox;
-import org.graphstream.ui.view.Viewer;
+//import org.graphstream.graph.*;
+//import org.graphstream.graph.implementations.*;
+//import org.graphstream.stream.file.FileSink;
+//import org.graphstream.stream.file.FileSinkFactory;
+//import org.graphstream.stream.file.FileSinkSVG2;
+//import org.graphstream.ui.layout.Layout;
+//import org.graphstream.ui.layout.Layouts;
+//import org.graphstream.ui.layout.springbox.implementations.SpringBox;
+//import org.graphstream.ui.view.Viewer;
 import umcg.genetica.io.text.TextFile;
 import umcg.genetica.text.Strings;
 

@@ -45,6 +45,12 @@ public class RewriteRSids {
 			topassocfile = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-04-28-ALSGWASAndMSGWAS\\2020-08-18-2020-05-03-topHitsUniqueRSids-wgwascatalog-wALS-wMS-wAlzheimer-wPD-wBPD-wFTD-wMetaBrain.txt.gz";
 			topassocfileo = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-04-28-ALSGWASAndMSGWAS\\2020-08-18-2020-05-03-topHitsUniqueRSids-wgwascatalog-wALS-wMS-wAlzheimer-wPD-wBPD-wFTD-wMetaBrain-MetaBrain2dot1IDs.txt.gz";
 
+			// 2021-11-15 update
+			allassocfile = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2021-06-04-Rebuttal\\2021-11-15-GWASUpdateForTransFX\\2021-11-15-2021-11-15-allTopAssociations-wgwascatalog-wALS-wMetaBrain.txt.gz";
+			allassocfileo = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2021-06-04-Rebuttal\\2021-11-15-GWASUpdateForTransFX\\2021-11-15-2021-11-15-allTopAssociations-wgwascatalog-wALS-wMetaBrain-MetaBrain2dot1IDs.txt.gz";
+			topassocfile = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2021-06-04-Rebuttal\\2021-11-15-GWASUpdateForTransFX\\2021-11-15-2021-11-15-topHitsUniqueRSids-wgwascatalog-wALS-wMetaBrain.txt.gz";
+			topassocfileo = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2021-06-04-Rebuttal\\2021-11-15-GWASUpdateForTransFX\\2021-11-15-2021-11-15-topHitsUniqueRSids-wgwascatalog-wALS-wMetaBrain-MetaBrain2dot1IDs.txt.gz";
+
 			r.rewrite(refrs, allassocfile, allassocfileo, 1);
 			r.rewrite(refrs, topassocfile, topassocfileo, 0);
 //            r.rewrite(refrs, assoc, assoco, 0);

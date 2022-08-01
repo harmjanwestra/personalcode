@@ -20,11 +20,25 @@ public class MRViz {
             boolean makeEQTLPositive = true;
             mrfile = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2021-01-27-MRViz\\AllMRData-DiseaseRisk.txt";
             output = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2021-01-27-MRViz\\AllMRData-OR.pdf";
-            MRViz.runOR(mrfile, output, true, makeEQTLPositive);
+//            MRViz.runOR(mrfile, output, true, makeEQTLPositive);
 //
             mrfile = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2021-01-27-MRViz\\AllMRData-Quantitative.txt";
             output = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\2021-01-27-MRViz\\AllMRData-Beta.pdf";
+//            MRViz.runOR(mrfile, output, false, makeEQTLPositive);
+
+
+//            mrfile = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2021-06-04-Rebuttal\\2022-05-MRViz\\table1-ms.txt";
+//            output = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2021-06-04-Rebuttal\\2022-05-MRViz\\table1-ms.pdf";
+//            MRViz.runOR(mrfile, output, true, makeEQTLPositive);
+
+            mrfile = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2021-06-04-Rebuttal\\2022-05-MRViz\\suptable12-all-or.txt";
+            output = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2021-06-04-Rebuttal\\2022-05-MRViz\\suptable12-all-or.pdf";
+            MRViz.runOR(mrfile, output, true, makeEQTLPositive);
+
+            mrfile = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2021-06-04-Rebuttal\\2022-05-MRViz\\suptable12-all-quant.txt";
+            output = "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2021-06-04-Rebuttal\\2022-05-MRViz\\suptable12-all-quant.pdf";
             MRViz.runOR(mrfile, output, false, makeEQTLPositive);
+
         } catch (IOException e) {
             e.printStackTrace();
         } catch (DocumentException e) {
@@ -105,31 +119,38 @@ public class MRViz {
 
         // chrom	pos	SNP	EA	NONEA	proxy_SNP	gene	beta_exposure	se_exposure	p_exposure	outcome	beta_outcome	se_outcome	p_outcome	WR	se	p
         // id	chrom	pos	SNP	EA	NONEA	proxy_used	proxy_SNP	ENSG	gene	beta_exposure	se_exposure	p_exposure	outcome	MRBase_id	beta_outcome	se_outcome	p_outcome	WR	se	p	pass bonferroni correction	default.coloc.PP4	nsnps.coloc.PP4	coloc.relaxed	coloc.strict	Astrocyte_Beta	EndothelialCell_Beta	Macrophage_Beta	Neuron_Beta	Oligodendrocyte_Beta	Astrocyte_FDR	EndothelialCell_FDR	Macrophage_FDR	Neuron_FDR	Oligodendrocyte_FDR	deconQTLFlip	n-signif.	DDG2P (accessed: 20-12-16)	DDG2P - mutation consequence	OrphaNet
+
+        // SNP	Gene	Beta Exposure	SE Exposure	Outcome	Beta Outcome	SE Outcome	WaldRatio	WaldRatio SE	COLOC PP4 Corrected for number of SNPs
+        // ID	Chromosome	Position	SNP	Effect Allele	Non Effect Allele	Proxy Used	Proxy SNP	Ensembl Gene ID	Gene	Beta Exposure	SE Exposure	P Exposure	Outcome	MRBase ID
+        // Beta Outcome	SE Outcome	P Outcome	WaldRatio	WaldRatio SE	WaldRatio P	Passes Bonferroni correction	Default Coloc PP4
+        // COLOC PP4 Corrected for number of SNPs	Coloc Relaxed	Coloc Strict
+        //
+        // Ensembl Gene ID	Gene	Beta Exposure	SE Exposure	P Exposure	Outcome	MRBase ID	Beta Outcome	SE Outcome	P Outcome	WaldRatio	WaldRatio SE	WaldRatio P	Passes Bonferroni correction	Default Coloc PP4	COLOC PP4 Corrected for number of SNPs	Coloc Relaxed	Coloc Strict
         for (int i = 0; i < header.length; i++) {
             String q = header[i];
             if (q.equals("SNP")) {
                 snpcol = i;
-            } else if (q.equals("EA")) {
+            } else if (q.equals("EA") || q.equals("Effect Allele")) {
                 eacol = i;
-            } else if (q.equals("NONEA")) {
+            } else if (q.equals("NONEA") || q.equals("Non Effect Allele")) {
                 noneacol = i;
-            } else if (q.equals("gene")) {
+            } else if (q.equals("gene") || q.equals("Gene")) {
                 genecol = i;
-            } else if (q.equals("beta_exposure")) {
+            } else if (q.equals("beta_exposure") || q.equals("Beta Exposure")) {
                 betaExpCol = i;
-            } else if (q.equals("se_exposure")) {
+            } else if (q.equals("se_exposure") || q.equals("SE Exposure")) {
                 seExpCol = i;
-            } else if (q.equals("outcome")) {
+            } else if (q.equals("outcome") || q.equals("Outcome")) {
                 outcomeCol = i;
-            } else if (q.equals("beta_outcome")) {
+            } else if (q.equals("beta_outcome") || q.equals("Beta Outcome")) {
                 betaOutCol = i;
-            } else if (q.equals("se_outcome")) {
+            } else if (q.equals("se_outcome") || q.equals("SE Outcome")) {
                 seOutCol = i;
-            } else if (q.equals("WR")) {
+            } else if (q.equals("WR") || q.equals("WaldRatio")) {
                 wrcol = i;
-            } else if (q.equals("se")) {
+            } else if (q.equals("se") || q.equals("WaldRatio SE")) {
                 sewrcol = i;
-            } else if (q.equals("p")) {
+            } else if (q.equals("p") || q.equals("WaldRatio P")) {
                 pwrcol = i;
             }
 

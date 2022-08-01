@@ -69,7 +69,15 @@ public class MainClass {
                     CalculateMValuesDiskBased450K d = new CalculateMValuesDiskBased450K();
                     d.run(args[1], args[2], args[3]);
                 }
-            } else if (args[0].equals("mergebinarymatrices")) {
+            } else if (args[0].equals("calcbvals")) {
+
+                if (args.length < 4) {
+                    System.out.println("Usage: calcbvals inU inM out");
+                } else {
+                    CalculateBetaValuesDiskBased450K d = new CalculateBetaValuesDiskBased450K();
+                    d.run(args[1], args[2], args[3]);
+                }
+            }else if (args[0].equals("mergebinarymatrices")) {
                 Merge450KDiskBased d = new Merge450KDiskBased();
                 if (args.length < 4) {
                     System.out.println("Usage: inT1 inT2 out [probelist]");
@@ -183,6 +191,7 @@ public class MainClass {
                 "makeprobelist\tlist probes in output (probes expected on rows, samples on cols)\n" +
                 "mergetables\tmerge 450K pipeline folder output\n" +
                 "calcmvals\tcalculate m-values\n" +
+                "calcbvals\tcalculate beta-values\n" +
                 "qqnorm\tquantile normalize (expect samples on rows)\n" +
                 "logtransform\tlog2transform (expect samples on rows)\n" +
                 "correl\tcorrelations (expect samples on rows); outputs upper triangle correlation matrix over rows\n" +
