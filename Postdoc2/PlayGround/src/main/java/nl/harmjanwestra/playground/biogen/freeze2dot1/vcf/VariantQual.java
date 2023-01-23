@@ -2,9 +2,8 @@ package nl.harmjanwestra.playground.biogen.freeze2dot1.vcf;
 
 import cern.colt.matrix.tdouble.DoubleMatrix2D;
 import nl.harmjanwestra.playground.legacy.vcf.*;
-import org.apache.commons.math.stat.correlation.PearsonsCorrelation;
+import org.apache.commons.math3.stat.correlation.PearsonsCorrelation;
 import org.broad.tribble.util.popgen.HardyWeinbergCalculation;
-import org.checkerframework.checker.units.qual.A;
 import umcg.genetica.io.text.TextFile;
 import umcg.genetica.math.stats.HWE;
 import umcg.genetica.util.Primitives;

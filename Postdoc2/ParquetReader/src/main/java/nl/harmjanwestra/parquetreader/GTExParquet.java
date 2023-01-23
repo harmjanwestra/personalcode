@@ -1,7 +1,9 @@
-package nl.harmjanwestra.playground.biogen.freeze2dot1.gtex;
+package nl.harmjanwestra.parquetreader;
 
-
-import ch.qos.logback.classic.Level;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.IntStream;
 
 import org.apache.parquet.column.page.PageReadStore;
 import org.apache.parquet.example.data.simple.SimpleGroup;
@@ -16,8 +18,6 @@ import org.apache.parquet.schema.Type;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import umcg.genetica.io.Gpio;
-import umcg.genetica.io.text.TextFile;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -25,13 +25,12 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.stream.IntStream;
 
-
-public class ProcessParquet {
+public class GTExParquet {
     public static void main(String[] args) {
 
         String folder = "U:\\2020-GTExV8\\GTEx_Analysis_v8_QTLs\\GTEx_Analysis_v8_EUR_eQTL_all_associations\\";
         String outfolder = "U:\\2020-GTExV8\\GTEx_Analysis_v8_QTLs\\GTEx_Analysis_v8_EUR_eQTL_all_associations-flat\\";
-        ProcessParquet p = new ProcessParquet();
+        GTExParquet p = new GTExParquet();
         try {
             p.run(folder, outfolder);
         } catch (IOException e) {
@@ -41,14 +40,16 @@ public class ProcessParquet {
 
     public void run(String infolder, String outfolder) throws IOException {
 
-        ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) org.slf4j.LoggerFactory.getLogger(ch.qos.logback.classic.Logger.ROOT_LOGGER_NAME);
-        root.setLevel(Level.INFO);
+//        ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) org.slf4j.LoggerFactory.getLogger(ch.qos.logback.classic.Logger.ROOT_LOGGER_NAME);
+//        root.setLevel(Level.INFO);
 
         String[] files = Gpio.getListOfFiles(infolder);
         Arrays.sort(files);
 
-        IntStream.range(0, files.length).parallel().forEach(v -> {
+//        IntStream.range(0, files.length).parallel().forEach(v -> {
+        IntStream.range(0, files.length).forEach(v -> {
             String filename = files[v];
+            System.out.println(filename);
             try {
                 processFile(infolder + filename, outfolder + filename + ".txt.gz");
             } catch (IOException e) {
@@ -62,7 +63,7 @@ public class ProcessParquet {
     private void processFile(String infile, String outfile) throws IOException {
 
 
-        Logger log = LoggerFactory.getLogger(ProcessParquet.class);
+        Logger log = LoggerFactory.getLogger(GTExParquet.class);
         log.info("Converting: " + infile + " --> " + outfile);
         TextFile output = new TextFile(outfile, TextFile.W);
         output.writeln("gene\tsnp\tmaf\tz\tp");
@@ -73,6 +74,9 @@ public class ProcessParquet {
 
         MessageType schema = reader.getFooter().getFileMetaData().getSchema();
         List<Type> fields = schema.getFields();
+        for (Type t : fields) {
+            System.out.println(t);
+        }
 
         int records = 0;
         PageReadStore pages;
@@ -114,6 +118,5 @@ public class ProcessParquet {
         log.info("Converting: " + infile + " --> " + outfile + "\tDONE.");
 
     }
-
 
 }

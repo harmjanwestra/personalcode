@@ -1,6 +1,6 @@
 package nl.harmjanwestra.playground.correlationcheck;
 
-import org.checkerframework.checker.units.qual.C;
+
 import umcg.genetica.io.text.TextFile;
 import umcg.genetica.math.matrix2.DoubleMatrixDataset;
 import umcg.genetica.math.stats.Correlation;

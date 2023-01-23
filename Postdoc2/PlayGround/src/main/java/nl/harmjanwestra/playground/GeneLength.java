@@ -1,7 +1,6 @@
 package nl.harmjanwestra.playground;
 
 import nl.harmjanwestra.playground.legacy.GTFAnnotation;
-import org.checkerframework.checker.units.qual.A;
 import umcg.genetica.enums.Chromosome;
 import umcg.genetica.features.Exon;
 import umcg.genetica.features.FeatureComparator;

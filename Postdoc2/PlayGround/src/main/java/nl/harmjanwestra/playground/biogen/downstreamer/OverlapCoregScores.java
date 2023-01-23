@@ -1,7 +1,7 @@
 package nl.harmjanwestra.playground.biogen.downstreamer;
 
 import com.google.common.util.concurrent.AtomicDouble;
-import org.apache.commons.math.stat.correlation.SpearmansCorrelation;
+import org.apache.commons.math3.stat.correlation.SpearmansCorrelation;
 import umcg.genetica.console.ProgressBar;
 import umcg.genetica.io.text.TextFile;
 import umcg.genetica.math.matrix2.DoubleMatrixDataset;

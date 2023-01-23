@@ -2,7 +2,6 @@ package nl.harmjanwestra.playground.trityper;
 
 import nl.harmjanwestra.playground.transeqtl.SupplementaryTables;
 import org.apache.commons.cli.*;
-import org.checkerframework.checker.units.qual.A;
 import umcg.genetica.containers.Pair;
 import umcg.genetica.io.text.TextFile;
 import umcg.genetica.io.trityper.SNP;

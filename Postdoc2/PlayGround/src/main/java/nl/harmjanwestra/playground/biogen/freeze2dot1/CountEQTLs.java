@@ -1,6 +1,6 @@
 package nl.harmjanwestra.playground.biogen.freeze2dot1;
 
-import org.checkerframework.checker.units.qual.C;
+
 import umcg.genetica.io.text.TextFile;
 
 import java.io.IOException;

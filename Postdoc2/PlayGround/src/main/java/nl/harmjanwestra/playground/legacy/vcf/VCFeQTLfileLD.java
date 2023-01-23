@@ -2,7 +2,6 @@ package nl.harmjanwestra.playground.legacy.vcf;
 
 import nl.harmjanwestra.playground.trityper.LDCalculator;
 import nl.harmjanwestra.playground.trityper.eQTLLDCalculator;
-import org.checkerframework.checker.units.qual.A;
 import umcg.genetica.console.ProgressBar;
 import umcg.genetica.containers.Pair;
 import umcg.genetica.containers.Triple;

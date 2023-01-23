@@ -1,6 +1,6 @@
 package nl.harmjanwestra.playground.biogen.interactions;
 
-import org.apache.commons.math.stat.correlation.SpearmansCorrelation;
+import org.apache.commons.math3.stat.correlation.SpearmansCorrelation;
 import umcg.genetica.io.text.TextFile;
 import umcg.genetica.math.matrix2.DoubleMatrixDataset;
 import umcg.genetica.math.stats.Correlation;

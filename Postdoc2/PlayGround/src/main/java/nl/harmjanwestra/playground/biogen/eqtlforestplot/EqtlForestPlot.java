@@ -2,7 +2,7 @@ package nl.harmjanwestra.playground.biogen.eqtlforestplot;
 
 import com.itextpdf.text.DocumentException;
 import nl.harmjanwestra.playground.biogen.mrvisualisation.MRPanel;
-import org.checkerframework.checker.units.qual.A;
+
 import umcg.genetica.graphics.Grid;
 import umcg.genetica.graphics.Range;
 import umcg.genetica.io.text.TextFile;

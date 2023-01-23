@@ -1,7 +1,7 @@
 package nl.harmjanwestra.playground.biogen.eqtlposthoc;
 
 import nl.harmjanwestra.playground.legacy.GTFAnnotation;
-import org.apache.commons.math.stat.correlation.SpearmansCorrelation;
+import org.apache.commons.math3.stat.correlation.SpearmansCorrelation;
 import umcg.genetica.console.ProgressBar;
 import umcg.genetica.features.Gene;
 import umcg.genetica.io.text.TextFile;

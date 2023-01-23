@@ -86,39 +86,6 @@
             <version>5.2.2</version>
         </dependency>
         <dependency>
-            <groupId>org.apache.parquet</groupId>
-            <artifactId>parquet-avro</artifactId>
-            <version>1.12.3</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.parquet</groupId>
-            <artifactId>parquet-column</artifactId>
-            <version>1.12.3</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.parquet</groupId>
-            <artifactId>parquet-hadoop</artifactId>
-            <version>1.12.3</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.hadoop</groupId>
-            <artifactId>hadoop-core</artifactId>
-            <version>1.2.1</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.hadoop</groupId>
-            <artifactId>hadoop-common</artifactId>
-            <version>3.3.2</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.hadoop</groupId>
-            <artifactId>hadoop-client</artifactId>
-            <version>3.3.2</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
             <groupId>org.graphstream</groupId>
             <artifactId>gs-core</artifactId>
             <version>2.0</version>
@@ -160,7 +127,9 @@
                             <!--                            <mainClass>nl.harmjanwestra.playground.qtltest.Main</mainClass>-->
                             <!--                            <mainClass>nl.harmjanwestra.playground.correlationcheck.Check</mainClass>-->
                             <!--                            <mainClass>nl.harmjanwestra.playground.correlationcheck.Check</mainClass>-->
-                            <mainClass>nl.harmjanwestra.playground.biogen.genotypes.CalculateGRM</mainClass>
+                            <!--                            <mainClass>nl.harmjanwestra.playground.biogen.genotypes.CalculateGRM</mainClass>-->
+                            <!--                            <mainClass>nl.harmjanwestra.playground.CleanupTool</mainClass>-->
+                            <mainClass>nl.harmjanwestra.playground.CleanupToolDirCompare</mainClass>
                             <!--                            <mainClass>nl.harmjanwestra.playground.legacy.vcf.VCFeQTLfileLD</mainClass>-->
                             <!--                            <mainClass>nl.harmjanwestra.playground.biogen.downstreamer.OverlapCoregScores</mainClass>-->
 

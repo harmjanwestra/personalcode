@@ -2,7 +2,6 @@ package nl.harmjanwestra.playground.trityper;
 
 import gnu.trove.map.hash.TObjectIntHashMap;
 import org.apache.commons.cli.*;
-import org.checkerframework.checker.units.qual.A;
 import umcg.genetica.console.MultiThreadProgressBar;
 import umcg.genetica.console.ProgressBar;
 import umcg.genetica.containers.Pair;
