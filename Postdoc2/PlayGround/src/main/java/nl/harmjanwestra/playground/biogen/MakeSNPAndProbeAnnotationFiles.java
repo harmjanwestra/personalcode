@@ -41,9 +41,16 @@ public class MakeSNPAndProbeAnnotationFiles {
 //            p.writeListOfProteinCodingGenes("D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\gencode.v32.primary_assembly.annotation.collapsedGenes.gtf.gz",
 //                    "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\gencode.v32.primary_assembly.annotation.collapsedGenes.proteincoding.txt.gz");
 
-            p.gtfToProbeAnnotationFile("D:\\tmp\\Homo_sapiens.GRCh37.75.gtf",
-                    "ensemble.75",
-                    "D:\\tmp\\Homo_sapiens.GRCh37.75.ProbeAnnotation.txt.gz", true);
+//            p.gtfToProbeAnnotationFile("D:\\tmp\\Homo_sapiens.GRCh37.75.gtf",
+//                    "ensemble.75",
+//                    "D:\\tmp\\Homo_sapiens.GRCh37.75.ProbeAnnotation.txt.gz", true);
+
+//            p.gtfToProbeAnnotationFile("D:\\tmp\\genes.gtf",
+//                    "refdata-gex-GRCh38-2020-A",
+//                    "D:\\tmp\\refdata-gex-GRCh38-2020-A-GeneAnnotation.txt.gz", true);
+            p.writeListOfProteinCodingGenes("D:\\tmp\\genes.gtf",
+                    "D:\\tmp\\refdata-gex-GRCh38-2020-A-proteincoding.txt");
+//                    "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\gencode.v32.primary_assembly.annotation.collapsedGenes.proteincoding.txt.gz");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -66,7 +73,8 @@ public class MakeSNPAndProbeAnnotationFiles {
         for (Gene g : genes) {
             String type = g.getType();
             if (type != null && type.contains("protein")) {
-                proteincoding.add(g.getName());
+//                proteincoding.add(g.getName());
+                proteincoding.add(g.getGeneSymbol());
             }
         }
 
