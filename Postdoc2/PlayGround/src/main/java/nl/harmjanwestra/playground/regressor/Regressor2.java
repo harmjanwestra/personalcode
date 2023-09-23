@@ -453,11 +453,13 @@ public class Regressor2 {
 						double[] yout = ols.estimateResiduals();
 						int cctr = 0;
 						for (int c = 0; c < y.length; c++) {
-							if (isNonNan[c]) {
-								finalOutputmat.setElementQuick(row, c, yout[cctr]);
-								cctr++;
-							} else {
-								finalOutputmat.setElementQuick(row, c, Double.NaN);
+							synchronized (finalOutputmat) {
+								if (isNonNan[c]) {
+									finalOutputmat.setElementQuick(row, c, yout[cctr]);
+									cctr++;
+								} else {
+									finalOutputmat.setElementQuick(row, c, Double.NaN);
+								}
 							}
 						}
 					}
@@ -479,8 +481,10 @@ public class Regressor2 {
 					ols.newSampleData(y, covariateDataMatrix);
 					double[] yout = ols.estimateResiduals();
 
-					for (int c = 0; c < yout.length; c++) {
-						finalOutputmat.setElementQuick(row, c, yout[c]);
+					synchronized (finalOutputmat) {
+						for (int c = 0; c < yout.length; c++) {
+							finalOutputmat.setElementQuick(row, c, yout[c]);
+						}
 					}
 				}
 			}
@@ -488,12 +492,14 @@ public class Regressor2 {
 		});
 		pb.close();
 
+		outputmat = finalOutputmat;
 		// dump some rows from the outputmat
 		if (!dumpRows.isEmpty()) {
-			outputmat = excludeRows(finalOutputmat, dumpRows);
+			outputmat = excludeRows(outputmat, dumpRows);
 		}
 
 		traitData.setMatrix(outputmat.getMatrix());
+		traitData.setRowObjects(outputmat.getRowObjects());
 		fileNamePrefix += ".CovariatesRemovedOLS";
 
 
@@ -516,7 +522,7 @@ public class Regressor2 {
 			double[] rowData = traitData.getRow(r).toArray();
 			String outln = traitData.getRowObjects().get(r) + "\t" + Strings.concat(rowData, Strings.tab);
 			out.writeln(outln);
-			pb.set(r);
+			pb.iterate();
 		}
 		pb.close();
 		out.close();
