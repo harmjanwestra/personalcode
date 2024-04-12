@@ -26,7 +26,6 @@ public class GTFDump {
                 }
             }
             tf.close();
-            Gene
         } catch (IOException e) {
             e.printStackTrace();
         }
