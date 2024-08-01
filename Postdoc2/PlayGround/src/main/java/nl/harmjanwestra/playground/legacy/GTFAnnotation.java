@@ -14,6 +14,7 @@ import umcg.genetica.io.text.TextFile;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.HashSet;
 
 /**
  * @author Harm-Jan
@@ -49,6 +50,8 @@ public class GTFAnnotation extends Annotation {
 		HashMap<String, Exon> strToExon = new HashMap<String, Exon>();
 
 // this all assumes the path is sorted on genomic coordinates..
+		HashMap<String, Integer> unknownTypes = new HashMap<>();
+		int lnctr = 0;
 		while (ln != null) {
 			if (ln.startsWith("#")) {
 				// skip
@@ -125,15 +128,27 @@ public class GTFAnnotation extends Annotation {
 
 
 				} else {
-					System.out.println("Unknown type " + lineObj.getType() + " found.");
+					Integer uobjctr = unknownTypes.get(lineObj.getType());
+					if (uobjctr == null) {
+						uobjctr = 0;
+					}
+					uobjctr++;
+					unknownTypes.put(lineObj.getType(), uobjctr);
 				}
 			}
-
-
 			ln = tf.readLine();
+			lnctr++;
+			if (lnctr % 1000 == 0) {
+				System.out.print(lnctr + " lines parsed\r");
+			}
 		}
+		System.out.print(lnctr + " lines parsed\n");
 		tf.close();
 		System.out.println(annotationLocation + ", Genes: " + strToGene.size() + "\tTranscripts: " + strToTranscript.size() + "\tExons: " + strToExon.size());
+
+		for (String s : unknownTypes.keySet()) {
+			System.out.println("Uknown type found: " + s + ", with occurence: " + unknownTypes.get(s));
+		}
 
 		// set the relative start and end positions of each gene and transcript
 		genes = strToGene.values();

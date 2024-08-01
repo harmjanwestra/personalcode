@@ -48,9 +48,11 @@ public class MakeSNPAndProbeAnnotationFiles {
 //            p.gtfToProbeAnnotationFile("D:\\tmp\\genes.gtf",
 //                    "refdata-gex-GRCh38-2020-A",
 //                    "D:\\tmp\\refdata-gex-GRCh38-2020-A-GeneAnnotation.txt.gz", true);
-            p.writeListOfProteinCodingGenes("D:\\tmp\\genes.gtf",
-                    "D:\\tmp\\refdata-gex-GRCh38-2020-A-proteincoding.txt");
+//            p.writeListOfProteinCodingGenes("D:\\tmp\\genes.gtf",
+//                    "D:\\tmp\\refdata-gex-GRCh38-2020-A-proteincoding.txt");
 //                    "D:\\Sync\\SyncThing\\Postdoc2\\2019-BioGen\\data\\2020-01-Freeze2dot1\\gencode.v32.primary_assembly.annotation.collapsedGenes.proteincoding.txt.gz");
+
+            p.gtfToProbeAnnotationFile("/Users/harm-jan/SyncData/TMP/orfeas/transtest/data/gencode.v45.primary_assembly.annotation-copy.gtf.gz","GencodeV45PrimaryAssembly", "/Users/harm-jan/SyncData/TMP/orfeas/transtest/data/ProbeAnnotation-gencode.v45.primary_assembly.annotation.txt.gz",true, true);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -85,7 +87,7 @@ public class MakeSNPAndProbeAnnotationFiles {
         outf.close();
     }
 
-    public void gtfToProbeAnnotationFile(String in, String platformstr, String out, boolean printTSS) throws IOException {
+    public void gtfToProbeAnnotationFile(String in, String platformstr, String out, boolean printTSS, boolean stripGeneVersion) throws IOException {
         GTFAnnotation gtfAnnotation = new GTFAnnotation(in);
 
         Collection<Gene> genes = gtfAnnotation.getGenes();
@@ -100,19 +102,27 @@ public class MakeSNPAndProbeAnnotationFiles {
                 } else {
                     tss = g.getStart();
                 }
-                String outln = platformstr + "\t" + g.getName() + "\t" + g.getGeneSymbol() + "\t" + g.getChromosome().getNumber() + "\t" + tss + "\t" + tss + "\t" + g.getName() + "\t" + g.getStrand();
+                String genename = g.getName();
+                if(stripGeneVersion){
+                    genename = genename.split("\\.")[0];
+                }
+                String outln = platformstr + "\t" + genename + "\t" + g.getGeneSymbol() + "\t" + g.getChromosome().getNumber() + "\t" + tss + "\t" + tss + "\t" + g.getName() + "\t" + g.getStrand();
                 if (g.getChromosome().equals(Chromosome.X)) {
-                    outln = platformstr + "\t" + g.getName() + "\t" + g.getGeneSymbol() + "\tX\t" + tss + "\t" + tss + "\t" + g.getName() + "\t" + g.getStrand();
+                    outln = platformstr + "\t" + genename + "\t" + g.getGeneSymbol() + "\tX\t" + tss + "\t" + tss + "\t" + g.getName() + "\t" + g.getStrand();
                 } else if (g.getChromosome().equals(Chromosome.Y)) {
-                    outln = platformstr + "\t" + g.getName() + "\t" + g.getGeneSymbol() + "\tY\t" + tss + "\t" + tss + "\t" + g.getName() + "\t" + g.getStrand();
+                    outln = platformstr + "\t" + genename + "\t" + g.getGeneSymbol() + "\tY\t" + tss + "\t" + tss + "\t" + g.getName() + "\t" + g.getStrand();
                 }
                 outf.writeln(outln);
             } else {
-                String outln = platformstr + "\t" + g.getName() + "\t" + g.getGeneSymbol() + "\t" + g.getChromosome().getNumber() + "\t" + g.getStart() + "\t" + g.getStop() + "\t" + g.getName() + "\tN";
+                String genename = g.getName();
+                if(stripGeneVersion){
+                    genename = genename.split("\\.")[0];
+                }
+                String outln = platformstr + "\t" + genename + "\t" + g.getGeneSymbol() + "\t" + g.getChromosome().getNumber() + "\t" + g.getStart() + "\t" + g.getStop() + "\t" + g.getName() + "\tN";
                 if (g.getChromosome().equals(Chromosome.X)) {
-                    outln = platformstr + "\t" + g.getName() + "\t" + g.getGeneSymbol() + "\tX\t" + g.getStart() + "\t" + g.getStop() + "\t" + g.getName() + "\tN";
+                    outln = platformstr + "\t" + genename + "\t" + g.getGeneSymbol() + "\tX\t" + g.getStart() + "\t" + g.getStop() + "\t" + g.getName() + "\tN";
                 } else if (g.getChromosome().equals(Chromosome.Y)) {
-                    outln = platformstr + "\t" + g.getName() + "\t" + g.getGeneSymbol() + "\tY\t" + g.getStart() + "\t" + g.getStop() + "\t" + g.getName() + "\tN";
+                    outln = platformstr + "\t" + genename + "\t" + g.getGeneSymbol() + "\tY\t" + g.getStart() + "\t" + g.getStop() + "\t" + g.getName() + "\tN";
                 }
                 outf.writeln(outln);
             }

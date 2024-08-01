@@ -5,7 +5,9 @@ import org.apache.commons.math3.stat.ranking.NaNStrategy;
 import org.apache.commons.math3.stat.ranking.NaturalRanking;
 import org.apache.commons.math3.stat.ranking.RankingAlgorithm;
 import org.apache.commons.math3.stat.ranking.TiesStrategy;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.Marker;
 import umcg.genetica.console.ProgressBar;
 import umcg.genetica.math.matrix2.DoubleMatrixDatasetAppendableWriter;
 import umcg.genetica.math.matrix2.DoubleMatrixDatasetRandomAccessReader;
@@ -238,7 +240,7 @@ public class CorrelateDiskBased450K {
 	}
 
 
-	private static final Logger LOG = Logger.getLogger(CorrelateDiskBased450K.class);
+	private static final Logger LOG = LogManager.getLogger(CorrelateDiskBased450K.class);
 
 	private static String humanReadableByteCount(long bytes, boolean si) {
 		final int unit = si ? 1000 : 1024;

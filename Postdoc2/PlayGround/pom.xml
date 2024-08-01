@@ -139,9 +139,11 @@
                             <!--                            <mainClass>nl.harmjanwestra.playground.correlationcheck.Check</mainClass>-->
                             <!--                            <mainClass>nl.harmjanwestra.playground.biogen.genotypes.CalculateGRM</mainClass>-->
                             <!--                            <mainClass>nl.harmjanwestra.playground.CleanupTool</mainClass>-->
-                                                        <mainClass>nl.harmjanwestra.playground.regressor.Regressor2</mainClass>
+                            <!--                                                        <mainClass>nl.harmjanwestra.playground.regressor.Regressor2</mainClass>-->
+<!--                            <mainClass>nl.harmjanwestra.playground.geengeduld.IsOp</mainClass>-->
+                            <mainClass>nl.harmjanwestra.playground.mbqtlvalidate.MbQTLValidator</mainClass>
                             <!--                            <mainClass>nl.harmjanwestra.playground.regressor.Regressor2Test</mainClass>-->
-<!--                            <mainClass>nl.harmjanwestra.playground.diffex.DifferentialExpression</mainClass>-->
+                            <!--                            <mainClass>nl.harmjanwestra.playground.diffex.DifferentialExpression</mainClass>-->
                             <!--                            <mainClass>nl.harmjanwestra.playground.legacy.vcf.VCFeQTLfileLD</mainClass>-->
                             <!--                            <mainClass>nl.harmjanwestra.playground.biogen.downstreamer.OverlapCoregScores</mainClass>-->
 
